@@ -1,5 +1,6 @@
 package smartcar.Sensor;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,7 +60,6 @@ public class SensorHall implements SensorHallIf {
         if (SensorListeners == null) {
             SensorListeners = new ArrayList<>(2);
         }
-
         if (!SensorListeners.contains(listener)) {
             SensorListeners.add(listener);
         }

@@ -8,14 +8,14 @@ import smartcar.Event.SensorListener;
  */
 public interface SensorHallIf {
     /**
-     * 
+     * 添加SensorEvent的监听者
      * @param listener
-     *  添加SensorEvent的监听者
      */
      void addSenserListener(SensorListener listener);
     /**
-     * 
-     * @param listener 移除SensorEvent的监听者
+     * 移除SensorEvent的监听者
+     * @param listener 
      */
     void removeSenserListener(SensorListener listener);
+
 }
