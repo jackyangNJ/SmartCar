@@ -14,7 +14,6 @@ import java.util.Scanner;
 public class Test {
 
     public static void main(String[] args) {
-        //System.out.print("0 to stop\n1 to clockwise\n2 to countclockwise\n3 to left\n4 to right\n5 to 7000 forward");
         smart_car_move car = new smart_car_move();
         
         System.out.println("input speed and angle");
