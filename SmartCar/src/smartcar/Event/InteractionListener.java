@@ -6,7 +6,8 @@ import java.util.EventListener;
 public interface InteractionListener extends EventListener{
     /**
      * 
-     * @param e fg
+     * @param e fgvvb
      */
+	
     void CommandPerformed(InteractionEvent e);
 }
