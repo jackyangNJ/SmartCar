@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author jack
  */
-public class SensorUlwave implements SensorUlwaveIf{
+public class SensorUltrasonic implements SensorUltrasonicIf{
 
     @Override
     public List getDistances() {

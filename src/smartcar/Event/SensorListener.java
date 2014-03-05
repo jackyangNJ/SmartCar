@@ -8,5 +8,5 @@ import java.util.EventListener;
  该Listener用户处理Sensor数据事件
  */
 public interface SensorListener extends EventListener{
-    void SensorEventProcess();
+    void SensorEventProcess(SensorEvent e);
 }
