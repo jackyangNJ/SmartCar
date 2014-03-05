@@ -5,8 +5,8 @@ import java.util.EventListener;
 /**
  *
  * @author jack
- * 该Listener用户处理Sensor数据事件
+ 该Listener用户处理Sensor数据事件
  */
-public interface SensorEventListener extends EventListener{
+public interface SensorListener extends EventListener{
     void SensorEventProcess();
 }
