@@ -24,12 +24,6 @@ public interface SensorGyroIf {
      * 获取水平角速度，单位度
      * @return 水平角速度
      */
-    float getHorizontalDps();
-    
-    /**
-     * 获取水平角度，与正北方向的夹角(正北方向顺时针到当前的方向所成的夹角)，单位度，范围0~360
-     * @return 
-     */
-    float getHorizontalAngular();
+    SensorGyroData getSensorGyroData();
     
 }

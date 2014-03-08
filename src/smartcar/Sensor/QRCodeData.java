@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package smartcar.Controller;
+package smartcar.Sensor;
 
 /**
  *
  * @author jack
  */
-public class Map {
+public class QRCodeData {
     
 }

@@ -4,16 +4,12 @@
  * and open the template in the editor.
  */
 
-package smartcar.Controller;
+package smartcar.Sensor;
 
 /**
  *
  * @author jack
  */
-public class Controller {
-    SmartMap map;
-    public Controller(SmartMap map){
-        this.map = map;
-    }
-            
+public class SensorMagneticData {
+    
 }

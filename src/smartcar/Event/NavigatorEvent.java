@@ -6,9 +6,9 @@ import java.util.EventObject;
  *
  * @author jack
  */
-public class InteractionEvent extends EventObject{
+public class NavigatorEvent extends EventObject {
 
-    public InteractionEvent(Object source) {
+    public NavigatorEvent(Object source) {
         super(source);
     }
     
