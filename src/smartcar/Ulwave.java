@@ -2,7 +2,7 @@
 package smartcar;
 
 /**
- *
+ *ultrosonic module
  * @author cshuo
  */
 public class Ulwave implements UlwaveInterface {
