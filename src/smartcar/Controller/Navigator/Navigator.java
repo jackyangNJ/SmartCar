@@ -4,14 +4,19 @@ import smartcar.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Sensor.QRCode;
+import smartcar.Sensor.QRCodeData;
 import smartcar.Sensor.QRCodeIf;
 import smartcar.Sensor.SensorAcc;
+import smartcar.Sensor.SensorAccData;
 import smartcar.Sensor.SensorAccIf;
 import smartcar.Sensor.SensorGyro;
+import smartcar.Sensor.SensorGyroData;
 import smartcar.Sensor.SensorGyroIf;
 import smartcar.Sensor.SensorHall;
+import smartcar.Sensor.SensorHallData;
 import smartcar.Sensor.SensorHallIf;
 import smartcar.Sensor.SensorMagnetic;
+import smartcar.Sensor.SensorMagneticData;
 import smartcar.Sensor.SensorMagneticIf;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicIf;
@@ -23,6 +28,7 @@ import smartcar.Sensor.SensorUltrasonicIf;
 public class Navigator {
 
     SmartMap map;
+    //传感器对象
     SensorHallIf sensorHall = new SensorHall();
     SensorAccIf sensorAcc = new SensorAcc();
     SensorUltrasonicIf sensorUltrasonic = new SensorUltrasonic();
@@ -30,6 +36,12 @@ public class Navigator {
     SensorMagneticIf sensorMagnetic = new SensorMagnetic();
     QRCodeIf qrCode = new QRCode();
 
+    //传感器数据
+    SensorHallData sensorHallData;
+    SensorAccData sensorAccData;
+    SensorGyroData sensorGyroData;
+    SensorMagneticData sensorMagneticData;
+    QRCodeData qrCodeData;
     /**
      * 霍尔传感器事件处理函数
      */
