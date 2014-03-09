@@ -4,6 +4,6 @@ package smartcar.Sensor;
  *
  * @author jack
  */
-public class QRCode {
+public class QRCode implements QRCodeIf{
     
 }
