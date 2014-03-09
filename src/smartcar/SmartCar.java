@@ -4,12 +4,25 @@
  */
 package smartcar;
 
+import smartcar.Controller.Controller;
+
 /**
  *
  * @author jack
  */
 public class SmartCar {
-
+    
+    Controller controller;
+    SmartMap map;
+    Interactor interactor;
+    
+    public SmartCar(){
+        map=new SmartMap();
+        controller=new Controller(map);
+        interactor = new Interactor(map);
+        
+    }
+    
     /**
      * @param args the command line arguments
      */

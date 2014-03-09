@@ -1,19 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package smartcar.Controller;
+
+import smartcar.SmartMap;
+import smartcar.Controller.Navigator.Navigator;
+import smartcar.Event.NavigatorListener;
 
 /**
  *
  * @author jack
  */
-public class Controller {
+public class Controller implements NavigatorListener{
     SmartMap map;
+    Navigator navigator;
+    
+    
     public Controller(SmartMap map){
         this.map = map;
+        navigator=new Navigator(map);
     }
             
 }

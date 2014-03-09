@@ -1,6 +1,6 @@
 package smartcar.Controller.Navigator;
 
-import smartcar.Controller.SmartMap;
+import smartcar.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Sensor.QRCode;
@@ -21,71 +21,90 @@ import smartcar.Sensor.SensorUltrasonicIf;
  * @author jack
  */
 public class Navigator {
+
     SmartMap map;
-    SensorHallIf sensorHall=new SensorHall();
-    SensorAccIf sensorAcc=new SensorAcc();
-    SensorUltrasonicIf sensorUltrasonic=new SensorUltrasonic();
-    SensorGyroIf sensorGyro=new SensorGyro();
-    SensorMagneticIf sensorMagnetic=new SensorMagnetic();
-    QRCodeIf qRCode=new QRCode();
-    /** 霍尔传感器事件处理函数*/
-    SensorListener sensorHallListener=new SensorListener() {
+    SensorHallIf sensorHall = new SensorHall();
+    SensorAccIf sensorAcc = new SensorAcc();
+    SensorUltrasonicIf sensorUltrasonic = new SensorUltrasonic();
+    SensorGyroIf sensorGyro = new SensorGyro();
+    SensorMagneticIf sensorMagnetic = new SensorMagnetic();
+    QRCodeIf qrCode = new QRCode();
 
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    /** 加速度传感器处理函数*/
-    SensorListener sensorAccListener=new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    /** 陀螺仪传感器事件处理函数*/
-    SensorListener sensorGyroListener=new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    /** 磁场传感器事件处理函数*/
-    SensorListener sensorMagneticListener=new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    /** 二维码事件处理函数*/
-    SensorListener QRCodeListener=new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    /**超声波事件处理函数*/
-    SensorListener sensorUltrasonicListener=new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-    
     /**
-     * 
-     * @param map 
+     * 霍尔传感器事件处理函数
      */
-    public Navigator(SmartMap map){
+    SensorListener sensorHallListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+    /**
+     * 加速度传感器处理函数
+     */
+    SensorListener sensorAccListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            //!TODO
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+    /**
+     * 陀螺仪传感器事件处理函数
+     */
+    SensorListener sensorGyroListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+    /**
+     * 磁场传感器事件处理函数
+     */
+    SensorListener sensorMagneticListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+    /**
+     * 二维码事件处理函数
+     */
+    SensorListener QRCodeListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+    /**
+     * 超声波事件处理函数
+     */
+    SensorListener sensorUltrasonicListener = new SensorListener() {
+
+        @Override
+        public void SensorEventProcess(SensorEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+
+    /**
+     *
+     * @param map
+     */
+    public Navigator(SmartMap map) {
         this.map = map;
+        
+        //注册监听器
         sensorHall.addSenserListener(sensorHallListener);
         sensorGyro.addSenserListener(sensorGyroListener);
         sensorAcc.addSenserListener(sensorAccListener);
-        
+        sensorMagnetic.addSenserListener(sensorMagneticListener);
+        sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
+        qrCode.addSenserListener(QRCodeListener);
     }
 }

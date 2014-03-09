@@ -6,10 +6,32 @@
 
 package smartcar.Sensor;
 
+import smartcar.Event.SensorListener;
+
 /**
  *
  * @author jack
  */
 public class SensorMagnetic implements SensorMagneticIf{
+
+    @Override
+    public void addSenserListener(SensorListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeSenserListener(SensorListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorMagneticData getData() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorMagneticData getRawData() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

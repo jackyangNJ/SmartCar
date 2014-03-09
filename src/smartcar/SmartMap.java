@@ -1,4 +1,4 @@
-package smartcar.Controller;
+package smartcar;
 
 /**
  *

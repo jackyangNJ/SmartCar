@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Test {
 
     public static void main(String[] args) {
-        smart_car_move car = new smart_car_move();
+        Motor car = new Motor();
         
         System.out.println("input speed and angle");
         Scanner input = new Scanner(System.in);

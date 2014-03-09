@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author cshuo
  */
-public class smart_car_move {
+public class Motor {
 
     public void set_clockwise() {
         String cspeed = "7000"+'\0';
@@ -23,7 +23,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm1_speed")) {
@@ -31,7 +31,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
@@ -39,7 +39,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm2_speed")) {
@@ -47,7 +47,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
@@ -55,7 +55,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
@@ -63,7 +63,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
@@ -71,7 +71,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
@@ -79,7 +79,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -90,7 +90,7 @@ public class smart_car_move {
             fw.write(Integer.toString(1));
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm1_speed")) {
@@ -98,7 +98,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
@@ -106,7 +106,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm2_speed")) {
@@ -114,7 +114,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
@@ -122,7 +122,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
@@ -130,7 +130,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
@@ -138,7 +138,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
@@ -146,7 +146,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -156,7 +156,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
@@ -164,7 +164,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
@@ -172,7 +172,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
@@ -180,7 +180,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -191,28 +191,28 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -224,7 +224,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
@@ -232,7 +232,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -244,7 +244,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
@@ -252,7 +252,7 @@ public class smart_car_move {
             fw.flush();
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(smart_car_move.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
