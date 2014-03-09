@@ -35,7 +35,7 @@ public class SensorHall implements SensorHallIf {
      *
      * @param e SensorEvent
      */
-    private void processSensorEvent(SensorEvent e) {
+    private void fireSensorEventProcess(SensorEvent e) {
         ArrayList list;
         synchronized (this) {
             if (SensorListeners == null) {
