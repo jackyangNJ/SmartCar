@@ -1,87 +1,149 @@
 package smartcar.Sensor;
 
-import smartcar.Event.SensorListener;
-import com.googlecode.javacpp.annotation.Const;
-import com.googlecode.javacv.cpp.cvkernels;
-import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_legacy.CvRandState;
-import com.googlecode.javacv.cpp.opencv_video;
-import com.googlecode.javacv.cpp.opencv_videostab;
-import com.googlecode.javacv.cpp.opencv_core.*;
-import com.googlecode.javacv.cpp.opencv_video.*;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.googlecode.javacv.*;
+import smartcar.Event.SensorEvent;
+import smartcar.Event.SensorListener;
+import spiLib.SPIFunc;
+
 /**
  *
- * @author jack
+ * @author cs
  */
 public class SensorGyro implements SensorGyroIf{
+    private ArrayList<SensorListener> SensorListeners;
+    private SPIFunc spifunc;
+    private SensorGyroData gyroData;
+    private  final float UNIT = 8.75f;
+    private  final byte OUT_Z_L_addr = 0x2C;
+    private  final byte OUT_Z_H_addr = 0x2D;
+    private  final byte L3G4200D_CTRL_REG1 = 0x20; 
+    private  final String routePath = "/dev/spidev32765.0";
+    /*every 10ms read a number,that's to say 100Hz*/
+    private  final  int readFrequency = 10;
     
     
-        
-    //private ArrayList<SensorListener> SensorListeners;
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            getSensorData();
+            /*读取使能*/
+            defaultEnable();  
+            read_HoriAngleSpeed();  
+            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, getSensorGyroData()));
         }
     };
-    CvMat z_k ;
-    CvMat y_k ;
-    CvKalman kalman;
-    SensorGyroData data;
-    public SensorGyro() {
-    
-            	kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(2, 1, 0) ;//创建kalman
-             
-		z_k = new CvMat();
-		z_k.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		z_k.zero();//预测值，即为返回值
-		
-		final float F[] = {1,1,0,1};
-		
-                System.arraycopy(kalman.transition_matrix().data_fl(), 0, F, 0,4);
-		//赋值
-	    
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.measurement_matrix(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.process_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.measurement_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.error_cov_post(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
-	    //初始化
-    
+            
+    public SensorGyro(){
+        gyroData = new SensorGyroData();
+        spifunc = new SPIFunc(routePath);        
+        timer.scheduleAtFixedRate(task,0,readFrequency);
     }
-        @Override
-        public void addSenserListener(SensorListener listener) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void removeSenserListener(SensorListener listener) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-         @Override
-        public SensorGyroData getSensorData(){
-      
-                          
-	    	y_k = opencv_video.cvKalmanPredict( kalman, null );
-                z_k.put(0,0,this.getSensorGyroData().getangular() + this.getSensorGyroData().getangular_velocity() * 1);    
-	    	z_k.put(1,0,this.getSensorGyroData().getangular_velocity());
-                opencv_video.cvKalmanCorrect(kalman, z_k);
-          
-                data.setangular((float)y_k.get(0,0));//
-                data.setangular_velocity((float)z_k.get(1, 0));
-                
-	    	return data;
-
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    /**
+     * 读取水平角速度，单位 度/s
+     */
+    public void read_HoriAngleSpeed(){
+        byte Z_L = gyr_read(OUT_Z_L_addr);
+        byte Z_H = gyr_read(OUT_Z_H_addr);
+        int z = Z_H<<8 | Z_L;
+        gyroData.setHori_angleSpeed((float)z*UNIT/1000);
     }
-        @Override
-        public SensorGyroData getSensorGyroData() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    /**
+     * 向控制写默认值
+     */
+    public void defaultEnable(){
+        byte[] data = new byte[2];
+        data[0] = L3G4200D_CTRL_REG1;
+        data[1] = 0x07;    //0x0F,to read the aodiuno
+        Gyr_write(data);
+    }
+    
+    /**
+     * 读取指定地址寄存器的值
+     * @param addr
+     * @return 
+     */
+    public byte gyr_read(byte addr){
+        byte[] read_data = new byte[2];
+        read_data[0] = (byte)((addr|(3<<6))-(1<<6));       //bit0置为1,bit1置为0
+        spifunc.RWBytes(read_data,2);
+        return read_data[1];
+    }
+    
+    /**
+     * 向指定地址寄存器写值
+     * @param data 
+     */
+    public void Gyr_write(byte[] data){
+        byte[] write_data = new byte[2];
+        write_data[0] = (byte) ((data[0]|(3<<6))-(3<<6));//   bit0，1置为0
+        write_data[1] = data[1];
+        spifunc.RWBytes(write_data,2);
+    }
+    
+    /**
+     * 根据寄存器的值判断设备是否正确
+     * @return 
+     */
+    public boolean id_true(){
+        byte ID_Addr = 0x0f;       
+        return gyr_read(ID_Addr)==(byte)0xd3;
+    }
+    
+    /**
+     *触发监听事件
+     * @param e 
+     */
+    private void fireSensorEventProcess(SensorEvent e){
+        ArrayList list;
+        synchronized(this){
+            if(SensorListeners == null){
+                return;
+            }
+            list = (ArrayList)SensorListeners.clone();
         }
-
+        for(int i=0;i<list.size();i++){
+            SensorListener listener = (SensorListener)list.get(i);
+            listener.SensorEventProcess(e);
+        }
+    }
+    
+    /**
+     * add SensorListener
+     * @param listener 
+     */
+    @Override
+    public void addSenserListener(SensorListener listener) {
+        if(SensorListeners == null){
+            SensorListeners = new ArrayList<>(2);
+        }
+        if(!SensorListeners.contains(listener)){
+            SensorListeners.add(listener);
+        }
+    }
+    
+    /**
+     * remove SensorListener
+     * @param listener 
+     */
+    @Override
+    public void removeSenserListener(SensorListener listener) {
+        if((SensorListeners != null) && SensorListeners.contains(listener)){
+            SensorListeners.remove(listener);
+        }
+    }
+    
+    /**
+     * 获取测得的数据
+     * @return 
+     */
+    @Override
+    public SensorGyroData getSensorGyroData() {       
+        return this.gyroData;
+    }
+    
 }

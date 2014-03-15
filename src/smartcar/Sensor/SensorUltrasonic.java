@@ -16,12 +16,24 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
     private ArrayList<SensorListener> SensorListeners;
     private SensorUltrasonicData UltrasonicData;   
     public static final String path = "/dev/";
+    /*unit:ms;  40Hz*/
+    public static final int Frequency = 25;    
     
     Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-        public void run(){            
+    TimerTask task = new TimerTask() {        
+        @Override
+        public void run() {
+            trigger();
+            getDistance();
+            /*what is the meaning of source in SensorEvent????????????????*/
+            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, getData()));
         }
     };
+    
+    public SensorUltrasonic(){
+        UltrasonicData = new SensorUltrasonicData();
+        timer.scheduleAtFixedRate(task, 0, Frequency);
+    }
     
     /**
      * 触发超声波传感器发出探测脉冲，

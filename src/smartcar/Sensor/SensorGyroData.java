@@ -8,32 +8,26 @@ package smartcar.Sensor;
 
 /**
  *
- * @author jack
+ * @author cs
  */
 public class SensorGyroData {
-    float angular ;
-    float angular_velocity;
+    private float hori_angleSpeed;        
     
-    public SensorGyroData(float angular , float angular_velocity) {
+    public  SensorGyroData(){
         
-        this.angular = angular;
-        this.angular_velocity = angular_velocity;
     }
     
-    public  float getangular(){
-        return this.angular;
+    /**
+     * @return the hori_angleSpeed
+     */
+    public float getHori_angleSpeed() {
+        return hori_angleSpeed;
     }
-    
-    public  float getangular_velocity(){
-        return this.angular_velocity;
+
+    /**
+     * @param hori_angleSpeed the hori_angleSpeed to set
+     */
+    public void setHori_angleSpeed(float hori_angleSpeed) {
+        this.hori_angleSpeed = hori_angleSpeed;
     }
-    
-    public void setangular(float angular){
-        this.angular = angular;
-    }
-    
-    public  void setangular_velocity(float angular_velocity){
-        this.angular_velocity = angular_velocity;
-    }
-    
 }
