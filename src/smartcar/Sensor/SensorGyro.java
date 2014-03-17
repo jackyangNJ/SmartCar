@@ -58,7 +58,7 @@ public class SensorGyro implements SensorGyroIf{
     public void defaultEnable(){
         byte[] data = new byte[2];
         data[0] = L3G4200D_CTRL_REG1;
-        data[1] = 0x07;    //0x0F,to read the aodiuno
+        data[1] = 0x0F;    
         Gyr_write(data);
     }
     
