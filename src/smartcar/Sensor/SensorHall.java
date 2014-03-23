@@ -11,11 +11,14 @@ import smartcar.Event.SensorListener;
  * @author jack
  */
 public class SensorHall implements SensorHallIf {
-
     private ArrayList<SensorListener> SensorListeners;
-    Timer timer = new Timer();
+    //sensor sample frequency
+    private static final int SampleFrequency = 10;
+    //Car Wheel girth,unit m
+    private static final float WheelGirth = 10;
+    
+    private Timer timer = new Timer();
     TimerTask task = new TimerTask() {
-
         @Override
         public void run() {
             getState();
@@ -23,7 +26,7 @@ public class SensorHall implements SensorHallIf {
     };
 
     public SensorHall() {
-        //start timer
+        timer.schedule(task, 0, 1000 / SampleFrequency);
     }
 
     private void getState() {
