@@ -27,4 +27,6 @@ public interface QRCodeIf {
      * @return QRCodeData
      */
     QRCodeData getQRCodeData();
+    
+    
 }

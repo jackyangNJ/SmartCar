@@ -13,11 +13,13 @@ import com.googlecode.javacv.cpp.opencv_video.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.googlecode.javacv.*;
+import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 
 /**
  *
  * @author jack
  */
+
 public class SensorAcc implements SensorAccIf{
  Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -26,50 +28,36 @@ public class SensorAcc implements SensorAccIf{
             getSensorData();
         }
     };
-    CvKalman kalman_x ;
-    CvKalman kalman_y ;
-    CvMat z1_k ;
-    CvMat z2_k;
+    private CvKalman kalman ;
     
-    CvMat x_axle;
-    CvMat y_axle;
+    private CvMat z_k ;
+   
+    public static final double time = 0.01;
+    
+    private CvMat xy_axle;
+
     SensorAccData data;
+
     public SensorAcc() {
-            kalman_x = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(2, 1, 0) ;//创建kalman for x
-            kalman_y = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(2, 1, 0) ;//创建kalman for y
-           
-           
-		/*CvMat x1_k = new CvMat();//for x axle
-		x1_k.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		x1_k.zero();*/
-		z1_k = new CvMat(); //for x axle
-		z1_k.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		z1_k.zero();//预测值，即为返回值
+            kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0) ;//创建kalman for x
+      
+
+		z_k = new CvMat(); //for x axle
+		z_k.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
+		z_k.zero();//预测值，即为返回值
 		
-                /*CvMat x2_k = new CvMat();//for y axle
-		x2_k.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		x2_k.zero();*/
-		z2_k = new CvMat(); //for y axle
-		z2_k.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		z2_k.zero();//预测值，即为返回值
                 
-                
-		final float F[] = {1,1,0,1};
+		final float F[][] = {{1,0,(float)time,0,0,0},{0,1,0,(float)time,0,0,},{0,0,1,0,(float)time,0},{0,0,0,1,0,(float)time},{0,0,0,0,1,0},{0,0,0,0,0,1}};
 		
-                System.arraycopy(kalman_x.transition_matrix().data_fl(), 0, F, 0,4);
-		System.arraycopy(kalman_y.transition_matrix().data_fl(), 0, F, 0,4);
+                System.arraycopy(kalman.transition_matrix().data_fl(), 0, F, 0,4);
+		
                 //赋值
 	    
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_x.measurement_matrix(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_x.process_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_x.measurement_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_x.error_cov_post(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
-	    //初始化   
-            
-            com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_y.measurement_matrix(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_y.process_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_y.measurement_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman_y.error_cov_post(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
+	    cvSet2D(kalman.measurement_matrix(),0,4,CvScalar.ZERO);
+            cvSet2D(kalman.measurement_matrix(),1,5,CvScalar.ONE);
+	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.process_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
+	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.measurement_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
+	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.error_cov_post(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
 	    //初始化   
     }
     
@@ -85,26 +73,6 @@ public class SensorAcc implements SensorAccIf{
 
     @Override
     public SensorAccData getSensorData() {
-          
- 
-                
-                
-	    	x_axle = opencv_video.cvKalmanPredict( kalman_x, null );
-                /*获取数据*/
-                z1_k.put(0,0,this.getSensorData().getv_x() + this.getSensorData().geta_x() * 1);//1为时间
-                z1_k.put(1,0,this.getSensorData().geta_x());
-	    	opencv_video.cvKalmanCorrect(kalman_x, z1_k);
-	    	
-                y_axle = opencv_video.cvKalmanPredict( kalman_y, null );
-                /*获取数据*/
-                z2_k.put(0,0,this.getSensorData().getv_y() + this.getSensorData().geta_y() * 1);//1为时间
-                z2_k.put(1,0,this.getSensorData().geta_y());
-	    	opencv_video.cvKalmanCorrect(kalman_y, z2_k);
-                
-                data.seta_x((float)x_axle.get(1, 0));
-                data.seta_y((float)y_axle.get(1, 0));
-                data.setv_x((float)x_axle.get(0, 0));
-                data.setv_y((float)y_axle.get(0, 0));
                 
 	    	return data;
 
@@ -115,5 +83,17 @@ public class SensorAcc implements SensorAccIf{
     public SensorAccData getSensorRawData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+     public SensorAccData kalmanData(SensorAccData sensoraccdata){
+         SensorAccData accdata = new SensorAccData(0,0,0,0);
+         xy_axle = opencv_video.cvKalmanPredict( kalman, null );
+         z_k.put(0,1,sensoraccdata.geta_x());//1为时间
+         z_k.put(1,0,sensoraccdata.geta_y());
+	 opencv_video.cvKalmanCorrect(kalman, z_k);
+         accdata.seta_x((float)z_k.get(0, 0));
+         accdata.seta_y((float)z_k.get(1, 0));
+         accdata.setv_x((float)xy_axle.get(2, 0));
+         accdata.setv_y((float)xy_axle.get(3,0));
+         return accdata;
+     }
     
 }

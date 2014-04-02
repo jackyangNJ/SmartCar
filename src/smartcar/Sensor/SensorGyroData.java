@@ -12,6 +12,7 @@ package smartcar.Sensor;
  */
 public class SensorGyroData {
     private float hori_angleSpeed;        
+    private float hori_angle;
     
     public  SensorGyroData(){
         
@@ -29,5 +30,23 @@ public class SensorGyroData {
      */
     public void setHori_angleSpeed(float hori_angleSpeed) {
         this.hori_angleSpeed = hori_angleSpeed;
+    }
+
+    double getangular() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the hori_angle
+     */
+    public float getHori_angle() {
+        return hori_angle;
+    }
+
+    /**
+     * @param hori_angle the hori_angle to set
+     */
+    public void setHori_angle(float hori_angle) {
+        this.hori_angle = hori_angle;
     }
 }
