@@ -1,4 +1,4 @@
-package test;
+package smartcar.test;
 
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_highgui;
