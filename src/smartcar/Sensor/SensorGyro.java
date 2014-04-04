@@ -167,7 +167,7 @@ public class SensorGyro implements SensorGyroIf{
     }
     
     /**
-     * 获取测得的数据
+     * 获取处理后的数据
      * @return 
      */
     @Override
@@ -182,6 +182,11 @@ public class SensorGyro implements SensorGyroIf{
                 z_k.put(GyroData.getHori_angleSpeed());    
                 opencv_video.cvKalmanCorrect(kalman, z_k);
                 return speed;
+    }
+
+    @Override
+    public SensorGyroData getRawSensorGyroData() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

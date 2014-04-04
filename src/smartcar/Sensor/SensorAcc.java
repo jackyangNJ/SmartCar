@@ -1,18 +1,11 @@
 package smartcar.Sensor;
 
 import smartcar.Event.SensorListener;
-import smartcar.Event.SensorListener;
-import com.googlecode.javacpp.annotation.Const;
-import com.googlecode.javacv.cpp.cvkernels;
-import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_legacy.CvRandState;
 import com.googlecode.javacv.cpp.opencv_video;
-import com.googlecode.javacv.cpp.opencv_videostab;
 import com.googlecode.javacv.cpp.opencv_core.*;
 import com.googlecode.javacv.cpp.opencv_video.*;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.googlecode.javacv.*;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 
 /**
