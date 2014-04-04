@@ -21,5 +21,12 @@ public interface QRCodeIf {
      * @param listener
      */
     void removeSenserListener(SensorListener listener);
-
+    
+    /**
+     * 获取准确位置
+     * @return QRCodeData
+     */
+    QRCodeData getQRCodeData();
+    
+    
 }

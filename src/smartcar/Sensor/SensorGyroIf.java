@@ -21,9 +21,13 @@ public interface SensorGyroIf {
     void removeSenserListener(SensorListener listener);
     
     /**
-     * 获取水平角速度，单位度
+     * 获取处理后的水平角速度，单位度
      * @return 水平角速度
      */
     SensorGyroData getSensorGyroData();
-    
+    /**
+     * 获取传感器原始数据
+     * @return 
+     */
+    SensorGyroData getRawSensorGyroData();
 }
