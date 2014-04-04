@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.Ulwave;
 
 /**
  *
@@ -58,7 +57,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
             fw.write("1\n");
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(Ulwave.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         try{            //直到从trigger文件读到yes，数据才准备好
@@ -76,7 +75,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
             }
             fr.close();        
         }catch(IOException ex){
-            Logger.getLogger(Ulwave.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
     
@@ -115,7 +114,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
             fr_dis1.close();
             fr_dis1.close();        
         } catch (IOException ex) {
-            Logger.getLogger(Ulwave.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         //单位(m)
