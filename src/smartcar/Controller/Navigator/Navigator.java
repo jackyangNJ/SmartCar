@@ -1,5 +1,6 @@
 package smartcar.Controller.Navigator;
 
+import java.util.ArrayList;
 import smartcar.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
@@ -26,7 +27,11 @@ import smartcar.Sensor.SensorUltrasonicIf;
  * @author jack
  */
 public class Navigator {
-
+    
+    private static final float possibility_hall = 1/2;
+    private static final float possibility_acc = 1/2;
+    private static final float possibility_gory = 1/2;
+    float frequency;
     SmartMap map;
     //传感器对象
     SensorHallIf sensorHall = new SensorHall();
@@ -42,14 +47,75 @@ public class Navigator {
     SensorGyroData sensorGyroData;
     SensorMagneticData sensorMagneticData;
     QRCodeData qrCodeData;
+    NavigatorData nevigatorData = new NavigatorData();
+    
+    ArrayList list = new ArrayList(10);
+    
+
+    
+    
     /**
      * 霍尔传感器事件处理函数
      */
+    //
+    /*
+    float dealangular(float angular){
+          if(angular > 2 * Math.PI * 3 / 4){
+                angular = (float) (2 * Math.PI - angular);
+            }
+            else if(angular > Math.PI ){
+                 angular = (float) (2 * Math.PI * 3 / 4 - angular);
+            }
+            else if(angular > 1 / 2 * Math.PI){
+                angular = (float)( Math.PI) - angular;
+            }
+          return angular;
+    }*/
+    
+    
     SensorListener sensorHallListener = new SensorListener() {
 
         @Override
         public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //To change body of generated methods, choose Tools | Templates.
+            /**
+             * 目前这段代码假定的是小车在1次测距离时转动的角度不到180度
+             */
+            
+            /*float distance = sensorHallData.getDriveDistance() - nevigatorData.getdistance();
+            float nowangular = sensorGyroData.getangular();
+            float historyangular = nevigatorData.getangular();
+            float angular = 0;//yong
+            float angulardifferience = nowangular - historyangular;
+            float linedistance = (float) (2 * Math.sin(Math.abs(angulardifferience) / 2)* distance /(Math.abs(angulardifferience)));//计算切线距离
+            */
+            
+            // s not ensure
+            float s = sensorHallData.getDriveDistance();
+        
+            float sum = 0;  
+             // 遍历求和  
+            for (int i = 0, size = list.size(); i < size; i++) {  
+                 sum += i;  
+            }  
+            float averageangular = sum / list.size();  
+            float x = nevigatorData.getx() + (float)(s * Math.cos((double) averageangular));
+            nevigatorData.setx(x);
+            float y = nevigatorData.gety() + (float)(s * Math.sin((double) averageangular));
+            nevigatorData.sety(y);
+            // t not ensure
+            float vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (float)(s * Math.cos((double) averageangular))* frequency;
+            nevigatorData.setv_x(vx);
+            float vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (float)(s * Math.sin((double) averageangular))* frequency;
+            nevigatorData.setv_y(vy);
+             
+            
+            
+            
+          
+          
+            nevigatorData.setdistance(sensorHallData.getDriveDistance());
+          
         }
     };
     /**
@@ -60,7 +126,15 @@ public class Navigator {
         @Override
         public void SensorEventProcess(SensorEvent e) {
             //!TODO
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //a little diffirence from instruction
+            float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccData.getv_x();
+            nevigatorData.setv_x(vx);
+            float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccData.getv_y();
+            nevigatorData.setv_y(vy);
+            float ax = sensorAccData.geta_x();
+            nevigatorData.setv_x(ax);
+            float ay = sensorAccData.getv_y();
+            nevigatorData.setv_x(vy);
         }
     };
     /**
@@ -70,7 +144,18 @@ public class Navigator {
 
         @Override
         public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             //To change body of generated methods, choose Tools | Templates.
+            nevigatorData.setangular((float) sensorGyroData.getHori_angle());
+            if(list.size() >= 10){
+                list.remove(0);
+            }
+           
+            float curangulat = (float) (possibility_gory * nevigatorData.getangular() +  (1 - possibility_gory) * sensorGyroData.getHori_angle());
+            nevigatorData.setangular(curangulat);
+            list.add(curangulat);
+            
+            nevigatorData.setangular_velocity(sensorGyroData. getHori_angleSpeed());
+            
         }
     };
     /**
@@ -80,7 +165,8 @@ public class Navigator {
 
         @Override
         public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //To change body of generated methods, choose Tools | Templates.
+           //  nevigatorData.setangular(sensorMagneticData.getangular());
         }
     };
     /**
@@ -90,7 +176,9 @@ public class Navigator {
 
         @Override
         public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //To change body of generated methods, choose Tools | Templates.
+           
+           // System.out.println("hello");
         }
     };
     /**
