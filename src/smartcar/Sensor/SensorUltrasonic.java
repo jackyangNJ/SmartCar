@@ -15,16 +15,26 @@ import smartcar.Ulwave;
 public class SensorUltrasonic implements SensorUltrasonicIf{
     private ArrayList<SensorListener> SensorListeners;
     private SensorUltrasonicData UltrasonicData;   
-    public static final String path = "/dev/";
+    public static final String path = "/sys/class/ulwave/ulwave0/";
     /*unit:ms;  40Hz*/
     public static final int Frequency = 25;    
     
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask() {        
+    private Timer timer = new Timer();
+    private TimerTask task = new TimerTask() {        
         @Override
         public void run() {
-            trigger();
-            getDistance();
+            try {
+                trigger();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SensorUltrasonic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("out of trigger");
+            try {
+                getDistance();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SensorUltrasonic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("one test!!");
             /*what is the meaning of source in SensorEvent????????????????*/
             fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, getData()));
         }
@@ -32,19 +42,20 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
     
     public SensorUltrasonic(){
         UltrasonicData = new SensorUltrasonicData();
-        timer.scheduleAtFixedRate(task, 0, Frequency);
+        //timer.scheduleAtFixedRate(task, 0, Frequency);
+        timer.schedule(task, 0, 1000);
     }
     
     /**
      * 触发超声波传感器发出探测脉冲，
      * 一直等到是yes才能读数据，？？？？一直不是yes,陷于循环？？？(是否限时)
      */
-    public void trigger(){
+    public void trigger() throws InterruptedException{
         char[] bufRead = new char[4];
         
         try{            //向trigger文件中写1
             FileWriter fw = new FileWriter(path+"trigger");
-            fw.write("1");
+            fw.write("1\n");
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Ulwave.class.getName()).log(Level.SEVERE, null, ex);
@@ -52,9 +63,16 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
         
         try{            //直到从trigger文件读到yes，数据才准备好
             FileReader fr = new FileReader(path+"trigger");            
-            fr.read(bufRead);            
+            fr.read(bufRead);
+            System.out.println(bufRead);         
+            int i;            
             while(!new String(bufRead,0,3).equals("yes")){
-               fr.read(bufRead);
+               fr = new FileReader(path+"trigger");
+               i = fr.read(bufRead);
+               fr.close();               
+               System.out.println("bytes: "+i);
+               System.out.println(bufRead); 
+               Thread.sleep(1);
             }
             fr.close();        
         }catch(IOException ex){
@@ -66,7 +84,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
     /**
      * 从distance文件中获取测量数据
      */
-    public void getDistance(){
+    public void getDistance() throws InterruptedException{
         char[] disRead = new char[20];
         long dis_cnt1 = 0,dis_cnt2 = 0,dis_cnt3 = 0;                            //time ulwave giving back
         
@@ -77,11 +95,22 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
             FileReader fr_dis2 = new FileReader(path+"distance2");
             FileReader fr_dis3 = new FileReader(path+"distance3");
             fr_dis1.read(disRead);
-            dis_cnt1 = Integer.parseInt(new String(disRead).trim());
+            System.out.println("distance1 is: "+new String(disRead));
+            String[] disarray = new String(disRead).split(" ");
+            dis_cnt1 = Integer.parseInt(disarray[0].trim());            
+            System.out.println("distance1 is: "+dis_cnt1);
+            
             fr_dis2.read(disRead);
-            dis_cnt2 = Integer.parseInt(new String(disRead).trim());
+            System.out.println("distance2 is: "+new String(disRead));
+            disarray = new String(disRead).split(" ");            
+            dis_cnt2 = Integer.parseInt(disarray[0].trim());
+            System.out.println("distance1 is: "+dis_cnt2);
+            
             fr_dis3.read(disRead);
-            dis_cnt3 = Integer.parseInt(new String(disRead).trim());
+            System.out.println("distance3 is: "+new String(disRead));
+            disarray = new String(disRead).split(" ");
+            dis_cnt3 = Integer.parseInt(disarray[0].trim());
+            System.out.println("distance1 is: "+dis_cnt3);
             fr_dis1.close();
             fr_dis1.close();
             fr_dis1.close();        
@@ -153,9 +182,9 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
         sensorUltrasonicData.setDistance2(UltrasonicData.getDistance2());
         sensorUltrasonicData.setDistance3(UltrasonicData.getDistance3());
         //传送数据之后，将储存的数据置为最大
-        UltrasonicData.setDistance1(3.0f);
-        UltrasonicData.setDistance1(3.0f);
-        UltrasonicData.setDistance1(3.0f);
+//        UltrasonicData.setDistance1(3.0f);
+//        UltrasonicData.setDistance1(3.0f);
+//        UltrasonicData.setDistance1(3.0f);
         
         return sensorUltrasonicData;
     }

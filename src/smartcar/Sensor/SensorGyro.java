@@ -172,8 +172,8 @@ public class SensorGyro implements SensorGyroIf{
      */
     @Override
     public SensorGyroData getSensorGyroData() { 
-        this.gyroData = this.kalmanData(gyroData);
-        return this.gyroData;
+        //this.gyroData = this.kalmanData(gyroData);
+        return this.kalmanData(gyroData);
     }
     
     public SensorGyroData kalmanData(SensorGyroData GyroData){
@@ -186,7 +186,7 @@ public class SensorGyro implements SensorGyroIf{
 
     @Override
     public SensorGyroData getRawSensorGyroData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.gyroData;
     }
     
 }
