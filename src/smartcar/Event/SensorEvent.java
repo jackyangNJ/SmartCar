@@ -18,6 +18,7 @@ public class SensorEvent extends EventObject {
     public static final int SENSOR_HALL_TYPE = 3;
     public static final int SENSOR_MAGNETIC_TYPE = 4;
     public static final int SENSOR_QRCODE_TYPE = 5;
+    public static final int SENSOR_ARDUINO_TYPE = 6;
     
     // 内部变量
     /** 传递数据 */
