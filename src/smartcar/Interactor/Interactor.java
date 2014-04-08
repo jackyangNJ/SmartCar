@@ -6,39 +6,40 @@ import smartcar.SmartMap;
  *
  * @author jack
  */
+class CarLocation{
+double CarLocation_x;                        //小车当前位置
+double CarLocation_y;
+}
+
+class BookLocation{
+double BookLocation_x;                       //待查询的书籍的位置
+double BookLocation_y;   
+}
+
 public class Interactor {
-    SmartMap map;
-    double CarLocation[];                        //小车当前位置
-    double BookLocation[];                       //待查询的书籍的位置
-    
-  /*  public Interactor(SmartMap map){
+    private SmartMap map;
+    private CarLocation cLocation;
+    private BookLocation bLocation;
+    public Interactor(SmartMap map){
         this.map = map;
-    }*/
-    public Interactor(){
-        CarLocation=new double[2];
-        BookLocation=new double[2];
-    }
-    //set the map
-    void setMap(SmartMap map){
-        this.map=map;
     }
     //set the location of the car
-    void setCarLocation(double x,double y){
-        CarLocation[0]=x;
-        CarLocation[1]=y;
+    public void setCarLocation(double x,double y){
+        cLocation.CarLocation_x=x;
+        cLocation.CarLocation_y=y;
     }
     //set the location of the book
-    void setBookLocation(double x,double y){
-        BookLocation[0]=x;
-        BookLocation[1]=y;
+    public void setBookLocation(double x,double y){
+        bLocation.BookLocation_x=x;
+        bLocation.BookLocation_y=y;
     }
-    SmartMap getMap(){
+    public SmartMap getMap(){
         return map;
     }
-    double[] getCarLocation(){
-        return CarLocation;
+    public CarLocation getCarLocation(){
+        return cLocation;
     }
-    double[] getBookLocation(){
-        return BookLocation;
+    public BookLocation getBookLocation(){
+        return bLocation;
     }
 }
