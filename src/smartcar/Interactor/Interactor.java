@@ -23,6 +23,8 @@ public class Interactor {
     public Interactor(SmartMap map){
         this.map = map;
     }
+    //set the operation for the car
+    
     //set the location of the car
     public void setCarLocation(double x,double y){
         cLocation.CarLocation_x=x;

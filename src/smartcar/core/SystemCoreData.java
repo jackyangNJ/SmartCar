@@ -9,8 +9,9 @@ public class SystemCoreData {
     //constant for systemState
     public static int STATE_GOAHEAD = 1;
     public static int STATE_GOBACK = 2;
-    public static int STATE_GOLEFT = 2;
-    public static int STATE_GORIGHT = 2;
+    public static int STATE_GOLEFT = 3;
+    public static int STATE_GORIGHT = 4;
+    public static int STATE_STILL = 5;
     
     private static int systemState;
     //position

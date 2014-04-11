@@ -21,6 +21,7 @@ import smartcar.Sensor.SensorMagneticData;
 import smartcar.Sensor.SensorMagneticIf;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicIf;
+import smartcar.core.SystemCoreData;
 
 /**
  *
@@ -48,7 +49,7 @@ public class Navigator {
     SensorMagneticData sensorMagneticData;
     QRCodeData qrCodeData;
     NavigatorData nevigatorData = new NavigatorData();
-    
+    SystemCoreData systemcoreData = new SystemCoreData();
     ArrayList list = new ArrayList(10);
     
 
@@ -104,10 +105,16 @@ public class Navigator {
             float y = nevigatorData.gety() + (float)(s * Math.sin((double) averageangular));
             nevigatorData.sety(y);
             // t not ensure
-            float vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (float)(s * Math.cos((double) averageangular))* frequency;
-            nevigatorData.setv_x(vx);
-            float vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (float)(s * Math.sin((double) averageangular))* frequency;
-            nevigatorData.setv_y(vy);
+            if(systemcoreData.getSystemState() != systemcoreData.STATE_STILL){
+                float vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (float)(s * Math.cos((double) averageangular))* frequency;
+                nevigatorData.setv_x(vx);
+                float vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (float)(s * Math.sin((double) averageangular))* frequency;
+                nevigatorData.setv_y(vy);
+            }
+            else{
+                nevigatorData.setv_x(0);
+                nevigatorData.setv_y(0);
+            }
              
             
             
@@ -127,14 +134,22 @@ public class Navigator {
         public void SensorEventProcess(SensorEvent e) {
             //!TODO
             //a little diffirence from instruction
-            float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccData.getv_x();
-            nevigatorData.setv_x(vx);
-            float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccData.getv_y();
-            nevigatorData.setv_y(vy);
-            float ax = sensorAccData.geta_x();
-            nevigatorData.setv_x(ax);
-            float ay = sensorAccData.getv_y();
-            nevigatorData.setv_x(vy);
+            if(systemcoreData.getSystemState() != systemcoreData.STATE_STILL){
+                float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccData.getv_x();
+                nevigatorData.setv_x(vx);
+                float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccData.getv_y();
+                nevigatorData.setv_y(vy);
+                float ax = sensorAccData.geta_x();
+                nevigatorData.seta_x(ax);
+                float ay = sensorAccData.getv_y();
+                nevigatorData.seta_y(ay);
+            }
+            else{
+                 nevigatorData.setv_x(0);
+                 nevigatorData.setv_y(0);
+                 nevigatorData.seta_x(0);
+                 nevigatorData.seta_y(0);
+            }
         }
     };
     /**
@@ -169,18 +184,7 @@ public class Navigator {
            //  nevigatorData.setangular(sensorMagneticData.getangular());
         }
     };
-    /**
-     * 二维码事件处理函数
-     */
-    SensorListener QRCodeListener = new SensorListener() {
-
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            //To change body of generated methods, choose Tools | Templates.
-           
-           // System.out.println("hello");
-        }
-    };
+   
     /**
      * 超声波事件处理函数
      */
@@ -205,6 +209,6 @@ public class Navigator {
         sensorAcc.addSenserListener(sensorAccListener);
         sensorMagnetic.addSenserListener(sensorMagneticListener);
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
-        qrCode.addSenserListener(QRCodeListener);
+   //     qrCode.addSenserListener(QRCodeListener);
     }
 }
