@@ -1,6 +1,6 @@
 package smartcar.Interactor;
 
-import smartcar.SmartMap;
+import smartcar.map.SmartMap;
 
 /**
  *

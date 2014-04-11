@@ -1,7 +1,7 @@
 package smartcar.Controller.Navigator;
 
 import java.util.ArrayList;
-import smartcar.SmartMap;
+import smartcar.map.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Sensor.QRCode;

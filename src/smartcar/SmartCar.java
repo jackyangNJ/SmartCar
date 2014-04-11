@@ -4,6 +4,7 @@
  */
 package smartcar;
 
+import smartcar.map.SmartMap;
 import smartcar.Interactor.Interactor;
 import smartcar.Controller.Controller;
 
