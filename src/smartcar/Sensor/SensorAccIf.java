@@ -4,7 +4,7 @@ import java.awt.Point;
 import smartcar.Event.SensorListener;
 
 /**
- *
+ * 刚哥fuck here
  * @author jack
  */
 public interface SensorAccIf {
