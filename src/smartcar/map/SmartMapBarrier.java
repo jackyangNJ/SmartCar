@@ -7,6 +7,7 @@
 package smartcar.map;
 
 import java.util.ArrayList;
+import smartcar.core.Point;
 
 /**
  *
@@ -15,10 +16,9 @@ import java.util.ArrayList;
 public class SmartMapBarrier {
     int num;//障碍物个数
     ArrayList<Barrier> barriers = new ArrayList<Barrier>();
-    void setBarrier(float x,float y,float length,float width,String s) {
+    void setBarrier(Point p,float length,float width,String s) {
         Barrier b = new Barrier();
-        b.x = x;
-        b.y = y;
+        b.p = new Point(p.x,p.y);
         b.length = length;
         b.width = width;
         b.description = s;
@@ -28,22 +28,21 @@ public class SmartMapBarrier {
     void printBarriers() {
         System.out.println("The number of barriers is " + num);
         for(int i = 0;i < num;i++) {
-            System.out.println(i + ": " + barriers.get(i).x + "," + barriers.get(i).y + "," + barriers.get(i).length
+            System.out.println(i + ": " + barriers.get(i).p.x + "," + barriers.get(i).p.y + "," + barriers.get(i).length
                     + "," + barriers.get(i).width + "," + barriers.get(i).description);
         }
     }
     void printBarriers(float x,float y) {
         for(int i = 0;i < num;i++) {
-            float distance = (barriers.get(i).y - y) * (barriers.get(i).y - y) 
-                    + (barriers.get(i).x - x) * (barriers.get(i).x - x);
+            float distance = (barriers.get(i).p.y - y) * (barriers.get(i).p.y - y) 
+                    + (barriers.get(i).p.x - x) * (barriers.get(i).p.x - x);
             if(distance < 4)
-            System.out.println(barriers.get(i).x + "," + barriers.get(i).y + "," + barriers.get(i).length
+            System.out.println(barriers.get(i).p.x + "," + barriers.get(i).p.y + "," + barriers.get(i).length
                     + "," + barriers.get(i).width + "," + barriers.get(i).description);
         }
     }
-    class Barrier {
-        float x;//中心点横坐标
-        float y;//中心点纵坐标
+    static class Barrier {
+        Point p;
         float length;
         float width;
         String description = new String();

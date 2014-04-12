@@ -11,6 +11,10 @@ package smartcar.core;
  * @author Administrator
  */
 public class Point {
-    float x;//横坐标
-    float y;//纵坐标
+    public float x;//横坐标
+    public float y;//纵坐标
+    public Point(float x,float y) {
+        this.x = x;
+        this.y = y;
+    }
 }

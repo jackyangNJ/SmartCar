@@ -7,6 +7,7 @@
 package smartcar.map;
 
 import java.util.ArrayList;
+import smartcar.core.Point;
 
 /**
  *
@@ -15,10 +16,9 @@ import java.util.ArrayList;
 public class SmartMapQRCode {
     int num;//二维码个数
     ArrayList<QRCode> qrcodes = new ArrayList<QRCode>();
-    void setQRCode(float x,float y,float length,float width,String s) {
+    void setQRCode(Point p,float length,float width,String s) {
         QRCode b = new QRCode();
-        b.x = x;
-        b.y = y;
+        b.p = new Point(p.x,p.y);
         b.description = s;
         qrcodes.add(b);
         num ++;
@@ -26,20 +26,19 @@ public class SmartMapQRCode {
     void printQRCodes() {
         System.out.println("The number of qrcodes is " + num);
         for(int i = 0;i < num;i++) {
-            System.out.println(i + ": " + qrcodes.get(i).x + "," + qrcodes.get(i).y + qrcodes.get(i).description);
+            System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).description);
         }
     }
     void printQRCodes(float x,float y) {
         for(int i = 0;i < num;i++) {
-            float distance = (qrcodes.get(i).y - y) * (qrcodes.get(i).y - y) 
-                    + (qrcodes.get(i).x - x) * (qrcodes.get(i).x - x);
+            float distance = (qrcodes.get(i).p.y - y) * (qrcodes.get(i).p.y - y) 
+                    + (qrcodes.get(i).p.x - x) * (qrcodes.get(i).p.x - x);
             if(distance < 4)
-            System.out.println(qrcodes.get(i).x + "," + qrcodes.get(i).y + "," + qrcodes.get(i).description);
+            System.out.println(qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + "," + qrcodes.get(i).description);
         }
     }
-    class QRCode {
-        float x;//中心点横坐标
-        float y;//中心点纵坐标
+    static class QRCode {
+        Point p;
         String description = new String();
     }
 }
