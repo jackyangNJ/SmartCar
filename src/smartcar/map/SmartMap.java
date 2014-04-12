@@ -23,6 +23,9 @@ class Node {
     private String name; 
     private Map<Node,Double> child=new HashMap<Node,Double>(); 
     private boolean barriermask = false;
+    SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
+    private boolean qrcodemask = false;
+    SmartMapQRCode.QRCode q = new SmartMapQRCode.QRCode();
     public Node(String name){ 
         this.name=name; 
     } 
@@ -38,11 +41,25 @@ class Node {
     public void setChild(Map<Node, Double> child) { 
         this.child = child; 
     } 
-    public void setblack(){//设置为障碍物点
+    public void setblack(SmartMapBarrier.Barrier b){//设置为障碍物点
     	barriermask = true;
+        this.b = b;
     }
     public boolean getblack(){
     	return barriermask;
+    }
+    public void setQRCode(SmartMapQRCode.QRCode q){//设置二维码
+    	qrcodemask = true;
+        this.q = q;
+    }
+    public boolean getQRCode(){
+    	return qrcodemask;
+    }
+    public SmartMapBarrier.Barrier getBarrierInfo() {
+        return b;
+    }
+    public SmartMapQRCode.QRCode getQRCodeInfo() {
+        return q;
     }
 } 
 
@@ -174,17 +191,10 @@ class Dijkstra {
     } 
     //输出所有最短路径
   
-
-    class PathNode { 
-        int x;
-        int y;
-        public PathNode(int x,int y) {
-           this.x = x;
-           this.y = y;
-        }
-    }
-    public void printPathInfo(Node ending){ 
-        Set<Map.Entry<String, String>> pathInfos=pathInfo.entrySet(); 
+    public ArrayList printPathInfo(Node ending){ 
+        Set<Map.Entry<String, String>> pathInfos=pathInfo.entrySet();
+        ArrayList<Point> path_nodes = new ArrayList<Point>();
+        ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();//记录计算出的初步路径，未合并
         for(Map.Entry<String, String> pathInfo:pathInfos){ 
         	//System.out.println(ending.getName()+"name");
         	//System.out.println(pathInfo.getKey()+"key");
@@ -192,32 +202,22 @@ class Dijkstra {
         		//System.out.println("fine");
         		System.out.println(pathInfo.getKey()+":"+pathInfo.getValue()); 
                         String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
-                        ArrayList<PathNode> path_nodes = new ArrayList<PathNode>();
                         for(int i = 0;i < path.length;i++) {
                             int x = Integer.parseInt(String.valueOf(path[i].charAt(1)));
                             int y = Integer.parseInt(String.valueOf(path[i].charAt(2)));
-                            PathNode p = new PathNode(x,y);
+                            Point p = new Point(x,y);
                             path_nodes.add(p);
                         }
-                        ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();//记录计算出的初步路径，未合并
                         SmartMapData data_part1 = new SmartMapData();
-                        data_part1.start_x = path_nodes.get(0).x;
-                        data_part1.start_y = path_nodes.get(0).y;
-                        data_part1.end_x = path_nodes.get(1).x;
-                        data_part1.end_y = path_nodes.get(1).y;
+                        data_part1.start = path_nodes.get(0);
+                        data_part1.end = path_nodes.get(1);
                         data_part1.child = null;
                         data.add(data_part1);
                         for(int i = 1;i < path_nodes.size() - 1;i++) {
-                            /*PathNode current = new PathNode(path_nodes.get(i).x,path_nodes.get(i).y);
-                            PathNode next = new PathNode(path_nodes.get(i + 1).x,path_nodes.get(i + 1).y);
-                            if(current.x == next.x || current.y == next.y || current.x/current.y == next.x/next.y) {
-                                
-                            }*/
+                            
                             SmartMapData data_part = new SmartMapData();
-                            data_part.start_x = path_nodes.get(i).x;
-                            data_part.start_y = path_nodes.get(i).y;
-                            data_part.end_x = path_nodes.get(i + 1).x;
-                            data_part.end_y = path_nodes.get(i + 1).y;
+                            data_part.start = path_nodes.get(i);
+                            data_part.end = path_nodes.get(i + 1);
                             data_part.child = null;
                             data.add(data_part);
                             data.get(i - 1).child = data_part;
@@ -226,6 +226,7 @@ class Dijkstra {
                 }
         	System.out.println("~~~~\n");
         }
+        return data;
     } 
 
     
@@ -267,8 +268,10 @@ public class SmartMap implements SmartMapInterface {
         }
 		
 		//set barriet
-	GridMap[2][2].setblack();
-	GridMap[2][3].setblack();
+        SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
+        SmartMapBarrier.Barrier c = new SmartMapBarrier.Barrier();
+	GridMap[2][2].setblack(b);
+	GridMap[2][3].setblack(c);
 		
 	for(int i = 0; i < numofx; i ++){
 			
@@ -319,37 +322,81 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapBarrier getBarrierInformation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SmartMapBarrier b = new SmartMapBarrier();
+        return b;
     }
 
     @Override
     public SmartMapQRCode getQRCodeInformation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
+        SmartMapQRCode q = new SmartMapQRCode();
+        return q;
     }
 
     @Override
     public SmartMapBarrier getBarrierInformation(Point p) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        SmartMapBarrier b = new SmartMapBarrier();
+        return b;
     }
 
     @Override
     public SmartMapQRCode getQRCodeInformation(Point p) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+        SmartMapQRCode q = new SmartMapQRCode();
+        return q;
     }
 
     @Override
     public SmartMapData getPath(Point start, Point end) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String name = "m" + String.valueOf(start.x) + String.valueOf(start.y);
+        Node ending = new Node(name);
+        Dijkstra test = new Dijkstra(); 
+        Node starting = test.init((int)end.x,(int)end.y); 
+        test.computePath(starting); 
+        ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();
+        data = test.printPathInfo(ending);//未合并
+        for(int i = 0;i < data.size() - 1;i++) {
+            /*PathNode current = new PathNode(path_nodes.get(i).x,path_nodes.get(i).y);
+                            PathNode next = new PathNode(path_nodes.get(i + 1).x,path_nodes.get(i + 1).y);
+                            if(current.x == next.x || current.y == next.y || current.x/current.y == next.x/next.y) {
+                                
+                            }*/
+            float slope1;
+            float dx1 = data.get(i).start.x - data.get(i).end.x;
+            if(dx1 == 0)
+                slope1 = 0;
+            else
+                slope1 = (data.get(i).start.y - data.get(i).end.y) / dx1;
+            float slope2;
+            float dx2 = data.get(i + 1).start.x - data.get(i + 1).end.x;
+            if(dx2 == 0)
+                slope2 = 0;
+            else
+                slope2 = (data.get(i + 1).start.y - data.get(i + 1).end.y) / dx2;
+            if(slope1 == slope2) {//斜率相等
+                data.get(i).end = data.get(i + 1).end;
+                data.get(i).child = data.get(i + 1).child;
+                data.remove(i + 1);
+                i--;
+            }
+        }
+        
+        SmartMapData d = data.get(0);
+        return d;
     }
 
     @Override
     public SmartMapInfo getMap() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SmartMapInfo info = new SmartMapInfo();
+        return info;
     }
 
     @Override
     public SmartMapQRCode getQRCodeInformation(long i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+        SmartMapQRCode q = new SmartMapQRCode();
+        return q;
     }
 } 
 
