@@ -11,27 +11,58 @@ package smartcar.map;
  * @author Administrator
  */
 public class SmartMapInfo {
+    //double width;
+    //double length;
+    //double grid;
+    int numofy;
+    int numofx;
+    Node[][] GridMap = new Node[numofx][numofy];
+    /*
+    void setWidth(double width) {
+        this.width = width;
+    }
+    
     double getWidth() {
-        return SmartMap.width;
+        return width;
+    }
+    
+    void setLength(double length) {
+        this.length = length;
     }
     
     double getLength() {
-        return SmartMap.length;
+        return length;
+    }
+    
+    void setGrid(double grid) {
+        this.grid = grid;
     }
     
     double getGrid() {
-        return SmartMap.grid;
+        return grid;
+    }
+    */
+    void setNumofy(int numofy) {
+        this.numofy = numofy;
     }
     
     int getNumofy() {//二维数组的行数
-        return SmartMap.numofy;
+        return numofy;
+    }
+    
+    void setNumofx(int numofx) {
+        this.numofx = numofx;
     }
     
     int getNumofx() {//二维数组的列数
-        return SmartMap.numofx;
+        return numofx;
+    }
+    
+    void setGridMap(Node[][] GridMap) {
+        this.GridMap = GridMap;
     }
     
     Node[][] getMap() {//表示地图的二维数组
-        return SmartMap.GridMap;
+        return GridMap;
     }
 }
