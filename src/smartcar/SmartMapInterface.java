@@ -19,7 +19,7 @@ public interface SmartMapInterface {
     public SmartMapQRCode getQRCodeInformation();//地图整体二维码位置信息
     public SmartMapBarrier getBarrierInformation(Point p);//地图中某点周围障碍物信息
     public SmartMapQRCode getQRCodeInformation(Point p);//地图中某点周围二维码位置信息
-    public SmartMapQRCode getQRCodeInformation(long i);
+    public SmartMapQRCode getQRCodeInformation(String s);
     public SmartMapData getPath(Point start,Point end);
     public SmartMapInfo getMap();//返回地图整体信息，用于jsp显示
 }

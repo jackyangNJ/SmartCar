@@ -37,6 +37,12 @@ public class SmartMapQRCode {
             System.out.println(qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + "," + qrcodes.get(i).l);
         }
     }
+    void printQRCodes(String s) {
+        for(int i = 0;i < num;i++) {
+            if(qrcodes.get(i).l.equals(s))
+                System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).l);
+        }
+    }
     static class QRCode {
         Point p;
         String l;
