@@ -16,18 +16,17 @@ import smartcar.core.Point;
 public class SmartMapQRCode {
     int num;//二维码个数
     ArrayList<QRCode> qrcodes = new ArrayList<QRCode>();
-    void setQRCode(Point p,long l,float length,float width,String s) {
+    void setQRCode(Point p,String l) {
         QRCode b = new QRCode();
         b.p = new Point(p.x,p.y);
         b.l = l;
-        b.description = s;
         qrcodes.add(b);
         num ++;
     }
     void printQRCodes() {
         System.out.println("The number of qrcodes is " + num);
         for(int i = 0;i < num;i++) {
-            System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).l + qrcodes.get(i).description);
+            System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).l);
         }
     }
     void printQRCodes(float x,float y) {
@@ -35,12 +34,11 @@ public class SmartMapQRCode {
             float distance = (qrcodes.get(i).p.y - y) * (qrcodes.get(i).p.y - y) 
                     + (qrcodes.get(i).p.x - x) * (qrcodes.get(i).p.x - x);
             if(distance < 4)
-            System.out.println(qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + "," + qrcodes.get(i).l + qrcodes.get(i).description);
+            System.out.println(qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + "," + qrcodes.get(i).l);
         }
     }
     static class QRCode {
         Point p;
-        long l;
-        String description = new String();
+        String l;
     }
 }

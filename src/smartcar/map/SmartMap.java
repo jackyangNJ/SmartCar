@@ -5,6 +5,11 @@ package smartcar.map;
  * @author cgirls
  */
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import smartcar.map.SmartMapData;
 import smartcar.map.SmartMapInfo;
 import smartcar.map.SmartMapQRCode;
@@ -12,9 +17,12 @@ import smartcar.map.SmartMapBarrier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 //import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import smartcar.SmartMapInterface;
 import smartcar.core.Point;
 
@@ -302,9 +310,10 @@ public class SmartMap implements SmartMapInterface {
         }		
 	//return GridMap;		
     }
-    public static void main(String[] args) { 
-    	SmartMapData d = new SmartMapData(); 
+    public static void main(String[] args) throws IOException { 
+    	 
         SmartMap s = new SmartMap();
+        /*SmartMapData d = new SmartMapData();
         d = s.getPath(new Point(1,2), new Point(4,3));
         System.out.print((int)d.start.x);
         System.out.print((int)d.start.y + "->" + (int)d.end.x);
@@ -314,7 +323,8 @@ public class SmartMap implements SmartMapInterface {
             System.out.print("->" + (int)d.end.x);
             System.out.print((int)d.end.y);
             d = d.child;
-        }
+        }*/
+        s.json();
             
     } 
 
@@ -401,5 +411,69 @@ public class SmartMap implements SmartMapInterface {
         SmartMapQRCode q = new SmartMapQRCode();
         return q;
     }
+    
+    public void json() throws FileNotFoundException, IOException {
+
+        String data = ReadFile("D:\\2013\\s\\SmartCar\\src\\config\\newjson.json");
+        System.out.println(data);
+        JSONObject jsonObj = JSONObject.fromString(data);
+        //得到barrier对象
+        JSONArray arrayB = jsonObj.getJSONArray("barriers");
+        SmartMapBarrier b = new SmartMapBarrier();
+        System.out.println("barrier length:" + arrayB.length());
+        for(int i = 0;i < arrayB.length();i++){
+            //= (SmartMapBarrier.Barrier)JSONObject.toBean((JSONArray.fromObject(arrayB.toString()).getJSONObject(i)),SmartMapBarrier.Barrier.class);
+            JSONObject temp = new JSONObject(arrayB.getString(i));
+            b.setBarrier(new Point((float)temp.getDouble("centre point x"),(float)temp.getDouble("centre point y")),(float)temp.getDouble("length"), (float)temp.getDouble("width"));
+            /*b.p.x = (float)temp.getDouble("centre point x");
+            b.p.y = (float)temp.getDouble("centre point y");
+            b.width = (float)temp.getDouble("width");
+            b.length = (float)temp.getDouble("length");*/
+            //System.out.println(b.num);
+        }
+        //得到qrcode集合
+        JSONArray arrayQ = jsonObj.getJSONArray("qrcodes");
+        SmartMapQRCode q = new SmartMapQRCode();
+        System.out.println("qrcode length:" + arrayQ.length());
+        for(int i = 0;i < arrayQ.length();i++){
+            //(SmartMapQRCode.QRCode)JSONObject.toBean((JSONArray.fromObject(arrayQ.toString()).getJSONObject(i)),SmartMapQRCode.QRCode.class);
+            JSONObject temp = new JSONObject(arrayQ.getString(i)); 
+            q.setQRCode(new Point((float)temp.getDouble("centre point x"),(float)temp.getDouble("centre point y")),temp.getString("content"));
+            /*q.p.x = temp.getInt("centre point x");
+            q.p.y = temp.getInt("centre point y");
+            q.l = temp.getString("content");*/
+        }
+
+    }
+    public String ReadFile(String path){
+        File file = new File(path);
+        BufferedReader reader = null;
+        String laststr = "";
+        try {
+            //System.out.println("以行为单位读取文件内容，一次读一整行：");
+            reader = new BufferedReader(new FileReader(file));
+            String tempString = null;
+            int line = 1;
+            //一次读入一行，直到读入null为文件结束
+               while ((tempString = reader.readLine()) != null) {
+                   laststr = laststr + tempString;
+                   line++;
+               }
+            reader.close();
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+        } 
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } 
+                catch (IOException e1) {
+                }
+            }
+        }
+        return laststr;
+   }
 } 
 
