@@ -1,16 +1,40 @@
 package smartcar.Interactor;
 
+import smartcar.core.Point;
 import smartcar.map.SmartMap;
 
 
 public interface InteractorIf {
+    //??????????????????????????????????????干什么的
     public void setOperation(int op);
-    //set the location of the car
-    public void setCarLocation(double x,double y);
-    //set the location of the book
-    public void setBookLocation(double x,double y);
-    public SmartMap getMap();
-    public CarLocation getCarLocation();
-    public BookLocation getBookLocation();
+    
+    /**
+     * 进入自动驾驶模式，由小车自动行驶到指定的位置
+     * @param x
+     * @param y 
+     */
+    public void setCarLocation(Point location);
+
+    
+    /**
+     * 获取SmartMap Instance
+     * @return 
+     */
+    public SmartMap getSmartMap();
+    
+    /**
+     * 获取小车当前的位置，由Controller提供返回值
+     * @return 
+     */
+    public Point getCarLocation();
+
+    //？？？？？？？？？？？？？？？？？？？？？？？这是干什么的
     public Movement getMovement();
+    
+    /**
+     * 手动控制小车，参数为控制小车的速度和角度，速度为正值时，小车往前走，速度为负值，小车朝相反方向 
+     * @param speed
+     * @param angle 
+     */
+    public void setCar(int speed,int angle);
 }
