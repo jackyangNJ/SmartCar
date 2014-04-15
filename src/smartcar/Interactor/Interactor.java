@@ -18,11 +18,6 @@ public class Interactor {
     //TODO
         
     }
-    //set the location of the book
-    public void setBookLocation(double x,double y){
-        bLocation.BookLocation_x=x;
-        bLocation.BookLocation_y=y;
-    }
     public SmartMap getMap(){
         return map;
     }
