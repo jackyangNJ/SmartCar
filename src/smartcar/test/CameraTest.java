@@ -11,19 +11,10 @@ import smartcar.Sensor.CameraHW;
  */
 public class CameraTest {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         CameraHW.startCamera();
-        opencv_highgui.cvNamedWindow("test");
-
-        while (true) {
-            opencv_core.IplImage frame = CameraHW.getImage();
-            opencv_highgui.cvShowImage("test", frame);
-            if (opencv_highgui.cvWaitKey(30) == 27) {
-                break;
-            }
-        }
-        
-        opencv_highgui.cvDestroyWindow("test");
+        opencv_core.IplImage frame = CameraHW.getIplImage();
+        opencv_highgui.cvSaveImage("z:/teset.jpg", frame);
         CameraHW.stopCamera();
     }
 }

@@ -7,10 +7,11 @@ package smartcar.core;
 public class SystemCoreData {
 
     //constant for systemState
-    public static int STATE_GOAHEAD = 1;
-    public static int STATE_GOBACK = 2;
-    public static int STATE_GOLEFT = 2;
-    public static int STATE_GORIGHT = 2;
+    public static int STATE_GOAHEAD = 0x1;
+    public static int STATE_GOBACK = 0x2;
+    public static int STATE_GOLEFT = 0x4;
+    public static int STATE_GORIGHT = 0x8;
+    public static int STATE_STILL = 0x10;
     
     private static int systemState;
     //position

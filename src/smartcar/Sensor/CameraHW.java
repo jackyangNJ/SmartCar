@@ -2,6 +2,7 @@ package smartcar.Sensor;
 
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_highgui;
+import java.awt.image.BufferedImage;
 
 /**
  * The CameraHW class is to manage the samera hardware in the system, and
@@ -26,7 +27,10 @@ public class CameraHW implements CameraHWIf {
         opencv_highgui.cvReleaseCapture(cvCapture);
     }
 
-    public static opencv_core.IplImage getImage() {
+    public static opencv_core.IplImage getIplImage() {
         return opencv_highgui.cvQueryFrame(cvCapture);
+    }
+    public static BufferedImage getBufferedImage() {
+        return opencv_highgui.cvQueryFrame(cvCapture).getBufferedImage();
     }
 }

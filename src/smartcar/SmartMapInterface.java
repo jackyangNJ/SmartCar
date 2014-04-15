@@ -5,7 +5,11 @@
  */
 
 package smartcar;
-
+import smartcar.map.SmartMapData;
+import smartcar.map.SmartMapInfo;
+import smartcar.map.SmartMapQRCode;
+import smartcar.map.SmartMapBarrier;
+import smartcar.core.Point;
 /**
  *
  * @author Administrator
@@ -13,7 +17,9 @@ package smartcar;
 public interface SmartMapInterface {
     public SmartMapBarrier getBarrierInformation();//地图整体障碍物信息
     public SmartMapQRCode getQRCodeInformation();//地图整体二维码位置信息
-    public SmartMapBarrier getBarrierInformation(float x,float y);//地图中某点周围障碍物信息
-    public SmartMapQRCode getQRCodeInformation(float x,float y);//地图中某点周围二维码位置信息
-    public SmartMapData getPath(float start_x,float start_y,float end_x,float end_y);
+    public SmartMapBarrier getBarrierInformation(Point p);//地图中某点周围障碍物信息
+    public SmartMapQRCode getQRCodeInformation(Point p);//地图中某点周围二维码位置信息
+    public SmartMapQRCode getQRCodeInformation(String s);
+    public SmartMapData getPath(Point start,Point end);
+    public SmartMapInfo getMap();//返回地图整体信息，用于jsp显示
 }

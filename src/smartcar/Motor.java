@@ -268,7 +268,7 @@ public class Motor {
     }
 
     public void smart_car_set(int speed, int angle) {
-        int dir_FB, dir_LR;             //NO static!!!!!!!!!
+        int dir_FB, dir_LR;
         int pwm_fast, pwm_slow;
         if(speed !=0){
             if (speed < 0) {

@@ -1,6 +1,6 @@
 package smartcar.Controller;
 
-import smartcar.SmartMap;
+import smartcar.map.SmartMap;
 import smartcar.Controller.Navigator.Navigator;
 import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
