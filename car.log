@@ -1,0 +1,44 @@
+INFO [2014-04-18 00:57:51,393][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 00:57:51,395][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 00:58:38,343][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 00:58:38,345][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:00:41,840][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:00:41,843][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:01:47,404][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:01:47,406][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:01:49,055][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:01:49,057][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:04:02,234][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:04:02,236][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:04:21,955][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:04:21,957][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:04:21,957][main]smartcar.test.testLogger(22):hello
+ERROR[2014-04-18 01:04:21,957][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:04:40,656][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:04:40,658][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:04:40,658][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:04:40,658][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:04:45,557][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:04:45,560][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:05:42,291][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:05:42,294][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:05:42,294][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:05:42,294][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:07:24,444][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:07:24,446][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:07:24,446][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:07:24,446][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:07:31,410][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:07:31,412][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:07:31,412][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:07:31,413][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:07:37,314][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:07:37,316][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:07:37,316][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:07:37,316][main]smartcar.test.testLogger(23):dfd
+INFO [2014-04-18 01:08:24,749][main]smartcar.test.testLogger(21):hello
+ERROR[2014-04-18 01:08:24,751][main]smartcar.test.testLogger(23):dfd
+DEBUG[2014-04-18 01:08:32,038][main]smartcar.test.testLogger(20):begin
+INFO [2014-04-18 01:08:32,040][main]smartcar.test.testLogger(21):hello
+DEBUG[2014-04-18 01:08:32,040][main]smartcar.test.testLogger(22):debug
+ERROR[2014-04-18 01:08:32,040][main]smartcar.test.testLogger(23):dfd
