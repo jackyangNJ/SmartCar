@@ -27,6 +27,7 @@ public class testLogger {
         PropertyConfigurator.configure("src/config/log4j.properties");
         testLogger teLogger=new testLogger();
         teLogger.a();
+        test a=new test();
         
     }
     
