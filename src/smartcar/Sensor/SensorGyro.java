@@ -183,8 +183,6 @@ public class SensorGyro implements SensorGyroIf{
             	y_k = opencv_video.cvKalmanPredict( kalman, null );//获取值
                 z_k.put(GyroData.getHori_angleSpeed());    
                 opencv_video.cvKalmanCorrect(kalman, z_k);
-                speed.setHori_angle((float)y_k.get(0, 0));
-                speed.setHori_angleSpeed((float)z_k.get(1, 0));
                 return speed;
     }*/
 
