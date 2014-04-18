@@ -27,7 +27,14 @@ public class SensorAccData {
         this.y = y;
     }
     
-       public float getx(){
+    public float getv_x(){
+        return this.v_x;
+    }
+    public void setv_x(float v_x){
+       this.v_x = v_x;
+    }
+    
+    public float getx(){
         return this.x;
     }
     public void setx(float x){
@@ -40,13 +47,7 @@ public class SensorAccData {
     public void sety(float y){
        this.y = y;
     }
-    public float getv_x(){
-        return this.v_x;
-    }
-    public void setv_x(float v_x){
-       this.v_x = v_x;
-    }
-   
+    
     public float getv_y(){
         return this.v_y;
     }
