@@ -10,17 +10,23 @@ import org.apache.log4j.PropertyConfigurator;
  * @author jack
  */
 public class testLogger {
-
+    Log logger=LogFactory.getLog(testLogger.class.getName());
+    
+    public void a(){
+        logger.info("A");
+        b();
+    }
+    public void b(){
+        logger.info("B");
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        PropertyConfigurator.configure("log4j.properties");
-        Log logger=LogFactory.getLog("test");
-        logger.trace("begin");
-        logger.info("hello");
-        logger.debug("debug");
-        logger.error("dfd");
+        PropertyConfigurator.configure("src/config/log4j.properties");
+        testLogger teLogger=new testLogger();
+        teLogger.a();
         
     }
     

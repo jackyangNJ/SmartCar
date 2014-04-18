@@ -1,7 +1,7 @@
 package smartcar.Controller;
 
 import smartcar.map.SmartMap;
-import smartcar.Controller.Navigator.Navigator;
+import smartcar.Navigator.Navigator;
 import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 
@@ -11,10 +11,12 @@ import smartcar.Event.NavigatorListener;
  */
 public class Controller implements NavigatorListener
 {
+    private enum DriveModeType{AUTO,MANUAL};
+    private DriveModeType driveMode;
+    
     SmartMap map;
     Navigator navigator;
-    
-    
+   
     public Controller(SmartMap map){
         this.map = map;
         navigator=new Navigator(map);

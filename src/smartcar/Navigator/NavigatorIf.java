@@ -1,4 +1,4 @@
-package smartcar.Controller.Navigator;
+package smartcar.Navigator;
 
 /**
  * Interface for class Navigator

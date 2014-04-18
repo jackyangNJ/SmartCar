@@ -1,4 +1,4 @@
-package smartcar.Controller.Navigator;
+package smartcar.Navigator;
 
 import java.util.ArrayList;
 import smartcar.map.SmartMap;
@@ -27,7 +27,7 @@ import smartcar.core.SystemCoreData;
  *
  * @author jack
  */
-public class Navigator {
+public class Navigator implements NavigatorIf{
     
     private static final float possibility_hall = 1/2;
     private static final float possibility_acc = 1/2;
