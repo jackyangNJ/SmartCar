@@ -57,12 +57,12 @@ public class SensorGyro implements SensorGyroIf{
 		z_k.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
 		z_k.zero();//测量值
                // z_k.
-                
 		final float F[][] = {{1,(float)frequency},{0,1}};//时间会变化
 
                 System.arraycopy(kalman.transition_matrix().data_fl(), 0, F, 0,4);
 		//赋值
-                
+                cvSet2D(kalman.measurement_matrix(),0,0,CvScalar.ZERO);
+                cvSet2D(kalman.measurement_matrix(),1,0,CvScalar.ONE);
                 kalman.measurement_matrix().put(0, 0, 0);
                 kalman.measurement_matrix().put(1, 0, 1);
                 cvSetIdentity(kalman.process_noise_cov(),cvRealScalar(1e-5));
@@ -181,8 +181,6 @@ public class SensorGyro implements SensorGyroIf{
             	y_k = opencv_video.cvKalmanPredict( kalman, null );//获取值
                 z_k.put(GyroData.getHori_angleSpeed());    
                 opencv_video.cvKalmanCorrect(kalman, z_k);
-                speed.setHori_angle((float)y_k.get(0, 0));
-                speed.setHori_angleSpeed((float)z_k.get(1, 0));
                 return speed;
     }
 
