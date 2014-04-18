@@ -7,6 +7,7 @@
 package smartcar.test;
 
 import smartcar.Sensor.SensorGyro;
+import spiLib.SPIFunc;
 
 /**
  *
@@ -17,7 +18,7 @@ public class gyroTest {
         SensorGyro gyroTest = new SensorGyro();
         while(true){
             System.out.println("raw data is: "+gyroTest.getRawSensorGyroData().getHori_angleSpeed());
-            System.out.println("processed data is: "+gyroTest.getSensorGyroData().getHori_angleSpeed());
+           //System.out.println("processed data is: "+gyroTest.getSensorGyroData().getHori_angleSpeed());
             Thread.sleep(2000);
         }
     }

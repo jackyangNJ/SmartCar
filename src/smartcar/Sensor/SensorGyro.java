@@ -1,12 +1,11 @@
 package smartcar.Sensor;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvRealScalar;
-import static com.googlecode.javacv.cpp.opencv_core.*;
+import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 import static com.googlecode.javacv.cpp.opencv_core.cvSetIdentity;
-import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_video.CvKalman;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,8 +30,8 @@ public class SensorGyro implements SensorGyroIf{
     private  final  int readFrequency = 10;
     private  CvMat z_k ;
     private  CvMat y_k ;//预测值
-    private  CvKalman kalman;
-    //private  SensorGyroData data;
+    private  CvKalman kalman;    
+    private  SensorGyroData data;
     public static  final  double frequency = 0.01;
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -41,7 +40,7 @@ public class SensorGyro implements SensorGyroIf{
             /*读取使能*/
             defaultEnable();  
             read_HoriAngleSpeed();  
-            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, getSensorGyroData()));
+            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, getRawSensorGyroData()));
         }
     };
             
@@ -170,13 +169,16 @@ public class SensorGyro implements SensorGyroIf{
      * 获取处理后的数据
      * @return 
      */
+    /*
     @Override
     public SensorGyroData getSensorGyroData() { 
-        //this.gyroData = this.kalmanData(gyroData);
-        return this.kalmanData(gyroData);
+          throw new UnsupportedOperationException("not supported now!!");
+          this.gyroData = this.kalmanData(gyroData);
+          return this.kalmanData(gyroData);
     }
+    */
     
-    public SensorGyroData kalmanData(SensorGyroData GyroData){
+    /*public SensorGyroData kalmanData(SensorGyroData GyroData){
                 SensorGyroData speed = new SensorGyroData();
             	y_k = opencv_video.cvKalmanPredict( kalman, null );//获取值
                 z_k.put(GyroData.getHori_angleSpeed());    
@@ -184,11 +186,11 @@ public class SensorGyro implements SensorGyroIf{
                 speed.setHori_angle((float)y_k.get(0, 0));
                 speed.setHori_angleSpeed((float)z_k.get(1, 0));
                 return speed;
-    }
+    }*/
 
     @Override
     public SensorGyroData getRawSensorGyroData() {
         return this.gyroData;
-    }
+    }   
     
 }

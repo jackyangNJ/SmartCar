@@ -26,14 +26,12 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
                 trigger();
             } catch (InterruptedException ex) {
                 Logger.getLogger(SensorUltrasonic.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("out of trigger");
+            }            
             try {
                 getDistance();
             } catch (InterruptedException ex) {
                 Logger.getLogger(SensorUltrasonic.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("one test!!");
+            }            
             /*what is the meaning of source in SensorEvent????????????????*/
             fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, getData()));
         }
@@ -69,8 +67,8 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
                fr = new FileReader(path+"trigger");
                i = fr.read(bufRead);
                fr.close();               
-               System.out.println("bytes: "+i);
-               System.out.println(bufRead); 
+               //System.out.println("bytes: "+i);
+               //System.out.println(bufRead); 
                Thread.sleep(1);
             }
             fr.close();        
