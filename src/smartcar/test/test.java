@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class test {
 
-    Log logger = LogFactory.getLog(testLogger.class.getName());
+    public static Log logger = LogFactory.getLog(test.class.getName());
 
     public test() {
         logger.info("test");
