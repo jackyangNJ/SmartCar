@@ -22,8 +22,8 @@ public class SensorAcc implements SensorAccIf{
         @Override
         public void run() {
             defaultEnable();
-            getSensorData();
-            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, getSensorData()));
+            readAccData();
+            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, getSensorRawData()));
         }
     };
     private CvKalman kalman ;
@@ -31,6 +31,9 @@ public class SensorAcc implements SensorAccIf{
     private CvMat z_k ;
    
     public static final double time = 0.01;
+    
+    //10ms
+    public static final long frequency = 1000;
     
     private CvMat xy_axle;
 
@@ -44,10 +47,9 @@ public class SensorAcc implements SensorAccIf{
    
     
     public SensorAcc() {
-        
-        
         spi = new SPIFunc(routePath);
         data = new SensorAccData(0,0,0,0,0,0);
+        timer.scheduleAtFixedRate(task, 0, frequency);
         kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0) ;
       
 		z_k = new CvMat(); 
@@ -73,7 +75,7 @@ public class SensorAcc implements SensorAccIf{
     }
     
      public void defaultEnable(){
-        wirte((byte) 0x1f, 0x52);
+        wirte((byte) 0x1f, (byte)0x52);
 	byte temp = (byte)this.read((byte) 0x2d);
 	temp = (byte) (temp|0x02);
 	wirte((byte) 0x2d, temp);
@@ -102,9 +104,14 @@ public class SensorAcc implements SensorAccIf{
     @Override
     public SensorAccData getSensorData() {
                 
-	    	 return this.kalmanData(data);
+//	    	 return this.kalmanData(data);
 
-    // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void readAccData(){       
+        readxalxe();
+        readyalxe();
     }
 
     	public void readxalxe() {
@@ -112,7 +119,7 @@ public class SensorAcc implements SensorAccIf{
 		byte xalxeHigh;
 		xalxeLow = (byte)this.read((byte) 0x0e);
 		xalxeHigh = (byte)this.read((byte)0x0f);
-		int value = xalxeHigh << 8 | xalxeLow ;
+		int value = xalxeHigh << 8 | xalxeLow ;               
 		data.seta_x(value);
 	}
 
@@ -121,13 +128,12 @@ public class SensorAcc implements SensorAccIf{
 		byte yalxeHigh;
 		yalxeLow = (byte)this.read((byte) 0x10);
 		yalxeHigh = (byte)this.read((byte)0x11);
-		int value = yalxeHigh << 8 | yalxeLow ;
+		int value = yalxeHigh << 8 | yalxeLow ;                
 		data.seta_y(value);
 	}
 
 
 	public int read(byte addr){
-
 		byte[] input = new byte[3];
 		input[0]=0x0b;
 		input[1] = addr;
@@ -136,14 +142,12 @@ public class SensorAcc implements SensorAccIf{
 		return input[2];
 	}
 
-	public void wirte(byte addr, int value){
-
+	public void wirte(byte addr, byte value){
 		byte[] output = new byte[3];
 		output[0]=0x0a;
 		output[1] = addr;
-		output[2] = 0x00;
+		output[2] = value;
 		int a = spi.RWBytes(output, 3);
-
 	}
 
     private void fireSensorEventProcess(SensorEvent e){
@@ -162,9 +166,9 @@ public class SensorAcc implements SensorAccIf{
     
     @Override
     public SensorAccData getSensorRawData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      
+            return this.data;
     }
+    
      public SensorAccData kalmanData(SensorAccData sensoraccdata){
          SensorAccData accdata = new SensorAccData(0,0,0,0,0,0);
          xy_axle = opencv_video.cvKalmanPredict( kalman, null );
