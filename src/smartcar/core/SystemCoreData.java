@@ -15,8 +15,8 @@ public class SystemCoreData {
     
     private static int systemState;
     //position
-    static float x;
-    static float y;
+    private static float x;
+    private static float y;
     //velocity
     private static float v_x;
     private static float v_y;
@@ -24,8 +24,8 @@ public class SystemCoreData {
     private static float a_x;
     private static float a_y;
     //angular
-    static float angular;
-    static float angular_velocity;
+    private static float angular;
+    private static float angular_velocity;
 
     public static int getSystemState() {
         return systemState;
