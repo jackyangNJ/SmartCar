@@ -1,7 +1,7 @@
 const int HallMsgType = 0;
 const int MagneticMsgType = 1;
-int HallPin = 12;
-int HallPinStateOld;
+int HallPin = 11;
+int HallPinStateOld = 1;
 int HallPinStateNew;
 
 void setup() {
@@ -13,7 +13,7 @@ void setup() {
 void loop() {
     //test state of Hall sensor
     HallPinStateNew = digitalRead(HallPin);
-    if ((HallPinStateNew == 1) &&(HallPinStateOld == 0)) {
+    if ((HallPinStateNew == 0) &&(HallPinStateOld == 1)) {
         //send Hall sensor message via serial
         Serial.write(HallMsgType);
         Serial.write('\n');
