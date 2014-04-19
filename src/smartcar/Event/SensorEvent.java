@@ -5,10 +5,12 @@ import javax.swing.JButton;
 
 /**
  * 传感器数据事件类，用于传递传感器数据，其中type字段指明了data字段的类型
+ *
  * @author jack
- * 
+ *
  */
 public class SensorEvent extends EventObject {
+
     /**
      * 常量
      */
@@ -19,11 +21,12 @@ public class SensorEvent extends EventObject {
     public static final int SENSOR_MAGNETIC_TYPE = 4;
     public static final int SENSOR_QRCODE_TYPE = 5;
     public static final int SENSOR_ARDUINO_TYPE = 6;
-    
+
     // 内部变量
-    /** 传递数据 */
+    /**
+     * 传递数据
+     */
     Object data;
-    /** sdfsdf */
     int type;
 
     public SensorEvent(Object source) {
@@ -33,7 +36,22 @@ public class SensorEvent extends EventObject {
     public SensorEvent(Object source, int type, Object data) {
         super(source);
         this.type = type;
-        this.data=data;
+        this.data = data;
     }
 
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 }

@@ -1,23 +1,20 @@
 package smartcar.Interactor;
 
 import smartcar.Controller.Controller;
+import smartcar.Controller.ControllerImpl;
 import smartcar.core.Point;
 import smartcar.map.SmartMap;
 
 public class Interactor implements InteractorIf {
 
     private SmartMap map;
-    private Controller controller;
+    private final Controller controller;
 
     public Interactor() {
         map = new SmartMap();
-        controller = new Controller(map);
+        controller = new ControllerImpl(map);
 
     }
-
-//    public SmartMap getSmartMap() {
-//        return map;
-//    }
 
     @Override
     public void setOperation(int op) {
@@ -26,32 +23,32 @@ public class Interactor implements InteractorIf {
 
     @Override
     public void setCarAutoDriveDestination(Point location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setCarAutoDriveDestination(location);
     }
 
     @Override
     public SmartMap getSmartMap() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return map;
     }
 
     @Override
     public Point getCarCurrentLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return controller.getCarCurrentLocation();
     }
 
     @Override
     public void setCar(int speed, int angle) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setCar(speed, angle);
     }
 
     @Override
     public void setCarClockwise() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setCarClockwise();
     }
 
     @Override
     public void setCarCounterClockwise() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setCarCounterClockwise();
     }
 
 }

@@ -6,7 +6,8 @@ public class SensorHallData {
      */
     float  DriveDistance;
     
-    public SensorHallData(){
+    public SensorHallData(float distance){
+        this.DriveDistance = distance;
     }
     
     
