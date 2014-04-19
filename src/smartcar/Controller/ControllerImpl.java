@@ -16,19 +16,20 @@ import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
+import smartcar.core.SystemProperty;
 
 /**
  *
  * @author jack
  */
-public class ControllerImpl implements NavigatorListener, Controller, Runnable {
-
-    public static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
+public class ControllerImpl extends TimerTask implements NavigatorListener, Controller {
 
     private enum DriveModeType {
 
         AUTO, MANUAL
     };
+    
+    public static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
     private DriveModeType driveMode = DriveModeType.AUTO;
 
     private SmartMap map;
@@ -36,10 +37,10 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
     private SensorUltrasonic sensorUltrasonic;
     private QRCode qrCode;
     private Timer controlerrtTimer;
-    private final Thread controllerThread;
     private Point destination;
+    
     //Parameters 
-
+    private static int RunFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
     /**
      * 超声波事件处理函数
      */
@@ -71,20 +72,15 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
         navigator = new Navigator(map);
         sensorUltrasonic = new SensorUltrasonic();
         qrCode = new QRCode();
-        
+
         //连接事件处理程序
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
         qrCode.addSenserListener(qrCodeListener);
-        
-        //启动controller线程
-        controlerrtTimer=new Timer("Controller");
-//        controlerrtTimer.scheduleAtFixedRate(new TimerTask, delay, period);
-        controllerThread = new Thread(this, "Controller");
-        controllerThread.start();
-    }
 
-    
-    
+        //启动controller线程
+        controlerrtTimer = new Timer("Controller");
+        controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / RunFrequency);
+    }
 
     @Override
     public Point getCarCurrentLocation() {
@@ -109,21 +105,22 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
 
     @Override
     public void run() {
-        if(driveMode == DriveModeType.AUTO){
+        if (driveMode == DriveModeType.AUTO) {
             autoDriveDealer();
-        }else{
+        } else {
             mannualDriveDealer();
         }
-        
+
     }
-    private void autoDriveDealer(){
-        
+
+    private void autoDriveDealer() {
+
     }
-    
-    private void mannualDriveDealer(){
-        
+
+    private void mannualDriveDealer() {
+
     }
-    
+
     /**
      * 设置小车自动驾驶的目的地
      *
@@ -137,7 +134,8 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
 
     /**
      * Navigator事件处理程序
-     * @param e 
+     *
+     * @param e
      */
     @Override
     public void NavigatorEventProcess(NavigatorEvent e) {
