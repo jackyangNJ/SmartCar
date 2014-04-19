@@ -1,6 +1,6 @@
 {
     "barriers":[
-    {"centre point x":2,"centre point y":2,"width":2,"length":2},
+    {"centre point x":3,"centre point y":2,"width":2,"length":2},
     {"centre point x":2,"centre point y":3,"width":2,"length":2}
     ],
     "qrcodes":[

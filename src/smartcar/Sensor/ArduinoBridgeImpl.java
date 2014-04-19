@@ -11,25 +11,27 @@ import java.util.Map;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.test.test;
 
 /**
  *
  * @author jack
  */
-
 public class ArduinoBridgeImpl implements ArduinoBridge {
 
-    private ArrayList<SensorListener> SensorListeners;
-    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
-    private String defaultComNameString="COM4";
-    private SerialComm serialComm= new SerialComm(defaultComNameString);
-    
-    public ArduinoBridgeImpl() {
-        
+    public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
+    private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
+    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();   
+    private SerialComm serialComm;
+
+    public ArduinoBridgeImpl(String serialComName,int serialRate) {
+        this.serialComm = new SerialComm(serialComName,serialRate);
     }
-    
+
     /**
      * trigger SensorEvent
      *
@@ -50,34 +52,31 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
     }
 
     class SerialComm implements SerialPortEventListener {
+
         CommPortIdentifier portId; //串口通信管理类
         Enumeration portList;   //已经连接上的端口的枚举
         private InputStream inputStream; //从串口来的输入流
         private OutputStream outputStream;//向串口输出的流
         private SerialPort serialPort;     //串口的引用
-        private int serialRate = 9600;
-        private String comName = "COM4";
+        private int serialRate;
+        private String serialName;
 
-        public SerialComm() {
+        public SerialComm(String serialName,int serialRate) {
+            this.serialName = serialName;
+            this.serialRate = serialRate;
             init();
         }
-        
-        public SerialComm(String comName) {
-            this.comName = comName;
-            init();
-        }
-        void init() {
-            portList = CommPortIdentifier.getPortIdentifiers(); //得到当前连接上的端口
-            while (portList.hasMoreElements()) {
-                portId = (CommPortIdentifier) portList.nextElement();
-                if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {//判断如果端口类型是串口
-                    if (!portId.getName().equals(comName)) { 
-                        return;
-                    }
-                }
-            }   
+
+        private void init() {
             try {
-                serialPort = (SerialPort) portId.open("OutCpuPort", 2000);//打开串口名字为myapp,延迟为2毫秒
+                portId = CommPortIdentifier.getPortIdentifier(serialName);
+            } catch (NoSuchPortException ex) {
+                Logger.getLogger(ArduinoBridgeImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            //打开串口名字为myapp,延迟为2毫秒
+            try {
+                serialPort = (SerialPort) portId.open("OutCpuPort", 2000);
             } catch (PortInUseException e) {
             }
             try {
@@ -85,19 +84,19 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
                 outputStream = serialPort.getOutputStream();
             } catch (IOException e) {
             }
-            
+
             //给当前串口添加一个监听器
             try {
-                serialPort.addEventListener(this);      
+                serialPort.addEventListener(this);
             } catch (TooManyListenersException e) {
             }
-            
+
             //当有数据时通知
-            serialPort.notifyOnDataAvailable(true); 
-            
+            serialPort.notifyOnDataAvailable(true);
+
             //设置串口读写参数
             try {
-                serialPort.setSerialPortParams(serialRate, SerialPort.DATABITS_8, 
+                serialPort.setSerialPortParams(serialRate, SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             } catch (UnsupportedCommOperationException e) {
             }
@@ -127,11 +126,11 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
                     } catch (IOException ex) {
                         Logger.getLogger(ArduinoBridgeImpl.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     System.out.println(new String(readBuffer, 0, numBytes));
-                    
+
                     //according the first the byte to dispatch the message
-                    int type= readBuffer[0];
+                    int type = readBuffer[0];
                     fireSensorEventProcess(type, new SensorEvent(this, SensorEvent.SENSOR_ARDUINO_TYPE, readBuffer));
                     break;
             }
@@ -162,4 +161,5 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
         }
         return true;
     }
+
 }

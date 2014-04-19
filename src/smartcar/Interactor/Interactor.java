@@ -15,9 +15,9 @@ public class Interactor implements InteractorIf {
 
     }
 
-    public SmartMap getSmartMap() {
-        return map;
-    }
+//    public SmartMap getSmartMap() {
+//        return map;
+//    }
 
     @Override
     public void setOperation(int op) {
