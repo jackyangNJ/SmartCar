@@ -15,10 +15,18 @@ import smartcar.test.testLogger;
  * @author jack
  */
 public class CameraHW {
-    public static Log logger=LogFactory.getLog(testLogger.class.getName());
+
+    public static Log logger = LogFactory.getLog(testLogger.class.getName());
     private static opencv_highgui.CvCapture cvCapture;
 
+    static {
+        startCamera();
+    }
+
     public static void startCamera() {
+        if (cvCapture != null) {
+            return;
+        }
         cvCapture = opencv_highgui.cvCreateCameraCapture(0);
         if (cvCapture == null) {
             logger.error("cannot get Camera device");
@@ -35,6 +43,7 @@ public class CameraHW {
     public static opencv_core.IplImage getIplImage() {
         return opencv_highgui.cvQueryFrame(cvCapture);
     }
+
     public static BufferedImage getBufferedImage() {
         return opencv_highgui.cvQueryFrame(cvCapture).getBufferedImage();
     }
