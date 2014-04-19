@@ -43,8 +43,10 @@ public class Navigator implements NavigatorIf{
 
     //传感器数据
     SensorHallData sensorHallData;
+    SensorAccData sensorAccRawData;
     SensorAccData sensorAccData;
     SensorGyroData sensorGyroData;
+      SensorGyroData sensorGyroRawData;
     SensorMagneticData sensorMagneticData;
     NavigatorData nevigatorData = new NavigatorData();
     ArrayList list = new ArrayList(10);
@@ -89,12 +91,13 @@ public class Navigator implements NavigatorIf{
             */
             
             // s not ensure
+            sensorHallData = (SensorHallData)e.getData();
             float s = sensorHallData.getDriveDistance();
         
             float sum = 0;  
              // 遍历求和  
             for (int i = 0, size = list.size(); i < size; i++) {  
-                 sum += i;  
+                 sum += (float)list.get(i);  
             }  
             float averageangular = sum / list.size();  
             float x = nevigatorData.getx() + (float)(s * Math.cos((double) averageangular));
@@ -119,6 +122,17 @@ public class Navigator implements NavigatorIf{
           
           
             nevigatorData.setdistance(sensorHallData.getDriveDistance());
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           
         }
     };
@@ -131,21 +145,37 @@ public class Navigator implements NavigatorIf{
         public void SensorEventProcess(SensorEvent e) {
             //!TODO
             //a little diffirence from instruction
+            sensorAccRawData = (SensorAccData)e.getData();
+           
             if(SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL){
-                float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccData.getv_x();
+                float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccRawData.getv_x();
                 nevigatorData.setv_x(vx);
-                float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccData.getv_y();
+                sensorAccData.setv_x(vx);
+                float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccRawData.getv_y();
                 nevigatorData.setv_y(vy);
-                float ax = sensorAccData.geta_x();
+                sensorAccData.setv_x(vx);
+                float ax = sensorAccRawData.geta_x();
                 nevigatorData.seta_x(ax);
-                float ay = sensorAccData.getv_y();
+                sensorAccData.setv_x(vx);
+                float ay = sensorAccRawData.getv_y();
                 nevigatorData.seta_y(ay);
+                sensorAccData.setv_x(vx);
+                sensorAccData.setx(nevigatorData.getx());
+                sensorAccData.sety(nevigatorData.gety());
+                
+                
             }
             else{
                  nevigatorData.setv_x(0);
                  nevigatorData.setv_y(0);
                  nevigatorData.seta_x(0);
                  nevigatorData.seta_y(0);
+                 sensorAccData.setv_x(0);
+                 sensorAccData.setv_y(0);
+                 sensorAccData.seta_x(0);
+                 sensorAccData.seta_y(0);
+                 sensorAccData.setx(nevigatorData.getx());
+                 sensorAccData.sety(nevigatorData.gety());
             }
         }
     };
@@ -157,16 +187,19 @@ public class Navigator implements NavigatorIf{
         @Override
         public void SensorEventProcess(SensorEvent e) {
              //To change body of generated methods, choose Tools | Templates.
-            nevigatorData.setangular((float) sensorGyroData.getHori_angle());
+            sensorGyroRawData = (SensorGyroData)e.getData();
+            nevigatorData.setangular((float) sensorGyroRawData.getHori_angle());
             if(list.size() >= 10){
                 list.remove(0);
             }
            
-            float curangulat = (float) (possibility_gory * nevigatorData.getangular() +  (1 - possibility_gory) * sensorGyroData.getHori_angle());
+            float curangulat = (float) (possibility_gory * nevigatorData.getangular() +  (1 - possibility_gory) * sensorGyroRawData.getHori_angle());
             nevigatorData.setangular(curangulat);
             list.add(curangulat);
             
-            nevigatorData.setangular_velocity(sensorGyroData. getHori_angleSpeed());
+            nevigatorData.setangular_velocity(sensorGyroRawData. getHori_angleSpeed());
+            sensorGyroData.setHori_angle(curangulat);
+            sensorGyroData.setHori_angleSpeed(sensorGyroRawData. getHori_angleSpeed());
             
         }
     };
@@ -200,27 +233,28 @@ public class Navigator implements NavigatorIf{
     
     @Override
     public NavigatorData getNavigatorDate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return nevigatorData;
     }
 
     @Override
     public SensorAccData getSensorAccRawDate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return sensorAccRawData;
     }
 
     @Override
     public SensorAccData getSensorAccDate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return  sensorAccData;
+       
     }
 
     @Override
     public SensorGyroData getSensorGyroRawData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return sensorGyroRawData;
     }
 
     @Override
     public SensorGyroData getSensorGyroData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return sensorGyroData;
     }
 
     @Override
@@ -235,6 +269,6 @@ public class Navigator implements NavigatorIf{
 
     @Override
     public SensorHallData getSensorHallData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+          return sensorHallData;
     }
 }
