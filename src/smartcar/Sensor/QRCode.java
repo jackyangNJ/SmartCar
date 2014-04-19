@@ -56,10 +56,10 @@ public class QRCode implements QRCodeIf{
 			hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
         
 			result = new MultiFormatReader().decode(bitmap, hints);
-			return result.getText();
+			return result.getText();       
         } catch (NotFoundException e) {
 			System.out.println("hehe");
-//			e.printStackTrace();
+			e.printStackTrace();
         }
         return null;
     }
