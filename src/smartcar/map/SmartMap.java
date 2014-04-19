@@ -260,19 +260,53 @@ public class SmartMap implements SmartMapInterface {
     int numofy=(int)(width/grid);
     int numofx=(int)(length/grid);
     Node[][] GridMap = new Node[numofx][numofy];
-    public void build(){ 
+    SmartMapBarrier b = new SmartMapBarrier();
+    SmartMapQRCode q = new SmartMapQRCode();
+    
+    public void build(SmartMapBarrier b,SmartMapQRCode q) throws IOException{ 
+        json(b,q);
         for(int i = 0; i < numofx; i ++){	
             for(int j=0; j< numofy; j++){			
                 GridMap[i][j]=new Node("m" + i + j); //give name
 				
             }
         }
-	//set barriet
-        SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
-        SmartMapBarrier.Barrier c = new SmartMapBarrier.Barrier();
-	GridMap[2][2].setblack(b);
-	GridMap[2][3].setblack(c);
-		
+	//set barrier
+        for(int i =0;i < b.num;i++) {
+            float x = b.barriers.get(i).p.x;
+            float y = b.barriers.get(i).p.y;
+            int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
+            int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
+            GridMap[x_i][y_i].setblack(b.barriers.get(i));
+            float length = (b.barriers.get(i).length - 2) / 2;//中心点一侧的长度
+            if(length != 0) {
+                int num_l = (int)length / 2 + 1;//中心点一侧的网格个数（除中心网格外）（左右）
+                for(int j = 1;j <= num_l;j++) {
+                    GridMap[x_i][y_i - num_l].setblack(b.barriers.get(i));
+                    GridMap[x_i][y_i + num_l].setblack(b.barriers.get(i));
+                }
+            }
+            float width = (b.barriers.get(i).width - 2) / 2;//中心点一侧的宽度
+            if(width != 0) {
+                int num_w = (int)width / 2 + 1;//中心点一侧的网格个数（除中心网格外）（上下）
+                for(int j = 1;j <= num_w;j++) {
+                    GridMap[x_i - num_w][y_i].setblack(b.barriers.get(i));
+                    GridMap[x_i + num_w][y_i].setblack(b.barriers.get(i));
+                }
+            }
+        }
+        
+	
+        //set qrcode
+        for(int i =0;i < q.num;i++) {
+            float x = q.qrcodes.get(i).p.x;
+            float y = q.qrcodes.get(i).p.y;
+            int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
+            int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
+            GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));
+        }
+        
+        
 	for(int i = 0; i < numofx; i ++){
 			
             for(int j = 0; j < numofy; j ++){
@@ -312,13 +346,12 @@ public class SmartMap implements SmartMapInterface {
         }		
 	//return GridMap;		
     }
-    SmartMapBarrier b = new SmartMapBarrier();
-    SmartMapQRCode q = new SmartMapQRCode();
+
     
-    public void main(String[] args) throws IOException { 
+    public static void main(String[] args) throws IOException { 
     	 
         SmartMap s = new SmartMap();
-        /*SmartMapData d = new SmartMapData();
+        SmartMapData d = new SmartMapData();
         d = s.getPath(new Point(1,2), new Point(4,3));
         System.out.print((int)d.start.x);
         System.out.print((int)d.start.y + "->" + (int)d.end.x);
@@ -328,8 +361,11 @@ public class SmartMap implements SmartMapInterface {
             System.out.print("->" + (int)d.end.x);
             System.out.print((int)d.end.y);
             d = d.child;
-        }*/
-        s.json(b,q);
+        }
+        /*float f = 1.9f;
+        int i = (int)f;
+        System.out.println(i);*/
+        //s.json(b,q);
             
     } 
 
@@ -390,7 +426,11 @@ public class SmartMap implements SmartMapInterface {
     
     @Override
     public SmartMapData getPath(Point start, Point end) {
-        build();
+        try {
+            build(b,q);
+        } catch (IOException ex) {
+            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String name = "m" + String.valueOf((int)end.x) + String.valueOf((int)end.y);
         Node ending = new Node(name);
         Dijkstra test = new Dijkstra(); 
@@ -430,7 +470,11 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapInfo getMap() {
-        build();
+        try {
+            build(b,q);
+        } catch (IOException ex) {
+            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
+        }
         SmartMapInfo info = new SmartMapInfo();
         info.setNumofx(numofx);
         info.setNumofy(numofy);
