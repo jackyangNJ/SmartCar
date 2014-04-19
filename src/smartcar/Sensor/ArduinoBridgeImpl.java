@@ -23,13 +23,13 @@ import smartcar.test.test;
  */
 public class ArduinoBridgeImpl implements ArduinoBridge {
 
-    public static Log logger = LogFactory.getLog(test.class.getName());
+    public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
-    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
-    private String defaultComNameString = "COM3";
-    private SerialComm serialComm = new SerialComm(defaultComNameString);
+    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();   
+    private SerialComm serialComm;
 
-    public ArduinoBridgeImpl() {
+    public ArduinoBridgeImpl(String serialComName,int serialRate) {
+        this.serialComm = new SerialComm(serialComName,serialRate);
     }
 
     /**
@@ -58,24 +58,22 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
         private InputStream inputStream; //从串口来的输入流
         private OutputStream outputStream;//向串口输出的流
         private SerialPort serialPort;     //串口的引用
-        private int serialRate = 115200;
-        private String comName;
+        private int serialRate;
+        private String serialName;
 
-        public SerialComm(String comName) {
-            this.comName = comName;
+        public SerialComm(String serialName,int serialRate) {
+            this.serialName = serialName;
+            this.serialRate = serialRate;
             init();
         }
 
-        void init() {
-            portList = CommPortIdentifier.getPortIdentifiers(); //得到当前连接上的端口
-            while (portList.hasMoreElements()) {
-                portId = (CommPortIdentifier) portList.nextElement();
-                if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {//判断如果端口类型是串口
-                    if (!portId.getName().equals(comName)) {
-                        return;
-                    }
-                }
+        private void init() {
+            try {
+                portId = CommPortIdentifier.getPortIdentifier(serialName);
+            } catch (NoSuchPortException ex) {
+                Logger.getLogger(ArduinoBridgeImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
             //打开串口名字为myapp,延迟为2毫秒
             try {
                 serialPort = (SerialPort) portId.open("OutCpuPort", 2000);

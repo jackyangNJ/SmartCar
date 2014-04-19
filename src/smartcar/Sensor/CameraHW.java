@@ -14,7 +14,7 @@ import smartcar.test.testLogger;
  *
  * @author jack
  */
-public class CameraHW implements CameraHWIf {
+public class CameraHW {
     public static Log logger=LogFactory.getLog(testLogger.class.getName());
     private static opencv_highgui.CvCapture cvCapture;
 

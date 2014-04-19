@@ -3,33 +3,25 @@ package smartcar.Sensor;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.core.SystemProperty;
 
 /**
  *
  * @author jack
  */
-public class SensorHall implements SensorHallIf {
+public class SensorHall implements SensorHallIf, SensorListener {
+
+    public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners;
-    //sensor sample frequency
-    private static final int SampleFrequency = 10;
+
     //Car Wheel girth,unit m
-    private static final float WheelGirth = 10;
-    
-    private Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            getState();
-        }
-    };
+    private static final float WheelGirth = Float.parseFloat(SystemProperty.getProperty("WheelGirth"));
 
     public SensorHall() {
-        timer.schedule(task, 0, 1000 / SampleFrequency);
-    }
-
-    private void getState() {
 
     }
 
@@ -77,6 +69,12 @@ public class SensorHall implements SensorHallIf {
         if ((SensorListeners != null) && SensorListeners.contains(listener)) {
             SensorListeners.remove(listener);
         }
+    }
+
+    @Override
+    public void SensorEventProcess(SensorEvent e) {
+        SensorHallData sensorHallData=new SensorHallData(WheelGirth);
+        fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, sensorHallData));
     }
 
 }
