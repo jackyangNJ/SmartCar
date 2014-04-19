@@ -78,17 +78,21 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
             try {
                 serialPort = (SerialPort) portId.open("OutCpuPort", 2000);
             } catch (PortInUseException e) {
+                logger.error(e);
             }
+            logger.info("serial port has been opened");
             try {
                 inputStream = serialPort.getInputStream();
                 outputStream = serialPort.getOutputStream();
             } catch (IOException e) {
+                logger.error(e);
             }
 
             //给当前串口添加一个监听器
             try {
                 serialPort.addEventListener(this);
             } catch (TooManyListenersException e) {
+                logger.error(e);
             }
 
             //当有数据时通知
@@ -99,7 +103,9 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
                 serialPort.setSerialPortParams(serialRate, SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             } catch (UnsupportedCommOperationException e) {
+                logger.error(e);
             }
+            logger.info("serial port has been configured");
         }
 
         //SerialPortEventListener 的方法,监听的时候会不断执行
@@ -129,6 +135,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
 
                     System.out.println(new String(readBuffer, 0, numBytes));
 
+                    logger.info("Receive serial port Raw message");
                     //according the first the byte to dispatch the message
                     int type = readBuffer[0];
                     fireSensorEventProcess(type, new SensorEvent(this, SensorEvent.SENSOR_ARDUINO_TYPE, readBuffer));

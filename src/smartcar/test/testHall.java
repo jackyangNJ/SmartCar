@@ -32,7 +32,9 @@ public class testHall {
     int serialRate =Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));
     ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName,serialRate);
     public testHall(){
+        logger.info("1");
         arduinoBridge.registerMessageListener(ArduinoBridge.HALL_MSG_TYPE,testHall);
+        logger.info("2");
         testHall.addSenserListener(new SensorListener() {
             @Override
             public void SensorEventProcess(SensorEvent e) {
