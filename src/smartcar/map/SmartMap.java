@@ -10,14 +10,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import smartcar.map.SmartMapData;
-import smartcar.map.SmartMapInfo;
-import smartcar.map.SmartMapQRCode;
-import smartcar.map.SmartMapBarrier;
+//import smartcar.map.SmartMapData;
+//import smartcar.map.SmartMapInfo;
+//import smartcar.map.SmartMapQRCode;
+//import smartcar.map.SmartMapBarrier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 //import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,9 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import smartcar.SmartMapInterface;
 import smartcar.core.Point;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 //Node对象用于封装节点信息，包括名字和子节点
 class Node { 
@@ -205,7 +207,7 @@ class Dijkstra {
         		System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
                         System.out.println("~~~~\n");
                         String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
-                        for(int i = 0;i < path.length;i++) {
+                        for(int i = 0;i < path.length;i++) {           
                             int x = Integer.parseInt(String.valueOf(path[i].charAt(1)));
                             int y = Integer.parseInt(String.valueOf(path[i].charAt(2)));
                             Point p = new Point(x,y);
@@ -253,6 +255,10 @@ class Dijkstra {
 
 //Main用于测试Dijkstra对象
 public class SmartMap implements SmartMapInterface { 
+    
+    public static Log logger = LogFactory.getLog(SmartMap.class.getName());
+    
+    
     final double width = 10;
     final double length = 10;
     final double grid = 2;
@@ -264,6 +270,7 @@ public class SmartMap implements SmartMapInterface {
     SmartMapQRCode q = new SmartMapQRCode();
     
     public void build(SmartMapBarrier b,SmartMapQRCode q) throws IOException{ 
+        logger.info("build map");
         json(b,q);
         for(int i = 0; i < numofx; i ++){	
             for(int j=0; j< numofy; j++){			
@@ -272,6 +279,7 @@ public class SmartMap implements SmartMapInterface {
             }
         }
 	//set barrier
+        logger.info("set barrier");
         for(int i =0;i < b.num;i++) {
             float x = b.barriers.get(i).p.x;
             float y = b.barriers.get(i).p.y;
@@ -296,7 +304,7 @@ public class SmartMap implements SmartMapInterface {
             }
         }
         
-	
+	logger.info("set qrcode");
         //set qrcode
         for(int i =0;i < q.num;i++) {
             float x = q.qrcodes.get(i).p.x;
@@ -371,6 +379,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapBarrier getBarrierInformation() {
+        logger.info("get barriers information of the map");
         SmartMap s = new SmartMap();
         try {
             s.json(b, q);
@@ -382,6 +391,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapQRCode getQRCodeInformation() {
+        logger.info("get qrcodes information of the map");
         SmartMap s = new SmartMap();
         try {
             s.json(b, q);
@@ -393,6 +403,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapBarrier getBarrierInformation(Point p) {
+        logger.info("get barriers information near the point");
         SmartMap s = new SmartMap();
         try {
             s.json(b, q);
@@ -404,6 +415,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapQRCode getQRCodeInformation(Point p) {
+        logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
         try {
             s.json(b, q);
@@ -415,6 +427,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapQRCode getQRCodeInformation(String str) {
+        logger.info("get qrcodes information");
         SmartMap s = new SmartMap();
         try {
             s.json(b, q);
@@ -426,6 +439,7 @@ public class SmartMap implements SmartMapInterface {
     
     @Override
     public SmartMapData getPath(Point start, Point end) {
+        logger.info("get the path between two points");
         try {
             build(b,q);
         } catch (IOException ex) {
@@ -470,6 +484,7 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapInfo getMap() {
+        logger.info("get information of the map");
         try {
             build(b,q);
         } catch (IOException ex) {
@@ -483,6 +498,7 @@ public class SmartMap implements SmartMapInterface {
     }
     
     public void json(SmartMapBarrier b,SmartMapQRCode q) throws FileNotFoundException, IOException {
+        logger.info("read the json file");
 
         String data = ReadFile("D:\\2013\\s\\SmartCar\\src\\config\\newjson.json");
         System.out.println(data);
