@@ -8,13 +8,23 @@ package smartcar.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import smartcar.Sensor.QRCode;
 
 /**
  *
  * @author Kedar
  */
 public class QRCodeTest {
-	public static void main() {
+	
+	public static Log logger = LogFactory.getLog(QRCodeTest.class.getName());
+	
+	public static void main() throws InterruptedException {
 		
+		QRCode test = new QRCode();
+		
+		while (true) {
+			logger.info("x is " + test.getQRCodeData().get_map_x() + "and y is " + test.getQRCodeData().get_map_y());
+			Thread.sleep(1000);
+		}
 	}
 }
