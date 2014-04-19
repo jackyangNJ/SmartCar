@@ -1,8 +1,6 @@
 package smartcar.Sensor;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
@@ -73,8 +71,13 @@ public class SensorHall implements SensorHallIf, SensorListener {
 
     @Override
     public void SensorEventProcess(SensorEvent e) {
+        logger.info("Receive Hall Event");
         SensorHallData sensorHallData=new SensorHallData(WheelGirth);
         fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, sensorHallData));
+    }
+    
+    public static void main(String[]args){
+        
     }
 
 }
