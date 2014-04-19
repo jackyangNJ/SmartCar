@@ -37,19 +37,16 @@ public class Navigator implements NavigatorIf{
     //传感器对象
     SensorHallIf sensorHall = new SensorHall();
     SensorAccIf sensorAcc = new SensorAcc();
-    SensorUltrasonicIf sensorUltrasonic = new SensorUltrasonic();
     SensorGyroIf sensorGyro = new SensorGyro();
     SensorMagneticIf sensorMagnetic = new SensorMagnetic();
-    QRCodeIf qrCode = new QRCode();
+    
 
     //传感器数据
     SensorHallData sensorHallData;
     SensorAccData sensorAccData;
     SensorGyroData sensorGyroData;
     SensorMagneticData sensorMagneticData;
-    QRCodeData qrCodeData;
     NavigatorData nevigatorData = new NavigatorData();
-    SystemCoreData systemcoreData = new SystemCoreData();
     ArrayList list = new ArrayList(10);
     
 
@@ -105,7 +102,7 @@ public class Navigator implements NavigatorIf{
             float y = nevigatorData.gety() + (float)(s * Math.sin((double) averageangular));
             nevigatorData.sety(y);
             // t not ensure
-            if(systemcoreData.getSystemState() != systemcoreData.STATE_STILL){
+            if(SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL){
                 float vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (float)(s * Math.cos((double) averageangular))* frequency;
                 nevigatorData.setv_x(vx);
                 float vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (float)(s * Math.sin((double) averageangular))* frequency;
@@ -134,7 +131,7 @@ public class Navigator implements NavigatorIf{
         public void SensorEventProcess(SensorEvent e) {
             //!TODO
             //a little diffirence from instruction
-            if(systemcoreData.getSystemState() != systemcoreData.STATE_STILL){
+            if(SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL){
                 float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccData.getv_x();
                 nevigatorData.setv_x(vx);
                 float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccData.getv_y();
@@ -184,17 +181,7 @@ public class Navigator implements NavigatorIf{
            //  nevigatorData.setangular(sensorMagneticData.getangular());
         }
     };
-   
-    /**
-     * 超声波事件处理函数
-     */
-    SensorListener sensorUltrasonicListener = new SensorListener() {
 
-        @Override
-        public void SensorEventProcess(SensorEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
 
     /**
      *
@@ -208,97 +195,46 @@ public class Navigator implements NavigatorIf{
         sensorGyro.addSenserListener(sensorGyroListener);
         sensorAcc.addSenserListener(sensorAccListener);
         sensorMagnetic.addSenserListener(sensorMagneticListener);
-        sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
    //     qrCode.addSenserListener(QRCodeListener);
     }
-
+    
     @Override
-    public float getv_x() {
+    public NavigatorData getNavigatorDate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setv_x(float v_x) {
+    public SensorAccData getSensorAccRawDate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public float getv_y() {
+    public SensorAccData getSensorAccDate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setv_y(float v_y) {
+    public SensorGyroData getSensorGyroRawData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public float geta_x() {
+    public SensorGyroData getSensorGyroData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void seta_x(float a_x) {
+    public SensorMagneticData getSensorMagneticRawData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public float geta_y() {
+    public SensorMagneticData getSensorMagneticData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void seta_y(float a_y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getx() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setx(float x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float gety() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void sety(float y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getangular() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setangular(float angular) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getdistance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setdistance(float distance) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getangular_velocity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setangular_velocity(float w) {
+    public SensorHallData getSensorHallData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

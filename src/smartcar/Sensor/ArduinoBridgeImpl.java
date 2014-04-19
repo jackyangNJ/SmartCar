@@ -22,8 +22,9 @@ import smartcar.test.test;
  * @author jack
  */
 public class ArduinoBridgeImpl implements ArduinoBridge {
+
     public static Log logger = LogFactory.getLog(test.class.getName());
-    private ArrayList<SensorListener> SensorListeners;
+    private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
     private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
     private String defaultComNameString = "COM3";
     private SerialComm serialComm = new SerialComm(defaultComNameString);

@@ -8,9 +8,13 @@ import smartcar.Event.SensorListener;
  */
 
 public interface ArduinoBridge {
+    public static final int HALL_MSG_TYPE = 0;
+    public static final int MAGNETIC_MSG_TYPE = 0;
+    
     /**
      * 移除SensorEvent的监听者
      *
+     * @param type
      * @param listener
      */
     void unregisterMessageListener(int type,SensorListener listener);
@@ -18,6 +22,7 @@ public interface ArduinoBridge {
     /**
      * 向ArduinoBridge注册侦听的接口类型
      * @param type 指明监听的类型（0..127,指向串口报文的第一个字节
+     * @param listener
      * @return true，register success
      *          false,register error,for the same type has been registered
      */
