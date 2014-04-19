@@ -11,34 +11,25 @@ package smartcar.Sensor;
  * @author Kedar
  */
 public class QRCodeData {
-    private float map_x;
-    private float map_y;
+    private String position;
     
     public QRCodeData() {
-        map_x = 0;
-        map_y = 0;
+        position = null;
     }
     
     /**
-     * 获取地图坐标x和y
+     * 获取地图坐标string
+	 * @return 
      */
-    public float get_map_x() {
-        return map_x;
-    }
-    
-    public float get_map_y() {
-        return map_y;
+    public String get_position() {
+        return position;
     }
     
     /**
-     * 设置x和y的数据
-     * @param x and y
+     * 设置position的数据
+	 * @param s
      */
-    public void set_map_x(float x) {
-        map_x = x;
-    }
-    
-    public void set_map_y(float y) {
-        map_y = y;
+    public void set_position(String s) {
+        position = s;
     }
 }

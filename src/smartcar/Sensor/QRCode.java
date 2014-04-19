@@ -24,7 +24,6 @@ public class QRCode implements QRCodeIf{
 
     private ArrayList<SensorListener> SensorListeners;
 	private String content;
-	private String[] s;
 	private QRCodeData qrcd;
 	
 	// every 100ms doing a decoding conduct which means 10Hz
@@ -35,8 +34,7 @@ public class QRCode implements QRCodeIf{
         @Override
         public void run() {
             content = decode();
-			s = content.split("#");
-			if (content!=null && s.length==5) {
+			if (content!=null) {
 				fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_QRCODE_TYPE, getQRCodeData()));
 			}
         }
@@ -118,10 +116,7 @@ public class QRCode implements QRCodeIf{
     @Override
     public QRCodeData getQRCodeData() {
 		// The string pattern is x:#12#,y:#34#.
-		Float x = Float.valueOf(s[1]);
-		Float y = Float.valueOf(s[3]);
-		qrcd.set_map_x(x);
-		qrcd.set_map_y(y);
+		qrcd.set_position(content);
 		return qrcd;
     }
     

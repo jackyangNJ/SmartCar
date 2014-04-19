@@ -8,6 +8,7 @@ package smartcar.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import smartcar.Sensor.CameraHW;
 import smartcar.Sensor.QRCode;
 
 /**
@@ -20,10 +21,11 @@ public class QRCodeTest {
 	
 	public static void main() throws InterruptedException {
 		
+		CameraHW.startCamera();
 		QRCode test = new QRCode();
 		
 		while (true) {
-			logger.info("x is " + test.getQRCodeData().get_map_x() + "and y is " + test.getQRCodeData().get_map_y());
+			logger.info("The position is " + test.getQRCodeData().get_position());
 			Thread.sleep(1000);
 		}
 	}
