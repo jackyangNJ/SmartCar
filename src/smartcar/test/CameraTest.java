@@ -14,13 +14,13 @@ import smartcar.Sensor.CameraHW;
  */
 public class CameraTest {
 
-    public static Log logger = LogFactory.getLog(testLogger.class.getName());
+    public static Log logger = LogFactory.getLog(CameraTest.class.getName());
 
     public static void main(String[] args) {
-        PropertyConfigurator.configure("src/config/log4j.properties");
+        PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         CameraHW.startCamera();
         opencv_core.IplImage frame = CameraHW.getIplImage();
-        opencv_highgui.cvSaveImage("z:/teset.jpg", frame);
+        opencv_highgui.cvSaveImage("test.jpg", frame);
         CameraHW.stopCamera();
     }
 }

@@ -1,5 +1,7 @@
 package smartcar.Controller;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.map.SmartMap;
@@ -33,6 +35,9 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
     private Navigator navigator;
     private SensorUltrasonic sensorUltrasonic;
     private QRCode qrCode;
+    private Timer controlerrtTimer;
+    private final Thread controllerThread;
+    private Point destination;
     //Parameters 
 
     /**
@@ -70,6 +75,12 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
         //连接事件处理程序
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
         qrCode.addSenserListener(qrCodeListener);
+        
+        //启动controller线程
+        controlerrtTimer=new Timer("Controller");
+//        controlerrtTimer.scheduleAtFixedRate(new TimerTask, delay, period);
+        controllerThread = new Thread(this, "Controller");
+        controllerThread.start();
     }
 
     
@@ -98,17 +109,30 @@ public class ControllerImpl implements NavigatorListener, Controller, Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(driveMode == DriveModeType.AUTO){
+            autoDriveDealer();
+        }else{
+            mannualDriveDealer();
+        }
+        
+    }
+    private void autoDriveDealer(){
+        
+    }
+    
+    private void mannualDriveDealer(){
+        
     }
     
     /**
      * 设置小车自动驾驶的目的地
      *
-     * @param location
+     * @param destination
      */
     @Override
-    public void setCarAutoDriveDestination(Point location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setCarAutoDriveDestination(Point destination) {
+        driveMode = DriveModeType.AUTO;
+        this.destination = destination;
     }
 
     /**

@@ -14,7 +14,7 @@ public interface Controller {
      *
      * @param location
      */
-    public void setCarAutoDriveDestination(Point location);
+    public void setCarAutoDriveDestination(Point destination);
 
     /**
      * 获取小车当前的位置，由Controller提供返回值
