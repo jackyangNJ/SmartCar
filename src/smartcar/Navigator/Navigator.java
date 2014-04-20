@@ -237,41 +237,31 @@ public class Navigator implements NavigatorIf{
        nevigatorData = new NavigatorData();
     }
     
-    @Override
-    public NavigatorData getNavigatorDate() {
+    
+    public NavigatorData getNavigatorData() {
        return nevigatorData;
     }
 
-    @Override
-    public SensorAccData getSensorAccRawDate() {
-       return sensorAccRawData;
+   
+    public SensorAccData getSensorAccRawData() {
+       return sensorAcc.getSensorRawData();
     }
 
-    @Override
-    public SensorAccData getSensorAccDate() {
-       return  sensorAccData;
-       
-    }
+  
 
     @Override
     public SensorGyroData getSensorGyroRawData() {
-       return sensorGyroRawData;
+       return sensorGyro.getRawSensorGyroData();
     }
 
-    @Override
-    public SensorGyroData getSensorGyroData() {
-       return sensorGyroData;
-    }
+  
 
     @Override
     public SensorMagneticData getSensorMagneticRawData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public SensorMagneticData getSensorMagneticData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public SensorHallData getSensorHallData() {
