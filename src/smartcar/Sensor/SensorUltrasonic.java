@@ -18,7 +18,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf{
     /*unit:ms;  40Hz*/
     public static final int Frequency = 25;    
     
-    private Timer timer = new Timer();
+    private Timer timer = new Timer("ultro");
     private TimerTask task = new TimerTask() {        
         @Override
         public void run() {

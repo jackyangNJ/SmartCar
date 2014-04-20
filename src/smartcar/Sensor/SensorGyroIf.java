@@ -24,7 +24,7 @@ public interface SensorGyroIf {
      * 获取处理后的水平角速度，单位度
      * @return 水平角速度
      */
-    //SensorGyroData getSensorGyroData();
+    SensorGyroData getSensorGyroData();
     /**
      * 获取传感器原始数据
      * @return 

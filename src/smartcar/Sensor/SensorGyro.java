@@ -5,6 +5,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvRealScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 import static com.googlecode.javacv.cpp.opencv_core.cvSetIdentity;
+import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_video.CvKalman;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -33,7 +34,7 @@ public class SensorGyro implements SensorGyroIf{
     private  CvKalman kalman;    
     private  SensorGyroData data;
     public static  final  double frequency = 0.01;
-    Timer timer = new Timer();
+    Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
@@ -47,23 +48,29 @@ public class SensorGyro implements SensorGyroIf{
     public SensorGyro(){
         gyroData = new SensorGyroData();
         gyroData.setHori_angle((float)0);
+        gyroData.setHori_angleSpeed((float)0);
         spifunc = new SPIFunc(routePath);        
         timer.scheduleAtFixedRate(task,0,readFrequency);
         //初始化kalman
  	kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(2, 1, 0) ;//创建kalman
              
-		z_k = new CvMat();
-		z_k.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		z_k.zero();//测量值
-               // z_k.
+//		z_k = new CvMat();
+		z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
+                z_k.put(0,0,1);
+		//z_k.zero();//测量值
+
                 
 		final float F[][] = {{1,(float)frequency},{0,1}};//时间会变化
 
-                System.arraycopy(kalman.transition_matrix().data_fl(), 0, F, 0,4);
+                kalman.transition_matrix().put(0, 0, 1);
+                kalman.transition_matrix().put(0, 1, frequency);
+                kalman.transition_matrix().put(1, 0, 0);
+                kalman.transition_matrix().put(1, 1, 1);
+                         
 		//赋值
                 
                 kalman.measurement_matrix().put(0, 0, 0);
-                kalman.measurement_matrix().put(1, 0, 1);
+                kalman.measurement_matrix().put(0, 1, 1);
                 cvSetIdentity(kalman.process_noise_cov(),cvRealScalar(1e-5));
                 cvSetIdentity(kalman.measurement_noise_cov(),cvRealScalar(1e-5));
                 cvSetIdentity(kalman.error_cov_post(),cvRealScalar(1));
@@ -169,24 +176,24 @@ public class SensorGyro implements SensorGyroIf{
      * 获取处理后的数据
      * @return 
      */
-    /*
+    
     @Override
     public SensorGyroData getSensorGyroData() { 
-          throw new UnsupportedOperationException("not supported now!!");
+//          throw new UnsupportedOperationException("not supported now!!");
           this.gyroData = this.kalmanData(gyroData);
-          return this.kalmanData(gyroData);
+          return gyroData;
     }
-    */
+
     
-    /*public SensorGyroData kalmanData(SensorGyroData GyroData){
+    public SensorGyroData kalmanData(SensorGyroData GyroData){
                 SensorGyroData speed = new SensorGyroData();
-            	y_k = opencv_video.cvKalmanPredict( kalman, null );//获取值
-                z_k.put(GyroData.getHori_angleSpeed());    
+            	y_k = opencv_video.cvKalmanPredict( kalman , null);//获取值
+                z_k.put(0,0,(GyroData.getHori_angleSpeed()));    
                 opencv_video.cvKalmanCorrect(kalman, z_k);
                 speed.setHori_angle((float)y_k.get(0, 0));
-                speed.setHori_angleSpeed((float)z_k.get(1, 0));
+                speed.setHori_angleSpeed((float)y_k.get(1, 0));
                 return speed;
-    }*/
+    }
 
     @Override
     public SensorGyroData getRawSensorGyroData() {

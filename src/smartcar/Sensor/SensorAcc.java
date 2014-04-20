@@ -17,7 +17,7 @@ import smartcar.Sensor.SensorAccData;
  */
 
 public class SensorAcc implements SensorAccIf{
- Timer timer = new Timer();
+ Timer timer = new Timer("Acc");
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
@@ -52,19 +52,41 @@ public class SensorAcc implements SensorAccIf{
         timer.scheduleAtFixedRate(task, 0, frequency);
         kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0) ;
       
-		z_k = new CvMat(); 
-		z_k.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-		z_k.zero();
+//		z_k = new CvMat(); 
+		z_k = CvMat.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
+//		z_k.zero();
 
                 
-		final float F[][] = {{1,0,(float)time,0,0,0},{0,1,0,(float)time,0,0,},{0,0,1,0,(float)time,0},{0,0,0,1,0,(float)time},{0,0,0,0,1,0},{0,0,0,0,0,1}};
-
-                System.arraycopy(kalman.transition_matrix().data_fl(), 0, F, 0,36);
+//	       final float F[][] = {{1,0,(float)time,0,0,0},{0,1,0,(float)time,0,0,},{0,0,1,0,(float)time,0},{0,0,0,1,0,(float)time},{0,0,0,0,1,0},{0,0,0,0,0,1}};
+             
+               for(int i = 0 ; i < 6 ; i++)
+               {
+                   for(int j = 0 ;j < 6; j++)
+                   {
+                       if(i != j)
+                       kalman.transition_matrix().put(i, j, 0);
+                       else
+                       kalman.transition_matrix().put(i, j, 1);
+                   }
+                   
+               }
+               kalman.transition_matrix().put(0, 2, time);
+               kalman.transition_matrix().put(1, 3, time);
+               kalman.transition_matrix().put(2, 4, time);
+               kalman.transition_matrix().put(3, 5, time);
+               
+//               kalman.transition_matrix().put(0, 0, 1);kalman.transition_matrix().put(1, 0, 0);kalman.transition_matrix().put(2, 0, time);
+//               kalman.transition_matrix().put(3, 0, 0);kalman.transition_matrix().put(4, 0, 0);kalman.transition_matrix().put(5, 0, 0);
+//               kalman.transition_matrix().put(1, 0, 0);kalman.transition_matrix().put(1, 1, 1);kalman.transition_matrix().put(1, 2, 0);
+//               kalman.transition_matrix().put(1, 3, time);kalman.transition_matrix().put(1, 4,0);kalman.transition_matrix().put(1, 5, 0);
+//               kalman.transition_matrix().put(0, 0, 1);kalman.transition_matrix().put(0, 0, 1);kalman.transition_matrix().put(0, 0, 1);
+//               kalman.transition_matrix().put(0, 0, 1);kalman.transition_matrix().put(0, 0, 1);kalman.transition_matrix().put(0, 0, 1);
+               
 
                 //¸³Öµ
 
-	    cvSet2D(kalman.measurement_matrix(),0,4,CvScalar.ONE);
-            cvSet2D(kalman.measurement_matrix(),1,5,CvScalar.ONE);
+	    kalman.measurement_matrix().put(0,4,1);
+            kalman.measurement_matrix().put(1,5,1);
 	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.process_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
 	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.measurement_noise_cov(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
 	    com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.error_cov_post(),com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
@@ -75,10 +97,12 @@ public class SensorAcc implements SensorAccIf{
     }
     
      public void defaultEnable(){
-        wirte((byte) 0x1f, (byte)0x52);
+        write((byte) 0x1f, (byte)0x52);
+        write((byte) 0x26, (byte)0x20);
+        write((byte) 0x2c, (byte)0x13);
 	byte temp = (byte)this.read((byte) 0x2d);
 	temp = (byte) (temp|0x02);
-	wirte((byte) 0x2d, temp);
+	write((byte) 0x2d, temp);
     }
     
     @Override
@@ -104,9 +128,9 @@ public class SensorAcc implements SensorAccIf{
     @Override
     public SensorAccData getSensorData() {
                 
-//	    	 return this.kalmanData(data);
+	    	 return this.kalmanData(data);
 
-     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public void readAccData(){       
@@ -142,7 +166,7 @@ public class SensorAcc implements SensorAccIf{
 		return input[2];
 	}
 
-	public void wirte(byte addr, byte value){
+	public void write(byte addr, byte value){
 		byte[] output = new byte[3];
 		output[0]=0x0a;
 		output[1] = addr;
@@ -172,11 +196,11 @@ public class SensorAcc implements SensorAccIf{
      public SensorAccData kalmanData(SensorAccData sensoraccdata){
          SensorAccData accdata = new SensorAccData(0,0,0,0,0,0);
          xy_axle = opencv_video.cvKalmanPredict( kalman, null );
-         z_k.put(0,1,sensoraccdata.geta_x());
+         z_k.put(0,0,sensoraccdata.geta_x());
          z_k.put(1,0,sensoraccdata.geta_y());
 	 opencv_video.cvKalmanCorrect(kalman, z_k);
-         accdata.seta_x((float)z_k.get(0, 0));
-         accdata.seta_y((float)z_k.get(1, 0));
+         accdata.seta_x((float)xy_axle.get(4, 0));
+         accdata.seta_y((float)xy_axle.get(5, 0));
          accdata.setv_x((float)xy_axle.get(2,0));
          accdata.setv_y((float)xy_axle.get(3,0));
           accdata.setx((float)xy_axle.get(0,0));
