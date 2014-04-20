@@ -204,8 +204,8 @@ class Dijkstra {
         	//System.out.println(ending.getName()+"name");
         	//System.out.println(pathInfo.getKey()+"key");
         	if(ending.getName().equals(pathInfo.getKey())){
-        		System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
-                        System.out.println("~~~~\n");
+        		//System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
+                        //System.out.println("~~~~\n");
                         String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
                         for(int i = 0;i < path.length;i++) {           
                             int x = Integer.parseInt(String.valueOf(path[i].charAt(1)));
@@ -501,12 +501,12 @@ public class SmartMap implements SmartMapInterface {
         logger.info("read the json file");
 
         String data = ReadFile("D:\\2013\\s\\SmartCar\\src\\config\\newjson.json");
-        System.out.println(data);
+        //System.out.println(data);
         JSONObject jsonObj = JSONObject.fromString(data);
         //得到barrier对象
         JSONArray arrayB = jsonObj.getJSONArray("barriers");
         
-        System.out.println("barrier length:" + arrayB.length());
+        //System.out.println("barrier length:" + arrayB.length());
         for(int i = 0;i < arrayB.length();i++){
             //= (SmartMapBarrier.Barrier)JSONObject.toBean((JSONArray.fromObject(arrayB.toString()).getJSONObject(i)),SmartMapBarrier.Barrier.class);
             JSONObject temp = new JSONObject(arrayB.getString(i));
@@ -520,7 +520,7 @@ public class SmartMap implements SmartMapInterface {
         //得到qrcode集合
         JSONArray arrayQ = jsonObj.getJSONArray("qrcodes");
         
-        System.out.println("qrcode length:" + arrayQ.length());
+        //System.out.println("qrcode length:" + arrayQ.length());
         for(int i = 0;i < arrayQ.length();i++){
             //(SmartMapQRCode.QRCode)JSONObject.toBean((JSONArray.fromObject(arrayQ.toString()).getJSONObject(i)),SmartMapQRCode.QRCode.class);
             JSONObject temp = new JSONObject(arrayQ.getString(i)); 
