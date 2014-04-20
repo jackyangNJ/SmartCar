@@ -46,12 +46,12 @@ public class Navigator implements NavigatorIf{
     SensorAccData sensorAccRawData;
     SensorAccData sensorAccData;
     SensorGyroData sensorGyroData;
-      SensorGyroData sensorGyroRawData;
+    SensorGyroData sensorGyroRawData;
     SensorMagneticData sensorMagneticData;
-    NavigatorData nevigatorData = new NavigatorData();
+    NavigatorData nevigatorData;
     ArrayList list = new ArrayList(10);
     
-
+    
     
     
     /**
@@ -176,7 +176,9 @@ public class Navigator implements NavigatorIf{
                  sensorAccData.seta_y(0);
                  sensorAccData.setx(nevigatorData.getx());
                  sensorAccData.sety(nevigatorData.gety());
+               
             }
+            e.setData(sensorAccData);
         }
     };
     /**
@@ -200,7 +202,7 @@ public class Navigator implements NavigatorIf{
             nevigatorData.setangular_velocity(sensorGyroRawData. getHori_angleSpeed());
             sensorGyroData.setHori_angle(curangulat);
             sensorGyroData.setHori_angleSpeed(sensorGyroRawData. getHori_angleSpeed());
-            
+            e.setData(sensorGyroData);
         }
     };
     /**
@@ -229,6 +231,10 @@ public class Navigator implements NavigatorIf{
         sensorAcc.addSenserListener(sensorAccListener);
         sensorMagnetic.addSenserListener(sensorMagneticListener);
    //     qrCode.addSenserListener(QRCodeListener);
+    }
+
+    public Navigator() {
+       nevigatorData = new NavigatorData();
     }
     
     @Override
