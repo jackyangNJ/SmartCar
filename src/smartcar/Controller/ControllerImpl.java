@@ -18,6 +18,7 @@ import smartcar.SmartMapInterface;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
+import smartcar.map.SmartMapData;
 
 /**
  *
@@ -29,7 +30,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
         AUTO, MANUAL
     };
-    
+
     public static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
     private DriveModeType driveMode = DriveModeType.AUTO;
 
@@ -39,7 +40,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     private QRCode qrCode;
     private Timer controlerrtTimer;
     private Point destination;
-    
+    private boolean needToSchedulePath = false;
+    private SmartMapData scheduledPath;
+
     //Parameters 
     private static int RunFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
     /**
@@ -86,8 +89,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     @Override
     public Point getCarCurrentLocation() {
-        Point location = new Point(SystemCoreData.getX(), SystemCoreData.getY());
-        return location;
+        return SystemCoreData.getLocation();
     }
 
     @Override
@@ -116,7 +118,24 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     }
 
     private void autoDriveDealer() {
-//        map.getPath(destination, destination)
+        //规划路径
+        logger.info("Enter autoDriveDealer");
+        if (needToSchedulePath) {
+            logger.info("Schedule Path");
+            needToSchedulePath =false;
+            Point currentLocation=SystemCoreData.getLocation();
+            scheduledPath = map.getPath(currentLocation, destination);
+        }
+        
+        
+    }
+    /**
+     * 旋转小车到一定角度，deviation指明了旋转的正负误差
+     * @param angular
+     * @param deviation 
+     */
+    private void rotateToAngular(float angular,float deviation){
+        
     }
 
     private void mannualDriveDealer() {
@@ -130,8 +149,11 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      */
     @Override
     public void setCarAutoDriveDestination(Point destination) {
+        logger.info("Change to Auto Drive Mode");
         driveMode = DriveModeType.AUTO;
         this.destination = destination;
+        needToSchedulePath = true;
+
     }
 
     /**

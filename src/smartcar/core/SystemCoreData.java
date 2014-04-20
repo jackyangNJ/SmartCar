@@ -5,7 +5,6 @@ package smartcar.core;
  * @author jack
  */
 public class SystemCoreData {
-
     //constant for systemState
     public static int STATE_GOAHEAD = 0x1;
     public static int STATE_GOBACK = 0x2;
@@ -14,73 +13,39 @@ public class SystemCoreData {
     public static int STATE_STILL = 0x10;
     
     private static int systemState;
-    //position
-    private static float x;
-    private static float y;
-    //velocity
-    private static float v_x;
-    private static float v_y;
-    //accelerater
-    private static float a_x;
-    private static float a_y;
-    //angular
+    //current location
+    private static Point location;
+    //current velocity
+    private static Point velocity;
+    //current accelerater
+    private static Point accelerater;
+    //current angular
     private static float angular;
+    //current angular_velocity
     private static float angular_velocity;
 
-    public static int getSystemState() {
-        return systemState;
+    public static Point getLocation() {
+        return location;
     }
 
-    public static void setSystemState(int systemState) {
-        SystemCoreData.systemState = systemState;
+    public static void setLocation(Point location) {
+        SystemCoreData.location = location;
     }
 
-    public static float getX() {
-        return x;
+    public static Point getVelocity() {
+        return velocity;
     }
 
-    public static void setX(float x) {
-        SystemCoreData.x = x;
+    public static void setVelocity(Point velocity) {
+        SystemCoreData.velocity = velocity;
     }
 
-    public static float getY() {
-        return y;
+    public static Point getAccelerater() {
+        return accelerater;
     }
 
-    public static void setY(float y) {
-        SystemCoreData.y = y;
-    }
-
-    public static float getV_x() {
-        return v_x;
-    }
-
-    public static void setV_x(float v_x) {
-        SystemCoreData.v_x = v_x;
-    }
-
-    public static float getV_y() {
-        return v_y;
-    }
-
-    public static void setV_y(float v_y) {
-        SystemCoreData.v_y = v_y;
-    }
-
-    public static float getA_x() {
-        return a_x;
-    }
-
-    public static void setA_x(float a_x) {
-        SystemCoreData.a_x = a_x;
-    }
-
-    public static float getA_y() {
-        return a_y;
-    }
-
-    public static void setA_y(float a_y) {
-        SystemCoreData.a_y = a_y;
+    public static void setAccelerater(Point accelerater) {
+        SystemCoreData.accelerater = accelerater;
     }
 
     public static float getAngular() {
@@ -98,4 +63,13 @@ public class SystemCoreData {
     public static void setAngular_velocity(float angular_velocity) {
         SystemCoreData.angular_velocity = angular_velocity;
     }
+
+    public static int getSystemState() {
+        return systemState;
+    }
+
+    public static void setSystemState(int systemState) {
+        SystemCoreData.systemState = systemState;
+    }
+
 }

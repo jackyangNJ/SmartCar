@@ -1,5 +1,6 @@
 package smartcar.Sensor;
 
+import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import java.awt.image.BufferedImage;
@@ -27,7 +28,8 @@ public class CameraHW {
         if (cvCapture != null) {
             return;
         }
-        cvCapture = opencv_highgui.cvCreateCameraCapture(0);
+//        cvCapture = opencv_highgui.cvCreateCameraCapture(0);
+        
         if (cvCapture == null) {
             logger.error("cannot get Camera device");
             System.exit(-1);

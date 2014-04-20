@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import smartcar.core.SystemProperty;
 
 /**
  *
@@ -14,153 +15,68 @@ import org.apache.commons.logging.LogFactory;
 public class Motor {
 
     public static Log logger = LogFactory.getLog(Motor.class.getName());
+    //Constants
+    private static final String MOTOR_FILE_DIRECTION1 = SystemProperty.getProperty("Motor.File.Direction1");
+    private static final String MOTOR_FILE_DIRECTION2 = SystemProperty.getProperty("Motor.File.Direction2");
+    private static final String MOTOR_FILE_DIRECTION3 = SystemProperty.getProperty("Motor.File.Direction3");
+    private static final String MOTOR_FILE_DIRECTION4 = SystemProperty.getProperty("Motor.File.Direction4");
+    private static final String MOTOR_FILE_SPEED1 = SystemProperty.getProperty("Motor.File.Speed1");
+    private static final String MOTOR_FILE_SPEED2 = SystemProperty.getProperty("Motor.File.Speed2");
+    private static final String MOTOR_FILE_SPEED3 = SystemProperty.getProperty("Motor.File.Speed3");
+    private static final String MOTOR_FILE_SPEED4 = SystemProperty.getProperty("Motor.File.Speed4");
 
-    public static void fileWrite(String filePath,String content){
-        try (FileWriter fw = new FileWriter(filePath)) {
+    public static void fileWrite(String filePath, String content) {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(filePath);
             fw.write(content);
             fw.flush();
             fw.close();
         } catch (IOException ex) {
             logger.error(ex);
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException ex) {
+                logger.error(ex);
+            }
         }
+
     }
-    
+
     public static void set_clockwise() {
         String cspeed = "7000" + '\0';
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction1")) {
-            fw.write(Integer.toString(0));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm1_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION1, Integer.toString(0));
+        fileWrite(MOTOR_FILE_SPEED1, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
-            fw.write(Integer.toString(1));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION2, Integer.toString(1));
+        fileWrite(MOTOR_FILE_SPEED2, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm2_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION3, Integer.toString(1));
+        fileWrite(MOTOR_FILE_SPEED3, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
-            fw.write(Integer.toString(1));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
-            fw.write(Integer.toString(0));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION4, Integer.toString(0));
+        fileWrite(MOTOR_FILE_SPEED4, cspeed);
     }
 
     public static void set_counterclockwise() {
         String cspeed = "7000" + '\0';
+        fileWrite(MOTOR_FILE_DIRECTION1, Integer.toString(1));
+        fileWrite(MOTOR_FILE_SPEED1, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction1")) {
-            fw.write(Integer.toString(1));
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION2, Integer.toString(0));
+        fileWrite(MOTOR_FILE_SPEED2, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm1_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION3, Integer.toString(0));
+        fileWrite(MOTOR_FILE_SPEED3, cspeed);
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
-            fw.write(Integer.toString(0));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm2_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
-            fw.write(Integer.toString(0));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            logger.error(ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
-            fw.write(Integer.toString(1));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
-            fw.write(cspeed);
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        fileWrite(MOTOR_FILE_DIRECTION4, Integer.toString(1));
+        fileWrite(MOTOR_FILE_SPEED4, cspeed);
     }
 
     public static void set_go() {
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction1")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION1)) {
             fw.write(Integer.toString(1));
             fw.flush();
             fw.close();
@@ -168,7 +84,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION2)) {
             fw.write(Integer.toString(1));
             fw.flush();
             fw.close();
@@ -176,7 +92,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION3)) {
             fw.write(Integer.toString(1));
             fw.flush();
             fw.close();
@@ -184,7 +100,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION4)) {
             fw.write(Integer.toString(1));
             fw.flush();
             fw.close();
@@ -195,28 +111,28 @@ public class Motor {
     }
 
     public static void set_back() {
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction1")) {
-            fw.write(Integer.toString(0));
-            fw.flush();
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger( Motor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction2")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION1)) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction3")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION2)) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/direction4")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION3)) {
+            fw.write(Integer.toString(0));
+            fw.flush();
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_DIRECTION4)) {
             fw.write(Integer.toString(0));
             fw.flush();
             fw.close();
@@ -228,7 +144,7 @@ public class Motor {
     public static void set_left(int speed) {   //no unsigned in java
         String cspeed = Integer.toString(speed) + '\0';
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm2_speed")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_SPEED2)) {
             fw.write(cspeed);
             fw.flush();
             fw.close();
@@ -236,7 +152,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm3_speed")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_SPEED3)) {
             fw.write(cspeed);
             fw.flush();
             fw.close();
@@ -248,7 +164,7 @@ public class Motor {
     public static void set_right(int speed) {
         String cspeed = Integer.toString(speed) + '\0';
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm1_speed")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_SPEED1)) {
             fw.write(cspeed);
             fw.flush();
             fw.close();
@@ -256,7 +172,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try (FileWriter fw = new FileWriter("/sys/class/motors/motor0/pwm4_speed")) {
+        try (FileWriter fw = new FileWriter(MOTOR_FILE_SPEED4)) {
             fw.write(cspeed);
             fw.flush();
             fw.close();
@@ -264,7 +180,7 @@ public class Motor {
             Logger.getLogger(Motor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void set_car(int FB, int LR, int fast, int slow) {
         if (FB == 1) {
             set_back();
