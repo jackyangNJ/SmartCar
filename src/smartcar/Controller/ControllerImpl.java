@@ -14,6 +14,7 @@ import smartcar.Motor;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
+import smartcar.SmartMapInterface;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
@@ -32,7 +33,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
     private DriveModeType driveMode = DriveModeType.AUTO;
 
-    private SmartMap map;
+    private SmartMapInterface map;
     private Navigator navigator;
     private SensorUltrasonic sensorUltrasonic;
     private QRCode qrCode;
@@ -69,7 +70,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     public ControllerImpl(SmartMap map) {
         this.map = map;
-        navigator = new Navigator(map);
+        navigator = new Navigator();
         sensorUltrasonic = new SensorUltrasonic();
         qrCode = new QRCode();
 
@@ -80,6 +81,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //启动controller线程
         controlerrtTimer = new Timer("Controller");
         controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / RunFrequency);
+        logger.info("starting Controller TimerTask ");
     }
 
     @Override
@@ -114,7 +116,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     }
 
     private void autoDriveDealer() {
-
+//        map.getPath(destination, destination)
     }
 
     private void mannualDriveDealer() {

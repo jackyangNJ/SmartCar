@@ -220,8 +220,8 @@ public class Navigator implements NavigatorIf{
      *
      * @param map
      */
-    public Navigator(SmartMap map) {
-        this.map = map;
+    public Navigator() {
+//        this.map = map;
         
         //注册监听器
         sensorHall.addSenserListener(sensorHallListener);

@@ -15,7 +15,7 @@ public class SensorHall implements SensorHallIf, SensorListener {
 
     public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners;
-
+    
     //Car Wheel girth,unit m
     private static final float WheelGirth = Float.parseFloat(SystemProperty.getProperty("WheelGirth"));
 

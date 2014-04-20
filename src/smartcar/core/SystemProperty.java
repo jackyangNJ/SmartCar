@@ -13,7 +13,7 @@ import smartcar.test.testLogger;
  * @author jack
  */
 public class SystemProperty {
-    public static Log logger = LogFactory.getLog(testLogger.class.getName());
+    public static Log logger = LogFactory.getLog(SystemProperty.class.getName());
     private static final Properties systemProperties;
 
     static {
@@ -28,6 +28,7 @@ public class SystemProperty {
         } catch (IOException ex) {
             logger.error(ex);
         }
+        logger.info("SystemProperty initialization OK!");
     }
 
     public static String getProperty(String key) {
