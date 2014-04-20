@@ -39,5 +39,14 @@ public class SmartMapData {//封装每一条小路径
         s.end = child.end;
         return s;
     }
-    
+    public float getAngular() {
+        float y = end.y - start.y;
+        float x = end.x - start.x;
+        if(y == 0)
+            return 0;
+        else if(x == 0)
+            return 90;
+        else
+            return 45;
+    }
 }
