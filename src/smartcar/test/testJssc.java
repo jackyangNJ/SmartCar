@@ -15,21 +15,13 @@ public class testJssc {
     static SerialPort serialPort;
 
     public static void main(String[] args) throws InterruptedException {
-        serialPort = new SerialPort("COM6"); 
+        serialPort = new SerialPort("/dev/ttyUSB0"); 
         try {
             serialPort.openPort();//Open port
             serialPort.setParams(9600, 8, 1, 0);//Set params
             int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
             serialPort.setEventsMask(mask);//Set mask
             serialPort.addEventListener(new SerialPortReader());//Add SerialPortEventListener
-            while (true) {                
-                
-                byte buffer[]=new byte[10];
-                buffer[0]='s';
-                buffer[1]='b';
-                serialPort.writeBytes("sb".getBytes());
-                Thread.sleep(1000);
-            }
         }
         catch (SerialPortException ex) {
             System.out.println(ex);

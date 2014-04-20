@@ -1,35 +1,50 @@
 package smartcar.Sensor;
 
-import gnu.io.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TooManyListenersException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.test.test;
 
 /**
  *
  * @author jack
  */
-public class ArduinoBridgeImpl implements ArduinoBridge {
-    
+public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener {
+
     public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
-    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();    
-    private SerialComm serialComm;
-    
-    public ArduinoBridgeImpl(String serialComName, int serialRate) {
-        this.serialComm = new SerialComm(serialComName, serialRate);
+    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
+    private jssc.SerialPort serialPort;
+
+    public ArduinoBridgeImpl(String serialName, int serialRate) {
+        init(serialName, serialRate);
+    }
+
+    private void init(String serialName, int serialRate) {
+        serialPort = new jssc.SerialPort(serialName);
+        try {
+            //Open port
+            serialPort.openPort();
+
+            //Set params
+            serialPort.setParams(serialRate, 8, 1, 0);
+
+            //Set mask
+            serialPort.setEventsMask(jssc.SerialPort.MASK_RXCHAR);
+
+            //Add SerialPortEventListener
+            serialPort.addEventListener(this);
+
+        } catch (SerialPortException ex) {
+            logger.error(ex);
+        }
+
     }
 
     /**
@@ -50,98 +65,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
             listener.SensorEventProcess(e);
         }
     }
-    
-    class SerialComm implements SerialPortEventListener {
-        
-        CommPortIdentifier portId; //串口通信管理类
-        Enumeration portList;   //已经连接上的端口的枚举
-        private InputStream inputStream; //从串口来的输入流
-        private OutputStream outputStream;//向串口输出的流
-        private SerialPort serialPort;     //串口的引用
-        private int serialRate;
-        private String serialName;
-        
-        public SerialComm(String serialName, int serialRate) {
-            this.serialName = serialName;
-            this.serialRate = serialRate;
-            init();
-        }
-        
-        private void init() {
-            try {
-                portId = CommPortIdentifier.getPortIdentifier(serialName);
-            } catch (NoSuchPortException ex) {
-                Logger.getLogger(ArduinoBridgeImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
-            //打开串口名字为myapp,延迟为2毫秒
-            try {
-                serialPort = (SerialPort) portId.open("OutCpuPort", 2000);
-            } catch (PortInUseException e) {
-                logger.error(e);
-            }
-            logger.info("serial port has been opened");
-            try {
-                inputStream = serialPort.getInputStream();
-                outputStream = serialPort.getOutputStream();
-            } catch (IOException e) {
-                logger.error(e);
-            }
-
-            //给当前串口添加一个监听器
-            try {
-                serialPort.addEventListener(this);
-            } catch (TooManyListenersException e) {
-                logger.error(e);
-            }
-
-            //当有数据时通知
-            serialPort.notifyOnDataAvailable(true);
-
-            //设置串口读写参数
-            try {
-                serialPort.setSerialPortParams(serialRate, SerialPort.DATABITS_8,
-                        SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-            } catch (UnsupportedCommOperationException e) {
-                logger.error(e);
-            }
-            logger.info("serial port has been configured");
-        }
-
-        //SerialPortEventListener 的方法,监听的时候会不断执行
-        @Override
-        public void serialEvent(SerialPortEvent event) {
-            switch (event.getEventType()) {
-                case SerialPortEvent.BI:
-                case SerialPortEvent.OE:
-                case SerialPortEvent.FE:
-                case SerialPortEvent.PE:
-                case SerialPortEvent.CD:
-                case SerialPortEvent.CTS:
-                case SerialPortEvent.DSR:
-                case SerialPortEvent.RI:
-                case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-                    break;
-                case SerialPortEvent.DATA_AVAILABLE://当有可用数据时读取数据,并且给串口返回数据
-                    byte[] readBuffer = new byte[200];
-                    int numBytes = 0;
-                    try {
-                        if (inputStream.available() > 0) {
-                            numBytes = inputStream.read(readBuffer);
-                        }
-                    } catch (IOException ex) {
-                        logger.error(ex);
-                    }
-                    
-                    logger.info("Receive serial port Raw message");
-                    //according the first the byte to dispatch the message
-                    int type = readBuffer[0];
-                    fireSensorEventProcess(type, new SensorEvent(this, SensorEvent.SENSOR_ARDUINO_TYPE, readBuffer));
-                    break;
-            }
-        }
-    }
-    
     @Override
     public synchronized void unregisterMessageListener(int type, SensorListener listener) {
         if (listenerTypeMap.containsKey(type)) {
@@ -151,7 +75,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
             }
         }
     }
-    
+
     @Override
     public synchronized boolean registerMessageListener(int type, SensorListener listener) {
         ArrayList<SensorListener> list;
@@ -166,5 +90,21 @@ public class ArduinoBridgeImpl implements ArduinoBridge {
         }
         return true;
     }
-    
+
+    @Override
+    public void serialEvent(SerialPortEvent spe) {
+        
+        //If data is available
+        if (spe.isRXCHAR()) {
+            try {
+                byte buffer[] = serialPort.readBytes();
+                int msgType = buffer[0];
+                SensorEvent event= new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
+                fireSensorEventProcess(msgType, event);
+            } catch (SerialPortException ex) {
+                logger.error(ex);
+            }
+        }
+    }
+
 }
