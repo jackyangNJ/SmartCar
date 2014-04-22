@@ -1,5 +1,5 @@
 ifneq ($(KERNELRELEASE),)
-obj-m := mydriver.o
+obj-m := motor.o
 else
 KERNEL_DIR := /home/jack/Desktop/linux-xlnx-master
 PWD := $(shell pwd)

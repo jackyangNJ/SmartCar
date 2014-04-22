@@ -4,7 +4,8 @@
 #include <linux/device.h>
 #include <asm/io.h>
 
-#define DEVICE_NAME "device"
+#define DEVICE_NAME "motor0"
+#define CLASS_NAME "motors"
 #define PWM_PHY_ADDR 0x7e400000
 
 
@@ -27,13 +28,13 @@ static ssize_t sys_direction1_set (struct device* dev, struct device_attribute* 
 {
 	long value;
     if (buf[0] == '1'){
-		value = inl(mypwm_addr);
+		value = readl(mypwm_addr);
 		value |= 0x40000000;
-		outl(value,mypwm_addr);
+		writel(value,mypwm_addr);
 	}else{
-		value = inl(mypwm_addr);
+		value = readl(mypwm_addr);
 		value &= 0xBFFFFFFF;
-		outl(value,mypwm_addr);
+		writel(value,mypwm_addr);
 	}
     return count;
 }
@@ -42,13 +43,13 @@ static ssize_t sys_direction2_set (struct device* dev, struct device_attribute* 
 {
 	long value;
     if (buf[0] == '1'){
-		value = inl(mypwm_addr+4);
+		value = readl(mypwm_addr+4);
 		value |= 0x40000000;
-		outl(value,mypwm_addr+4);
+		writel(value,mypwm_addr+4);
 	}else{
-		value = inl(mypwm_addr+4);
+		value = readl(mypwm_addr+4);
 		value &= 0xBFFFFFFF;
-		outl(value,mypwm_addr+4);
+		writel(value,mypwm_addr+4);
 	}
     return count;
 }
@@ -56,13 +57,13 @@ static ssize_t sys_direction3_set (struct device* dev, struct device_attribute* 
 {
 	long value;
     if (buf[0] == '1'){
-		value = inl(mypwm_addr+8);
+		value = readl(mypwm_addr+8);
 		value |= 0x40000000;
-		outl(value,mypwm_addr+8);
+		writel(value,mypwm_addr+8);
 	}else{
-		value = inl(mypwm_addr+8);
+		value = readl(mypwm_addr+8);
 		value &= 0xBFFFFFFF;
-		outl(value,mypwm_addr+8);
+		writel(value,mypwm_addr+8);
 	}
     return count;
 }
@@ -71,13 +72,13 @@ static ssize_t sys_direction4_set (struct device* dev, struct device_attribute* 
 {
 	long value;
     if (buf[0] == '1'){
-		value = inl(mypwm_addr+0xC);
+		value = readl(mypwm_addr+0xC);
 		value |= 0x40000000;
-		outl(value,mypwm_addr+0xC);
+		writel(value,mypwm_addr+0xC);
 	}else{
-		value = inl(mypwm_addr+0xC);
+		value = readl(mypwm_addr+0xC);
 		value &= 0xBFFFFFFF;
-		outl(value,mypwm_addr+0xC);
+		writel(value,mypwm_addr+0xC);
 	}
     return count;
 }
@@ -94,7 +95,7 @@ static ssize_t sys_pwm1_speed_set (struct device* dev, struct device_attribute* 
     if (num != 0)
         num = num | 0x80000000;
     printk("wrtite to addr\n");
-    outl(num, mypwm_addr);
+    writel(num, mypwm_addr);
     printk("write to addr OK!!!\n");
     return count;
 }
@@ -109,7 +110,7 @@ static ssize_t sys_pwm2_speed_set (struct device* dev, struct device_attribute* 
     }
     if (num != 0)
         num = num | 0x80000000;
-    outl(num, mypwm_addr+4);
+    writel(num, mypwm_addr+4);
     return count;
 }
 
@@ -123,7 +124,7 @@ static ssize_t sys_pwm3_speed_set (struct device* dev, struct device_attribute* 
     }
     if (num != 0)
         num = num | 0x80000000;
-    outl(num, mypwm_addr+8);
+    writel(num, mypwm_addr+8);
     return count;
 }
 
@@ -137,7 +138,7 @@ static ssize_t sys_pwm4_speed_set (struct device* dev, struct device_attribute* 
     }
     if (num != 0)
         num = num | 0x80000000;
-    outl(num, mypwm_addr+12);
+    writel(num, mypwm_addr+12);
     return count;
 }
 
@@ -160,14 +161,14 @@ static int __init mydriver_module_init(void)
         return -1;
     }
 
-    mydriver_class = class_create(THIS_MODULE, "motor");
+    mydriver_class = class_create(THIS_MODULE, CLASS_NAME);
     if (IS_ERR(mydriver_class)){
         printk("failed to create device class.\n");
         unregister_chrdev(mydriver_major, DEVICE_NAME);
         return -1;
     }
 
-    mydriver_device = device_create(mydriver_class, NULL, MKDEV(mydriver_major, 0), NULL, "device");
+    mydriver_device = device_create(mydriver_class, NULL, MKDEV(mydriver_major, 0), NULL, DEVICE_NAME);
     if (IS_ERR(mydriver_device)){
         printk("failed to create device .\n");
         unregister_chrdev(mydriver_major, DEVICE_NAME);
