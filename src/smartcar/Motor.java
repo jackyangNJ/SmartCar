@@ -2,8 +2,6 @@ package smartcar;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.core.SystemProperty;
@@ -50,7 +48,7 @@ public class Motor {
     }
 
     public static void set_clockwise() {
-        System.out.println("hehe");
+        logger.info("set clockwise");
         String cspeed = "7000" + '\0';
 
         fileWrite(MOTOR_FILE_DIRECTION1, Integer.toString(0));
@@ -67,7 +65,7 @@ public class Motor {
     }
 
     public static void set_counterclockwise() {
-        System.out.println("hehe1");
+        logger.info("set counterclockwise");
         String cspeed = "7000" + '\0';
         fileWrite(MOTOR_FILE_DIRECTION1, Integer.toString(1));
         fileWrite(MOTOR_FILE_SPEED1, cspeed);
@@ -83,17 +81,16 @@ public class Motor {
     }
 
     public static void set_go() {
-        System.out.println("set go");
+        logger.info("set go");
         logger.info(MOTOR_FILE_DIRECTION1);
         fileWrite(MOTOR_FILE_DIRECTION1,Integer.toString(1));
         fileWrite(MOTOR_FILE_DIRECTION2,Integer.toString(1));
         fileWrite(MOTOR_FILE_DIRECTION3,Integer.toString(1));
         fileWrite(MOTOR_FILE_DIRECTION4,Integer.toString(1));
-        System.out.println("end set go");
     }
 
     public static void set_back() {
-        System.out.println("set back");
+        logger.info("set back");
         fileWrite(MOTOR_FILE_DIRECTION1,Integer.toString(0));
         fileWrite(MOTOR_FILE_DIRECTION2,Integer.toString(0));
         fileWrite(MOTOR_FILE_DIRECTION3,Integer.toString(0));
@@ -103,14 +100,14 @@ public class Motor {
 
 
     public static void set_left(int speed) {   //no unsigned in java
-        System.out.println("set left");
+        logger.info("set left");
         String cspeed = Integer.toString(speed) + '\0';
         fileWrite(MOTOR_FILE_SPEED2,cspeed);
         fileWrite(MOTOR_FILE_SPEED3,cspeed);
     }
 
     public static void set_right(int speed) {
-        System.out.println("set right");
+        logger.info("Motor set right");
         String cspeed = Integer.toString(speed) + '\0';
         fileWrite(MOTOR_FILE_SPEED1,cspeed);
         fileWrite(MOTOR_FILE_SPEED4,cspeed);   
@@ -133,7 +130,6 @@ public class Motor {
     }
 
     public static void smart_car_set(int speed, int angle) {
-        System.out.println("hehe2");
         int dir_FB, dir_LR;
         int pwm_fast, pwm_slow;
         if (speed != 0) {
