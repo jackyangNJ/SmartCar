@@ -14,7 +14,7 @@ import smartcar.Motor;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
-import smartcar.SmartMapInterface;
+import smartcar.map.SmartMapInterface;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;

@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import smartcar.SmartMapInterface;
 import smartcar.core.Point;
 
 import org.apache.commons.logging.Log;

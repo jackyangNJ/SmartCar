@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package smartcar;
+package smartcar.map;
 import smartcar.map.SmartMapData;
 import smartcar.map.SmartMapInfo;
 import smartcar.map.SmartMapQRCode;
