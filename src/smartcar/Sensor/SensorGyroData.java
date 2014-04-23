@@ -3,21 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package smartcar.Sensor;
+
+import javax.swing.JButton;
 
 /**
  *
  * @author cs
  */
 public class SensorGyroData {
-    private float hori_angleSpeed;        
+
+    private float hori_angleSpeed;
     private float hori_angle;
-    
-    public  SensorGyroData(){
-        
+
+    public SensorGyroData() {
+        this(0, 0);
     }
-    
+
+    public SensorGyroData(float horiAngleSpeed, float horiAngle) {
+        this.hori_angleSpeed = horiAngleSpeed;
+        this.hori_angle = horiAngle;
+    }
+
     /**
      * @return the hori_angleSpeed
      */

@@ -66,7 +66,7 @@ public class SensorAcc implements SensorAccIf {
         kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0);
         z_k = CvMat.create(2, 1, opencv_core.CV_32FC1);
 
-        //initial transition matrix,6x6
+        //initial transition matrix,6x6,对角线赋值为1
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 if (i != j) {
