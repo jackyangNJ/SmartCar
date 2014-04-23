@@ -15,7 +15,7 @@ public class SensorHall implements SensorHallIf, SensorListener {
 
     public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners;
-    
+
     //Car Wheel girth,unit m
     private static final float WheelGirth = Float.parseFloat(SystemProperty.getProperty("Car.WheelGirth"));
 
@@ -69,15 +69,14 @@ public class SensorHall implements SensorHallIf, SensorListener {
         }
     }
 
+    /**
+     * 通过注册ArduinoBridge的消息，这个函数是ArduinoBridge的消息的处理函数
+     * @param e
+     */
     @Override
     public void SensorEventProcess(SensorEvent e) {
         logger.info("Receive Hall Event");
-        SensorHallData sensorHallData=new SensorHallData(WheelGirth);
+        SensorHallData sensorHallData = new SensorHallData(WheelGirth);
         fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, sensorHallData));
     }
-    
-    public static void main(String[]args){
-        
-    }
-
 }

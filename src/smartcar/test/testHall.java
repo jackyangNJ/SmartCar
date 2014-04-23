@@ -15,7 +15,6 @@ import smartcar.Sensor.ArduinoBridge;
 import smartcar.Sensor.ArduinoBridgeImpl;
 import smartcar.Sensor.SensorHall;
 import smartcar.core.SystemProperty;
-import static smartcar.test.testArduinoBridge.logger;
 
 /**
  *
@@ -26,7 +25,7 @@ public class testHall {
     /**
      * @param args the command line arguments
      */
-    public static Log logger = LogFactory.getLog(test.class.getName());
+    public static Log logger = LogFactory.getLog(testHall.class.getName());
     SensorHall testHall = new SensorHall();
     String serialName = SystemProperty.getProperty("ArduinoBridge.serialComName");
     int serialRate =Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));

@@ -15,7 +15,7 @@ import smartcar.core.SystemProperty;
  */
 public class testArduinoBridge {
 
-    public static Log logger = LogFactory.getLog(test.class.getName());
+    public static Log logger = LogFactory.getLog(testArduinoBridge.class.getName());
     String serialName = SystemProperty.getProperty("ArduinoBridge.serialComName");
     int serialRate =Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));
     ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName,serialRate);

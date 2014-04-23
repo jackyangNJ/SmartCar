@@ -18,7 +18,7 @@ import smartcar.Interactor.Interactor;
  * @author cs
  */
 public class testInterator {
-    public static Log logger = LogFactory.getLog(test.class.getName());
+    public static Log logger = LogFactory.getLog(testInterator.class.getName());
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         logger.info("111");

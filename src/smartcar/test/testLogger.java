@@ -30,8 +30,6 @@ public class testLogger {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         testLogger teLogger = new testLogger();
         teLogger.a();
-        test a = new test();
-
     }
 
 }

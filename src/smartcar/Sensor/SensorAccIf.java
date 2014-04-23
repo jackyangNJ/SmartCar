@@ -1,6 +1,5 @@
 package smartcar.Sensor;
 
-import java.awt.Point;
 import smartcar.Event.SensorListener;
 
 /**

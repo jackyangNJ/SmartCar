@@ -6,7 +6,6 @@
 package smartcar.test;
 
 import com.googlecode.javacv.cpp.opencv_core;
-import static com.googlecode.javacv.cpp.opencv_core.CV_32F;
 import static com.googlecode.javacv.cpp.opencv_core.CV_32FC1;
 
 /**
