@@ -1,5 +1,6 @@
 package smartcar.Sensor;
 
+import com.googlecode.javacv.cpp.opencv_core;
 import smartcar.Event.SensorListener;
 import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_core.*;
@@ -63,8 +64,9 @@ public class SensorAcc implements SensorAccIf {
      */
     private void initKalmanFilter() {
         kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0);
-        z_k = CvMat.create(2, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
+        z_k = CvMat.create(2, 1, opencv_core.CV_32FC1);
 
+        //initial transition matrix,6x6
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 if (i != j) {
@@ -79,11 +81,19 @@ public class SensorAcc implements SensorAccIf {
         kalman.transition_matrix().put(2, 4, time);
         kalman.transition_matrix().put(3, 5, time);
 
+        //initial measurement matric,2x6
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 6; j++) {
+                kalman.measurement_matrix().put(i, j, 0);
+            }
+        }
         kalman.measurement_matrix().put(0, 4, 1);
         kalman.measurement_matrix().put(1, 5, 1);
-        com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.process_noise_cov(), com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-        com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.measurement_noise_cov(), com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1e-5));
-        com.googlecode.javacv.cpp.opencv_core.cvSetIdentity(kalman.error_cov_post(), com.googlecode.javacv.cpp.opencv_core.cvRealScalar(1));
+
+        //initial cov parameter
+        opencv_core.cvSetIdentity(kalman.process_noise_cov(), opencv_core.cvRealScalar(1e-5));
+        opencv_core.cvSetIdentity(kalman.measurement_noise_cov(), opencv_core.cvRealScalar(1e-5));
+        opencv_core.cvSetIdentity(kalman.error_cov_post(), opencv_core.cvRealScalar(1));
     }
 
     private void sensorConfig() {
@@ -214,6 +224,7 @@ public class SensorAcc implements SensorAccIf {
     }
 
     private void fireSensorEventProcess(SensorEvent e) {
+        logger.info("fire Sensor event");
         ArrayList list;
         synchronized (this) {
             if (SensorListeners == null) {

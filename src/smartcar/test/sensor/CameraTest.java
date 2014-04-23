@@ -1,4 +1,4 @@
-package smartcar.test;
+package smartcar.test.sensor;
 
 import com.googlecode.javacv.FrameGrabber;
 import com.googlecode.javacv.OpenCVFrameGrabber;

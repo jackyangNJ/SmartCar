@@ -6,7 +6,7 @@ import com.googlecode.javacv.cpp.opencv_highgui;
 import java.awt.image.BufferedImage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import smartcar.test.testLogger;
+import smartcar.test.env.testLogger;
 
 /**
  * The CameraHW class is to manage the samera hardware in the system, and

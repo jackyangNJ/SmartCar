@@ -4,12 +4,13 @@
  * and open the template in the editor.
  */
 
-package smartcar.test;
+package smartcar.test.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Navigator.Navigator;
+import smartcar.test.sensor.CameraTest;
 
 
 /**

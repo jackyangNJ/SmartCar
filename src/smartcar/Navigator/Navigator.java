@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import smartcar.map.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.Sensor.QRCode;
-import smartcar.Sensor.QRCodeData;
-import smartcar.Sensor.QRCodeIf;
 import smartcar.Sensor.SensorAcc;
 import smartcar.Sensor.SensorAccData;
 import smartcar.Sensor.SensorAccIf;
@@ -19,8 +16,6 @@ import smartcar.Sensor.SensorHallIf;
 import smartcar.Sensor.SensorMagnetic;
 import smartcar.Sensor.SensorMagneticData;
 import smartcar.Sensor.SensorMagneticIf;
-import smartcar.Sensor.SensorUltrasonic;
-import smartcar.Sensor.SensorUltrasonicIf;
 import smartcar.core.SystemCoreData;
 
 /**
@@ -270,6 +265,26 @@ public class Navigator implements NavigatorIf{
 
     @Override
     public NavigatorData getNavigatorDate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorAccData getSensorAccRawDate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorAccData getSensorAccDate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorGyroData getSensorGyroData() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SensorMagneticData getSensorMagneticData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

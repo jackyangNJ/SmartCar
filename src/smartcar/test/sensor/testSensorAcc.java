@@ -1,4 +1,4 @@
-package smartcar.test;
+package smartcar.test.sensor;
 
 import smartcar.Sensor.SensorAcc;
 

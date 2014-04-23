@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package smartcar.test;
+package smartcar.test.component;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Interactor.Interactor;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *

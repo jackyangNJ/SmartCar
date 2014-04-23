@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package smartcar.test;
+package smartcar.test.sensor;
 
 import smartcar.Sensor.SensorUltrasonic;
 

@@ -1,4 +1,4 @@
-package smartcar.test;
+package smartcar.test.sensor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
