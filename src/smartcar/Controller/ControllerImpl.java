@@ -45,6 +45,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     //Parameters 
     private static int RunFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
+
     /**
      * 超声波事件处理函数
      */
@@ -122,20 +123,29 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         logger.info("Enter autoDriveDealer");
         if (needToSchedulePath) {
             logger.info("Schedule Path");
-            needToSchedulePath =false;
-            Point currentLocation=SystemCoreData.getLocation();
+            needToSchedulePath = false;
+            Point currentLocation = SystemCoreData.getLocation();
             scheduledPath = map.getPath(currentLocation, destination);
         }
-        
-        
+         
+          
     }
     /**
-     * 旋转小车到一定角度，deviation指明了旋转的正负误差
-     * @param angular
-     * @param deviation 
+     * 检查小车当前位置是否存在二维码信息
+     * @return 
      */
-    private void rotateToAngular(float angular,float deviation){
-        
+    private boolean checkQRCode() {
+        return false;
+    }
+
+    /**
+     * 旋转小车到一定角度，deviation指明了旋转的正负误差
+     *
+     * @param angular
+     * @param deviation
+     */
+    private void rotateToAngular(float angular, float deviation) {
+
     }
 
     private void mannualDriveDealer() {

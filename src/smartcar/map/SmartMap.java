@@ -306,8 +306,8 @@ public class SmartMap implements SmartMapInterface {
 	logger.info("set qrcode");
         //set qrcode
         for(int i =0;i < q.num;i++) {
-            float x = q.qrcodes.get(i).p.x;
-            float y = q.qrcodes.get(i).p.y;
+            float x = q.qrcodes.get(i).location.x;
+            float y = q.qrcodes.get(i).location.y;
             int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
             GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));

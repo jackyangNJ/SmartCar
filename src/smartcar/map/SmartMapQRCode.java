@@ -15,36 +15,36 @@ import smartcar.core.Point;
  */
 public class SmartMapQRCode {
     int num;//二维码个数
-    ArrayList<QRCode> qrcodes = new ArrayList<QRCode>();
-    void setQRCode(Point p,String l) {
+    ArrayList<QRCode> qrcodes = new ArrayList<>();
+    void setQRCode(Point location,String data) {
         QRCode b = new QRCode();
-        b.p = new Point(p.x,p.y);
-        b.l = l;
+        b.location = new Point(location.x,location.y);
+        b.data = data;
         qrcodes.add(b);
         num ++;
     }
     void printQRCodes() {
         System.out.println("The number of qrcodes is " + num);
         for(int i = 0;i < num;i++) {
-            System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).l);
+            System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
     }
     void printQRCodes(float x,float y) {
         for(int i = 0;i < num;i++) {
-            float distance = (qrcodes.get(i).p.y - y) * (qrcodes.get(i).p.y - y) 
-                    + (qrcodes.get(i).p.x - x) * (qrcodes.get(i).p.x - x);
+            float distance = (qrcodes.get(i).location.y - y) * (qrcodes.get(i).location.y - y) 
+                    + (qrcodes.get(i).location.x - x) * (qrcodes.get(i).location.x - x);
             if(distance < 4)
-            System.out.println(qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + "," + qrcodes.get(i).l);
+            System.out.println(qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + "," + qrcodes.get(i).data);
         }
     }
     void printQRCodes(String s) {
         for(int i = 0;i < num;i++) {
-            if(qrcodes.get(i).l.equals(s))
-                System.out.println(i + ": " + qrcodes.get(i).p.x + "," + qrcodes.get(i).p.y + qrcodes.get(i).l);
+            if(qrcodes.get(i).data.equals(s))
+                System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
     }
     static class QRCode {
-        Point p;
-        String l;
+        Point location;
+        String data;
     }
 }
