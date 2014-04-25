@@ -8,9 +8,11 @@ import com.googlecode.javacv.cpp.opencv_video.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
+import static smartcar.Sensor.SensorGyro.ON_TIMER_STOP;
 import spiLib.SPIFunc;
 import smartcar.core.SystemProperty;
 
@@ -21,14 +23,28 @@ import smartcar.core.SystemProperty;
 public class SensorAcc implements SensorAccIf {
 
     public static Log logger = LogFactory.getLog(SensorAcc.class);
+    int state = ON_TIMER_RUNNING;
+
+    /**
+     * 表明sensor 在执行定时任务
+     */
+    static final int ON_TIMER_RUNNING = 0;
+
+    /**
+     * 表明Sensor没有执行定时任务
+     */
+    static final int ON_TIMER_STOP = 1;
+
     private ArrayList<SensorListener> SensorListeners;
     Timer timer = new Timer("Acc");
 
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            readAccData();
-            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, getSensorRawData()));
+            if (state == ON_TIMER_RUNNING) {
+                readAccData();
+                fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, getSensorRawData()));
+            }
         }
     };
 
@@ -37,6 +53,7 @@ public class SensorAcc implements SensorAccIf {
     private CvMat xy_axle;
     public static final double time = 0.01;
     private SensorAccData data;
+    private SensorAccData calibrationData;
     private SPIFunc spi;
 
     /**
@@ -44,6 +61,7 @@ public class SensorAcc implements SensorAccIf {
      */
     public static final int frequency = Integer.parseInt(SystemProperty.getProperty("ACC.Frequency"));
     private final String routePath = SystemProperty.getProperty("ACC.DevFile");
+    private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("ACC.CalibrateDataNum"));
 
     public SensorAcc() {
         //init SPI function
@@ -236,5 +254,26 @@ public class SensorAcc implements SensorAccIf {
             SensorListener listener = (SensorListener) list.get(i);
             listener.SensorEventProcess(e);
         }
+    }
+
+    @Override
+    public void calibrate() {
+        //pause timer task
+        state = ON_TIMER_STOP;
+        ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
+        for (int i = 0; i < calibrationDataNum; i++) {
+            dataList.add(getSensorRawData());
+        }
+       calibrationData =getMeanGyroData(dataList);
+    }
+
+    private SensorAccData getMeanGyroData(List<SensorAccData> dataList) {
+        int size = dataList.size();
+        SensorAccData meanData = new SensorAccData();
+        for (SensorAccData sensorAccData : dataList) {
+            meanData.seta_x(sensorAccData.geta_x() / size + meanData.geta_x());
+            meanData.seta_y(sensorAccData.geta_y() / size + meanData.geta_y());
+        }
+        return meanData;
     }
 }

@@ -6,6 +6,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvSetIdentity;
 import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_video.CvKalman;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -23,10 +25,23 @@ import spiLib.SPIFunc;
  */
 public class SensorGyro implements SensorGyroIf {
 
+    int state = ON_TIMER_RUNNING;
+
+    /**
+     * 表明sensor 在执行定时任务
+     */
+    static final int ON_TIMER_RUNNING = 0;
+
+    /**
+     * 表明Sensor没有执行定时任务
+     */
+    static final int ON_TIMER_STOP = 1;
     public static Log logger = LogFactory.getLog(SensorGyro.class);
     private ArrayList<SensorListener> SensorListeners;
     private SPIFunc spifunc;
     private SensorGyroData gyroData;
+    private SensorGyroData calibrationData;
+
     /**
      * constant
      */
@@ -35,21 +50,24 @@ public class SensorGyro implements SensorGyroIf {
     private final byte OUT_Z_H_addr = 0x2D;
     private final byte L3G4200D_CTRL_REG1 = 0x20;
     private final byte L3G4300D_ID = (byte) 0xd3;
-    private final String routePath = SystemProperty.getProperty("Gyro.DevFile");
-    private final int readFrequency = Integer.parseInt(SystemProperty.getProperty("Gyro.Frequency"));
-
+    private static final String routePath = SystemProperty.getProperty("Gyro.DevFile");
+    private static final int readFrequency = Integer.parseInt(SystemProperty.getProperty("Gyro.Frequency"));
+    private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("GYRO.CalibrateDataNum"));
     private CvMat z_k;
     private CvMat y_k;//预测值
     private CvKalman kalman;
     public static final double deltaT = 0.01;
 
-    Timer timer = new Timer("gyro");
+    private Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            read_HoriAngleSpeed();
-            gyroData = kalmanData(gyroData);
-            fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
+            if (state == ON_TIMER_RUNNING) {
+                read_HoriAngleSpeed();
+                gyroData = kalmanData(gyroData);
+                fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
+            }
+
         }
     };
 
@@ -208,7 +226,8 @@ public class SensorGyro implements SensorGyroIf {
 
     public SensorGyroData kalmanData(SensorGyroData GyroData) {
         SensorGyroData speed = new SensorGyroData();
-        y_k = opencv_video.cvKalmanPredict(kalman, null);//获取值
+        //获取值
+        y_k = opencv_video.cvKalmanPredict(kalman, null);
         z_k.put(0, 0, (GyroData.getHori_angleSpeed()));
         opencv_video.cvKalmanCorrect(kalman, z_k);
         speed.setHori_angle((float) y_k.get(0, 0));
@@ -219,6 +238,26 @@ public class SensorGyro implements SensorGyroIf {
     @Override
     public SensorGyroData getRawSensorGyroData() {
         return this.gyroData;
+    }
+
+    @Override
+    public void calibrate() {
+        //pause timer task
+        state = ON_TIMER_STOP;
+        ArrayList<SensorGyroData> dataList = new ArrayList<>(calibrationDataNum);
+        for (int i = 0; i < calibrationDataNum; i++) {
+            dataList.add(getRawSensorGyroData());
+        }
+        calibrationData = getMeanGyroData(dataList);
+    }
+
+    private SensorGyroData getMeanGyroData(List<SensorGyroData> dataList) {
+        int size = dataList.size();
+        SensorGyroData meanData = new SensorGyroData();
+        for (SensorGyroData sensorGyroData : dataList) {
+            meanData.setHori_angleSpeed(sensorGyroData.getHori_angleSpeed() / size + meanData.getHori_angleSpeed());
+        }
+        return meanData;
     }
 
 }

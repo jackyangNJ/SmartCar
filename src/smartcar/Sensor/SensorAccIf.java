@@ -31,4 +31,8 @@ public interface SensorAccIf {
      */
     SensorAccData getSensorRawData(); 
     
+    /**
+     * 用于静止时传感器校准
+     */
+    void calibrate();
 }

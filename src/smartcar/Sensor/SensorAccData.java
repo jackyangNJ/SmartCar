@@ -18,6 +18,9 @@ public class SensorAccData {
     float x;
     float y;
 
+    public SensorAccData(){
+        this(0,0,0,0,0,0);
+    }
     public SensorAccData(float v_x , float v_y ,float a_x,float a_y,float x,float y) {
         this.v_x = v_x;
         this.v_y = v_y;
