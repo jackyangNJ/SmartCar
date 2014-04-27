@@ -68,7 +68,11 @@ public class SystemCoreData {
         return systemState;
     }
 
-    public static void setSystemState(int systemState) {
+    /**
+     * 设为同步方法，获取系统状态
+     * @param systemState 
+     */
+    public static synchronized void setSystemState(int systemState) {
         SystemCoreData.systemState = systemState;
     }
 

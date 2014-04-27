@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import static smartcar.Sensor.SensorGyro.ON_TIMER_STOP;
+import smartcar.core.SystemCoreData;
 import spiLib.SPIFunc;
 import smartcar.core.SystemProperty;
 
@@ -24,7 +25,6 @@ public class SensorAcc implements SensorAccIf {
 
     public static Log logger = LogFactory.getLog(SensorAcc.class);
     int state = ON_TIMER_RUNNING;
-
     /**
      * 表明sensor 在执行定时任务
      */
@@ -43,7 +43,9 @@ public class SensorAcc implements SensorAccIf {
         public void run() {
             if (state == ON_TIMER_RUNNING) {
                 readAccData();
-                fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, getSensorRawData()));
+                rawData = calibrateRawData(rawData, meanData);
+                accData = kalmanData(rawData);
+                fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, accData));
             }
         }
     };
@@ -52,9 +54,19 @@ public class SensorAcc implements SensorAccIf {
     private CvMat z_k;
     private CvMat xy_axle;
     public static final double time = 0.01;
-    private SensorAccData data;
-    private SensorAccData calibrationData;
-    private SPIFunc spi;
+    /**
+     * accData is the data after kalman filter
+     */
+    SensorAccData accData;
+    /**
+     * rawData is the data acquired from sensor
+     */
+    SensorAccData rawData;
+    /**
+     * meanData is mean value after calibration
+     */
+    SensorAccData meanData;
+    SPIFunc spi;
 
     /**
      * constant
@@ -69,7 +81,8 @@ public class SensorAcc implements SensorAccIf {
         //config sensor ADXL362
         sensorConfig();
 
-        data = new SensorAccData(0, 0, 0, 0, 0, 0);
+        accData = new SensorAccData();
+        rawData = new SensorAccData();
         //start timely work
         timer.scheduleAtFixedRate(task, 0, frequency);
 
@@ -151,7 +164,7 @@ public class SensorAcc implements SensorAccIf {
         xalxeLow = (byte) this.read((byte) 0x0e);
         xalxeHigh = (byte) this.read((byte) 0x0f);
         int value = xalxeHigh << 8 | xalxeLow;
-        data.seta_x(value);
+        rawData.seta_x(value);
     }
 
     private void readyalxe() {
@@ -160,7 +173,7 @@ public class SensorAcc implements SensorAccIf {
         yalxeLow = (byte) this.read((byte) 0x10);
         yalxeHigh = (byte) this.read((byte) 0x11);
         int value = yalxeHigh << 8 | yalxeLow;
-        data.seta_y(value);
+        rawData.seta_y(value);
     }
 
     private byte read(byte addr) {
@@ -215,12 +228,12 @@ public class SensorAcc implements SensorAccIf {
 
     @Override
     public SensorAccData getSensorRawData() {
-        return this.data;
+        return this.rawData;
     }
 
     @Override
     public SensorAccData getSensorData() {
-        return this.kalmanData(data);
+        return this.accData;
     }
 
     @Override
@@ -256,24 +269,50 @@ public class SensorAcc implements SensorAccIf {
         }
     }
 
+    /**
+     * 用于在静止时矫正传感器的数据，系统状态SystemCoreData.state应处于静止
+     */
     @Override
     public void calibrate() {
+        //wait until car is still
+        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
+
+        }
         //pause timer task
         state = ON_TIMER_STOP;
         ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {
             dataList.add(getSensorRawData());
         }
-       calibrationData =getMeanGyroData(dataList);
+        meanData = getMeanGyroData(dataList);
     }
 
+    /**
+     * 获取矫正后的数据，即用rawData中的测量加速度减去meanData中的平均加速度
+     * @param rawData
+     * @param meanData
+     * @return 返回矫正后的传感器测量值
+     */
+    private SensorAccData calibrateRawData(SensorAccData rawData, SensorAccData meanData) {
+        SensorAccData newData = new SensorAccData();
+        newData.seta_x(rawData.geta_x() - meanData.geta_x());
+        newData.seta_y(rawData.geta_y() - meanData.geta_y());
+        return newData;
+    }
+
+    /**
+     * 获取datalist中数据的均值
+     *
+     * @param dataList
+     * @return 存有均值的SensorAccData
+     */
     private SensorAccData getMeanGyroData(List<SensorAccData> dataList) {
         int size = dataList.size();
-        SensorAccData meanData = new SensorAccData();
+        SensorAccData data = new SensorAccData();
         for (SensorAccData sensorAccData : dataList) {
-            meanData.seta_x(sensorAccData.geta_x() / size + meanData.geta_x());
-            meanData.seta_y(sensorAccData.geta_y() / size + meanData.geta_y());
+            data.seta_x(sensorAccData.geta_x() / size + data.geta_x());
+            data.seta_y(sensorAccData.geta_y() / size + data.geta_y());
         }
-        return meanData;
+        return data;
     }
 }

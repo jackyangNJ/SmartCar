@@ -7,15 +7,13 @@ import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_video.CvKalman;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
 import spiLib.SPIFunc;
 
@@ -36,11 +34,22 @@ public class SensorGyro implements SensorGyroIf {
      * 表明Sensor没有执行定时任务
      */
     static final int ON_TIMER_STOP = 1;
-    public static Log logger = LogFactory.getLog(SensorGyro.class);
-    private ArrayList<SensorListener> SensorListeners;
-    private SPIFunc spifunc;
-    private SensorGyroData gyroData;
-    private SensorGyroData calibrationData;
+
+    static Log logger = LogFactory.getLog(SensorGyro.class);
+    ArrayList<SensorListener> SensorListeners;
+    SPIFunc spifunc;
+    /**
+     * gyroData is the data after the kalman filter
+     */
+    SensorGyroData gyroData;
+    /**
+     * rawData is the data acquired from sensor
+     */
+    SensorGyroData rawData;
+    /**
+     * meanData is the mean data after the excution of calibration
+     */
+    SensorGyroData meanData;
 
     /**
      * constant
@@ -54,25 +63,28 @@ public class SensorGyro implements SensorGyroIf {
     private static final int readFrequency = Integer.parseInt(SystemProperty.getProperty("Gyro.Frequency"));
     private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("GYRO.CalibrateDataNum"));
     private CvMat z_k;
-    private CvMat y_k;//预测值
+    //预测值
+    private CvMat y_k;
     private CvKalman kalman;
     public static final double deltaT = 0.01;
 
-    private Timer timer = new Timer("gyro");
+    private final Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
             if (state == ON_TIMER_RUNNING) {
                 read_HoriAngleSpeed();
-                gyroData = kalmanData(gyroData);
+                //calibrate data
+                rawData = calibrateRawData(rawData, meanData);
+                gyroData = kalmanData(rawData);
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
-
         }
     };
 
     public SensorGyro() {
         gyroData = new SensorGyroData();
+        rawData = new SensorGyroData();
         spifunc = new SPIFunc(routePath);
         timer.scheduleAtFixedRate(task, 0, readFrequency);
 
@@ -130,7 +142,7 @@ public class SensorGyro implements SensorGyroIf {
         byte Z_L = gyr_read(OUT_Z_L_addr);
         byte Z_H = gyr_read(OUT_Z_H_addr);
         int z = Z_H << 8 | Z_L;
-        gyroData.setHori_angleSpeed((float) z * UNIT / 1000);
+        rawData.setHori_angleSpeed((float) z * UNIT / 1000);
     }
 
     /**
@@ -237,27 +249,51 @@ public class SensorGyro implements SensorGyroIf {
 
     @Override
     public SensorGyroData getRawSensorGyroData() {
-        return this.gyroData;
+        return this.rawData;
     }
 
+    /**
+     * 用于在静止时矫正传感器的数据，系统状态SystemCoreData.state应处于静止 数据的平均值会存在meanData中
+     */
     @Override
     public void calibrate() {
+        //wait until car is still
+        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
+        }
         //pause timer task
         state = ON_TIMER_STOP;
         ArrayList<SensorGyroData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {
             dataList.add(getRawSensorGyroData());
         }
-        calibrationData = getMeanGyroData(dataList);
+        meanData = getMeanGyroData(dataList);
     }
 
+    /**
+     * 获取datalist中数据的均值
+     *
+     * @param dataList
+     * @return 存有均值的SensorAccData
+     */
     private SensorGyroData getMeanGyroData(List<SensorGyroData> dataList) {
         int size = dataList.size();
-        SensorGyroData meanData = new SensorGyroData();
+        SensorGyroData data = new SensorGyroData();
         for (SensorGyroData sensorGyroData : dataList) {
-            meanData.setHori_angleSpeed(sensorGyroData.getHori_angleSpeed() / size + meanData.getHori_angleSpeed());
+            data.setHori_angleSpeed(sensorGyroData.getHori_angleSpeed() / size + data.getHori_angleSpeed());
         }
-        return meanData;
+        return data;
     }
 
+    /**
+     * 获取矫正后的数据，即用rawData中的测量加速度减去meanData中的平均加速度
+     *
+     * @param rawData
+     * @param meanData
+     * @return 返回矫正后的传感器测量值
+     */
+    private SensorGyroData calibrateRawData(SensorGyroData rawData, SensorGyroData meanData) {
+        SensorGyroData newData = new SensorGyroData();
+        rawData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
+        return newData;
+    }
 }
