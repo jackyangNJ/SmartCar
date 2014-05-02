@@ -41,6 +41,7 @@ public class SensorAcc implements SensorAccIf {
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
+            logger.debug("timer triggered");
             if (state == ON_TIMER_RUNNING) {
                 readAccData();
                 rawData = calibrateRawData(rawData, meanData);
@@ -50,7 +51,7 @@ public class SensorAcc implements SensorAccIf {
         }
     };
 
-    private CvKalman kalman;
+    public CvKalman kalman;
     private CvMat z_k;
     private CvMat xy_axle;
     public static final double time = 0.01;
@@ -65,7 +66,7 @@ public class SensorAcc implements SensorAccIf {
     /**
      * meanData is mean value after calibration
      */
-    SensorAccData meanData;
+    SensorAccData meanData = new SensorAccData();
     SPIFunc spi;
 
     /**
@@ -83,11 +84,12 @@ public class SensorAcc implements SensorAccIf {
 
         accData = new SensorAccData();
         rawData = new SensorAccData();
-        //start timely work
-        timer.scheduleAtFixedRate(task, 0, frequency);
 
         //init Kalman filter
         initKalmanFilter();
+
+        //start timely work
+        timer.scheduleAtFixedRate(task, 0, 1000 / frequency);
     }
 
     /**
@@ -137,8 +139,8 @@ public class SensorAcc implements SensorAccIf {
         }
         logger.info("Sensor acc reset softly");
 
-//        write((byte) 0x26, (byte) 0x20);
-//        write((byte) 0x2c, (byte) 0x13);
+        write((byte) 0x26, (byte) 0x20);
+        write((byte) 0x2c, (byte) 0x13);
         //start acc measurements
         byte temp = (byte) this.read((byte) 0x2d);
         temp = (byte) (temp | 0x02);
@@ -156,23 +158,39 @@ public class SensorAcc implements SensorAccIf {
     private void readAccData() {
         readxalxe();
         readyalxe();
+        readzalxe();
+    }
+
+    private void readzalxe() {
+        byte xalxeLow;
+        byte xalxeHigh;
+//        xalxeLow = (byte) this.read((byte) 0x12);
+//        xalxeHigh = (byte) this.read((byte) 0x13);
+//        int value = xalxeHigh << 8 | xalxeLow;
+        int value = (byte)this.read((byte)0x0A);
+        logger.info(value);
+//        rawData.seta_x(value);
     }
 
     private void readxalxe() {
         byte xalxeLow;
         byte xalxeHigh;
-        xalxeLow = (byte) this.read((byte) 0x0e);
-        xalxeHigh = (byte) this.read((byte) 0x0f);
-        int value = xalxeHigh << 8 | xalxeLow;
+//        xalxeLow = (byte) this.read((byte) 0x0e);
+//        xalxeHigh = (byte) this.read((byte) 0x0f);
+//        int value = xalxeHigh << 8 | xalxeLow;
+        int value = (byte) this.read((byte)0x08);
+        logger.info(value);
         rawData.seta_x(value);
     }
 
     private void readyalxe() {
-        byte yalxeLow;
-        byte yalxeHigh;
-        yalxeLow = (byte) this.read((byte) 0x10);
-        yalxeHigh = (byte) this.read((byte) 0x11);
-        int value = yalxeHigh << 8 | yalxeLow;
+//        byte yalxeLow;
+//        byte yalxeHigh;
+//        yalxeLow = (byte) this.read((byte) 0x10);
+//        yalxeHigh = (byte) this.read((byte) 0x11);
+//        int value = yalxeHigh << 8 | yalxeLow;
+        int value =  (byte) this.read((byte) 0x09);
+        logger.info(value);
         rawData.seta_y(value);
     }
 
@@ -193,8 +211,11 @@ public class SensorAcc implements SensorAccIf {
         spi.RWBytes(output, 3);
     }
 
-    public SensorAccData kalmanData(SensorAccData sensoraccdata) {
+    private SensorAccData kalmanData(SensorAccData sensoraccdata) {
         SensorAccData accdata = new SensorAccData(0, 0, 0, 0, 0, 0);
+        if (kalman == null) {
+            logger.info("kalman is NULL !!!");
+        }
         xy_axle = opencv_video.cvKalmanPredict(kalman, null);
         z_k.put(0, 0, sensoraccdata.geta_x());
         z_k.put(1, 0, sensoraccdata.geta_y());
@@ -209,21 +230,21 @@ public class SensorAcc implements SensorAccIf {
     }
 
     private void checkAllControlRegs() {
-        logger.info("Reg 0x20" + read((byte) 0x20));
-        logger.info("Reg 0x21" + read((byte) 0x21));
-        logger.info("Reg 0x22" + read((byte) 0x22));
-        logger.info("Reg 0x23" + read((byte) 0x23));
-        logger.info("Reg 0x24" + read((byte) 0x24));
-        logger.info("Reg 0x25" + read((byte) 0x25));
-        logger.info("Reg 0x26" + read((byte) 0x26));
-        logger.info("Reg 0x27" + read((byte) 0x27));
-        logger.info("Reg 0x28" + read((byte) 0x28));
-        logger.info("Reg 0x29" + read((byte) 0x29));
-        logger.info("Reg 0x2A" + read((byte) 0x2A));
-        logger.info("Reg 0x2B" + read((byte) 0x2B));
-        logger.info("Reg 0x2C" + read((byte) 0x2C));
-        logger.info("Reg 0x2D" + read((byte) 0x2D));
-        logger.info("Reg 0x2E" + read((byte) 0x2E));
+        logger.info("Reg 0x20 " + read((byte) 0x20));
+        logger.info("Reg 0x21 " + read((byte) 0x21));
+        logger.info("Reg 0x22 " + read((byte) 0x22));
+        logger.info("Reg 0x23 " + read((byte) 0x23));
+        logger.info("Reg 0x24 " + read((byte) 0x24));
+        logger.info("Reg 0x25 " + read((byte) 0x25));
+        logger.info("Reg 0x26 " + read((byte) 0x26));
+        logger.info("Reg 0x27 "  + read((byte) 0x27));
+        logger.info("Reg 0x28 " + read((byte) 0x28));
+        logger.info("Reg 0x29 " + read((byte) 0x29));
+        logger.info("Reg 0x2A " + read((byte) 0x2A));
+        logger.info("Reg 0x2B " + read((byte) 0x2B));
+        logger.info("Reg 0x2C " + read((byte) 0x2C));
+        logger.info("Reg 0x2D " + read((byte) 0x2D));
+        logger.info("Reg 0x2E " + read((byte) 0x2E));
     }
 
     @Override
@@ -233,6 +254,7 @@ public class SensorAcc implements SensorAccIf {
 
     @Override
     public SensorAccData getSensorData() {
+//        return kalmanData(rawData);
         return this.accData;
     }
 
@@ -255,7 +277,7 @@ public class SensorAcc implements SensorAccIf {
     }
 
     private void fireSensorEventProcess(SensorEvent e) {
-        logger.info("fire Sensor event");
+        logger.debug("fire Sensor event");
         ArrayList list;
         synchronized (this) {
             if (SensorListeners == null) {
@@ -289,6 +311,7 @@ public class SensorAcc implements SensorAccIf {
 
     /**
      * 获取矫正后的数据，即用rawData中的测量加速度减去meanData中的平均加速度
+     *
      * @param rawData
      * @param meanData
      * @return 返回矫正后的传感器测量值

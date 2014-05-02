@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
@@ -23,7 +25,7 @@ import spiLib.SPIFunc;
  */
 public class SensorGyro implements SensorGyroIf {
 
-    int state = ON_TIMER_RUNNING;
+    private int state = ON_TIMER_RUNNING;
 
     /**
      * 表明sensor 在执行定时任务
@@ -74,9 +76,14 @@ public class SensorGyro implements SensorGyroIf {
         public void run() {
             if (state == ON_TIMER_RUNNING) {
                 read_HoriAngleSpeed();
-                //calibrate data
+                //calibrate data                
                 rawData = calibrateRawData(rawData, meanData);
+//                logger.info(rawData.getHori_angleSpeed());
+                logger.info(rawData.getHori_angleSpeed());
+                cal_angualr();
+//                logger.info(rawData.getHori_angle());
                 gyroData = kalmanData(rawData);
+                logger.info(gyroData.getHori_angle());
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
         }
@@ -85,14 +92,17 @@ public class SensorGyro implements SensorGyroIf {
     public SensorGyro() {
         gyroData = new SensorGyroData();
         rawData = new SensorGyroData();
+        meanData = new SensorGyroData();
         spifunc = new SPIFunc(routePath);
-        timer.scheduleAtFixedRate(task, 0, readFrequency);
+        
 
         //初始化kalman
         initKalmanFilter();
 
         //初始化sensor
         sensorConfig();
+        
+        timer.scheduleAtFixedRate(task, 0, 1000/readFrequency);
     }
 
     private void sensorConfig() {
@@ -141,8 +151,9 @@ public class SensorGyro implements SensorGyroIf {
     public void read_HoriAngleSpeed() {
         byte Z_L = gyr_read(OUT_Z_L_addr);
         byte Z_H = gyr_read(OUT_Z_H_addr);
-        int z = Z_H << 8 | Z_L;
+        int z = Z_H << 8 | Z_L;        
         rawData.setHori_angleSpeed((float) z * UNIT / 1000);
+        //logger.info(rawData.getHori_angleSpeed());
     }
 
     /**
@@ -258,15 +269,25 @@ public class SensorGyro implements SensorGyroIf {
     @Override
     public void calibrate() {
         //wait until car is still
-        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
+        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {            
         }
         //pause timer task
-        state = ON_TIMER_STOP;
+        logger.info("calibrate!!!!!!!");
+        setState(ON_TIMER_STOP);
         ArrayList<SensorGyroData> dataList = new ArrayList<>(calibrationDataNum);
-        for (int i = 0; i < calibrationDataNum; i++) {
-            dataList.add(getRawSensorGyroData());
+        for (int i = 0; i < calibrationDataNum; i++) {            //timeval      
+            read_HoriAngleSpeed();
+            dataList.add(new SensorGyroData(rawData.getHori_angleSpeed(), 0));
+            try {
+                Thread.sleep(1000/readFrequency);
+            } catch (InterruptedException ex) {
+                logger.error(ex);
+            }
+               
         }
-        meanData = getMeanGyroData(dataList);
+        meanData = getMeanGyroData(dataList);     
+        setState(ON_TIMER_RUNNING);
+        
     }
 
     /**
@@ -291,9 +312,22 @@ public class SensorGyro implements SensorGyroIf {
      * @param meanData
      * @return 返回矫正后的传感器测量值
      */
-    private SensorGyroData calibrateRawData(SensorGyroData rawData, SensorGyroData meanData) {
+    private SensorGyroData calibrateRawData(SensorGyroData rawData, SensorGyroData meanData) {        
         SensorGyroData newData = new SensorGyroData();
-        rawData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
+        newData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
+        newData.setHori_angle(rawData.getHori_angle());
         return newData;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState(int state) {
+        this.state = state;
+    }
+    
+    public void cal_angualr(){            
+        float angular = rawData.getHori_angle()+rawData.getHori_angleSpeed()/readFrequency;
+        rawData.setHori_angle(angular);
     }
 }

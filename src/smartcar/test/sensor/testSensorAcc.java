@@ -1,17 +1,18 @@
 package smartcar.test.sensor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
 import smartcar.Sensor.SensorAcc;
 
 
 public class testSensorAcc {	
+    public static Log logger = LogFactory.getLog(testHall.class.getName());
 	public static void main(String[] args) throws InterruptedException {
+                PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
                 SensorAcc  accTest = new SensorAcc();
                 while(true){
-                    System.out.println("a.x: "+accTest.getSensorRawData().geta_x());
-                    System.out.println("a.y: "+accTest.getSensorRawData().geta_y());
-                     System.out.println("after a.x: "+accTest.getSensorData().geta_x());
-                    System.out.println("after a.y: "+accTest.getSensorData().geta_y());
-                    Thread.sleep(1000);
+                   
                 }
 	}
 }
