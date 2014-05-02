@@ -17,18 +17,18 @@ public interface NavigatorIf {
     * 获取加速度传感器的原始数据
     * @return 
     */
-   public SensorAccData getSensorAccRawDate();
+   public SensorAccData getSensorAccRawData();
    /**
     * 获取加速度传感器处理后的数据
     * @return 
     */
-   public SensorAccData getSensorAccDate();
+ //  public SensorAccData getSensorAccDate();
    
    public SensorGyroData getSensorGyroRawData();
-   public SensorGyroData getSensorGyroData();
+  // public SensorGyroData getSensorGyroData();
    
    public SensorMagneticData getSensorMagneticRawData();
-   public SensorMagneticData getSensorMagneticData();
+  // public SensorMagneticData getSensorMagneticData();
    
    /**
     * 获取霍尔传感器的数据，指明小车轮子是否转了一圈
