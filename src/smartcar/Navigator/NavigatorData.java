@@ -81,12 +81,12 @@ public class NavigatorData {
     public void setangular(double angular){
        this.angular = angular;
     }
-    public double getdistance(){
+   /* public double getdistance(){
         return this.distance;
     }
     public void setdistance(double distance){
        this.distance = distance;
-    }
+    }*/
     public double getangular_velocity(){
         return this.angular_velocity;
     }
