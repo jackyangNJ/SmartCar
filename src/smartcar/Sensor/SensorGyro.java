@@ -54,7 +54,7 @@ public class SensorGyro implements SensorGyroIf {
     /**
      * constant
      */
-    private final float UNIT = 8.75f;
+    private final double UNIT = 8.75;
     private final byte OUT_Z_L_addr = 0x2C;
     private final byte OUT_Z_H_addr = 0x2D;
     private final byte L3G4200D_CTRL_REG1 = 0x20;
@@ -67,7 +67,7 @@ public class SensorGyro implements SensorGyroIf {
     //预测值
     private CvMat y_k;
     private CvKalman kalman;
-    public static final double deltaT = (float)1/readFrequency;
+    public static final double deltaT = (double)1/readFrequency;
 
     private final Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
@@ -153,7 +153,7 @@ public class SensorGyro implements SensorGyroIf {
         z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
         z_k.put(0, 0, 1);
 
-//        final float F[][] = {{1, (float) frequency}, {0, 1}};//时间会变化
+//        final double F[][] = {{1, (double) frequency}, {0, 1}};//时间会变化
         //initial transition matrix(2x2)
         kalman.transition_matrix().put(0, 0, 1);
         kalman.transition_matrix().put(0, 1, deltaT);
@@ -176,7 +176,7 @@ public class SensorGyro implements SensorGyroIf {
         byte Z_L = gyr_read(OUT_Z_L_addr);
         byte Z_H = gyr_read(OUT_Z_H_addr);
         int z = Z_H << 8 | Z_L;        
-        rawData.setHori_angleSpeed((float) z * UNIT / 1000);
+        rawData.setHori_angleSpeed((double) z * UNIT / 1000);
     }
 
     /**
@@ -276,8 +276,8 @@ public class SensorGyro implements SensorGyroIf {
         y_k = opencv_video.cvKalmanPredict(kalman, null);
         z_k.put(0, 0, (GyroData.getHori_angleSpeed()));
         opencv_video.cvKalmanCorrect(kalman, z_k);
-        speed.setHori_angle((float) y_k.get(0, 0));
-        speed.setHori_angleSpeed((float) y_k.get(1, 0));
+        speed.setHori_angle((double) y_k.get(0, 0));
+        speed.setHori_angleSpeed((double) y_k.get(1, 0));
         return speed;
     }
 

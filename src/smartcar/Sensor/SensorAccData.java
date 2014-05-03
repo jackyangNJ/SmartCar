@@ -11,17 +11,17 @@ package smartcar.Sensor;
  * @author jack
  */
 public class SensorAccData {
-    float v_x;
-    float v_y;
-    float a_x;
-    float a_y;
-    float x;
-    float y;
+    double v_x;
+    double v_y;
+    double a_x;
+    double a_y;
+    double x;
+    double y;
 
     public SensorAccData(){
         this(0,0,0,0,0,0);
     }
-    public SensorAccData(float v_x , float v_y ,float a_x,float a_y,float x,float y) {
+    public SensorAccData(double v_x , double v_y ,double a_x,double a_y,double x,double y) {
         this.v_x = v_x;
         this.v_y = v_y;
         this.a_x = a_x;
@@ -30,46 +30,46 @@ public class SensorAccData {
         this.y = y;
     }
     
-    public float getv_x(){
+    public double getv_x(){
         return this.v_x;
     }
-    public void setv_x(float v_x){
+    public void setv_x(double v_x){
        this.v_x = v_x;
     }
     
-    public float getx(){
+    public double getx(){
         return this.x;
     }
-    public void setx(float x){
+    public void setx(double x){
        this.x = x;
     }
     
-      public float gety(){
+      public double gety(){
         return this.y;
     }
-    public void sety(float y){
+    public void sety(double y){
        this.y = y;
     }
     
-    public float getv_y(){
+    public double getv_y(){
         return this.v_y;
     }
-    public void setv_y(float v_y){
+    public void setv_y(double v_y){
        this.v_y = v_y;
     }
     
-    public float geta_x(){
+    public double geta_x(){
         return this.a_x;
     }
-    public void seta_x(float a_x){
+    public void seta_x(double a_x){
        this.a_x = a_x;
     }
     
     
-    public float geta_y(){
+    public double geta_y(){
         return this.a_y;
     }
-    public void seta_y(float a_y){
+    public void seta_y(double a_y){
        this.a_y = a_y;
     }
     

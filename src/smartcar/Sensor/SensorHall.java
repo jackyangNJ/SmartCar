@@ -17,7 +17,7 @@ public class SensorHall implements SensorHallIf, SensorListener {
     private ArrayList<SensorListener> SensorListeners;
 
     //Car Wheel girth,unit m
-    private static final float WheelGirth = Float.parseFloat(SystemProperty.getProperty("Car.WheelGirth"));
+    private static final double WheelGirth = Double.parseDouble(SystemProperty.getProperty("Car.WheelGirth"));
 
     public SensorHall() {
 

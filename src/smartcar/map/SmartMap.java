@@ -29,50 +29,6 @@ import smartcar.core.Point;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-//Node对象用于封装节点信息，包括名字和子节点
-class Node { 
-    private String name; 
-    private Map<Node,Double> child=new HashMap<Node,Double>(); 
-    private boolean barriermask = false;
-    SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
-    private boolean qrcodemask = false;
-    SmartMapQRCode.QRCode q = new SmartMapQRCode.QRCode();
-    public Node(String name){ 
-        this.name=name; 
-    } 
-    public String getName() { 
-        return name; 
-    } 
-    public void setName(String name) { 
-        this.name = name; 
-    } 
-    public Map<Node, Double> getChild() { 
-        return child; 
-    } 
-    public void setChild(Map<Node, Double> child) { 
-        this.child = child; 
-    } 
-    public void setblack(SmartMapBarrier.Barrier b){//设置为障碍物点
-    	barriermask = true;
-        this.b = b;
-    }
-    public boolean getblack(){
-    	return barriermask;
-    }
-    public void setQRCode(SmartMapQRCode.QRCode q){//设置二维码
-    	qrcodemask = true;
-        this.q = q;
-    }
-    public boolean getQRCode(){
-    	return qrcodemask;
-    }
-    public SmartMapBarrier.Barrier getBarrierInfo() {
-        return b;
-    }
-    public SmartMapQRCode.QRCode getQRCodeInfo() {
-        return q;
-    }
-} 
 
 
 //Dijkstra对象用于计算起始节点到所有其他节点的最短路径
@@ -280,12 +236,12 @@ public class SmartMap implements SmartMapInterface {
 	//set barrier
         logger.info("set barrier");
         for(int i =0;i < b.num;i++) {
-            float x = b.barriers.get(i).p.x;
-            float y = b.barriers.get(i).p.y;
+            double x = b.barriers.get(i).p.x;
+            double y = b.barriers.get(i).p.y;
             int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
             GridMap[x_i][y_i].setblack(b.barriers.get(i));
-            float length = (b.barriers.get(i).length - 2) / 2;//中心点一侧的长度
+            double length = (b.barriers.get(i).length - 2) / 2;//中心点一侧的长度
             if(length != 0) {
                 int num_l = (int)length / 2 + 1;//中心点一侧的网格个数（除中心网格外）（左右）
                 for(int j = 1;j <= num_l;j++) {
@@ -293,7 +249,7 @@ public class SmartMap implements SmartMapInterface {
                     GridMap[x_i][y_i + num_l].setblack(b.barriers.get(i));
                 }
             }
-            float width = (b.barriers.get(i).width - 2) / 2;//中心点一侧的宽度
+            double width = (b.barriers.get(i).width - 2) / 2;//中心点一侧的宽度
             if(width != 0) {
                 int num_w = (int)width / 2 + 1;//中心点一侧的网格个数（除中心网格外）（上下）
                 for(int j = 1;j <= num_w;j++) {
@@ -306,8 +262,8 @@ public class SmartMap implements SmartMapInterface {
 	logger.info("set qrcode");
         //set qrcode
         for(int i =0;i < q.num;i++) {
-            float x = q.qrcodes.get(i).location.x;
-            float y = q.qrcodes.get(i).location.y;
+            double x = q.qrcodes.get(i).location.x;
+            double y = q.qrcodes.get(i).location.y;
             int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
             GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));
@@ -369,7 +325,7 @@ public class SmartMap implements SmartMapInterface {
             System.out.print((int)d.end.y);
             d = d.child;
         }
-        /*float f = 1.9f;
+        /*double f = 1.9f;
         int i = (int)f;
         System.out.println(i);*/
         //s.json(b,q);
@@ -457,14 +413,14 @@ public class SmartMap implements SmartMapInterface {
                             if(current.x == next.x || current.y == next.y || current.x/current.y == next.x/next.y) {
                                 
                             }*/
-            float slope1;
-            float dx1 = data.get(i).start.x - data.get(i).end.x;
+            double slope1;
+            double dx1 = data.get(i).start.x - data.get(i).end.x;
             if(dx1 == 0)
                 slope1 = 0;
             else
                 slope1 = (data.get(i).start.y - data.get(i).end.y) / dx1;
-            float slope2;
-            float dx2 = data.get(i + 1).start.x - data.get(i + 1).end.x;
+            double slope2;
+            double dx2 = data.get(i + 1).start.x - data.get(i + 1).end.x;
             if(dx2 == 0)
                 slope2 = 0;
             else
@@ -509,11 +465,11 @@ public class SmartMap implements SmartMapInterface {
         for(int i = 0;i < arrayB.length();i++){
             //= (SmartMapBarrier.Barrier)JSONObject.toBean((JSONArray.fromObject(arrayB.toString()).getJSONObject(i)),SmartMapBarrier.Barrier.class);
             JSONObject temp = new JSONObject(arrayB.getString(i));
-            b.setBarrier(new Point((float)temp.getDouble("centre point x"),(float)temp.getDouble("centre point y")),(float)temp.getDouble("length"), (float)temp.getDouble("width"));
-            /*b.p.x = (float)temp.getDouble("centre point x");
-            b.p.y = (float)temp.getDouble("centre point y");
-            b.width = (float)temp.getDouble("width");
-            b.length = (float)temp.getDouble("length");*/
+            b.setBarrier(new Point(temp.getDouble("centre point x"),temp.getDouble("centre point y")),temp.getDouble("length"), temp.getDouble("width"));
+            /*b.p.x = temp.getDouble("centre point x");
+            b.p.y = temp.getDouble("centre point y");
+            b.width = temp.getDouble("width");
+            b.length = temp.getDouble("length");*/
             //System.out.println(b.num);
         }
         //得到qrcode集合
@@ -523,7 +479,7 @@ public class SmartMap implements SmartMapInterface {
         for(int i = 0;i < arrayQ.length();i++){
             //(SmartMapQRCode.QRCode)JSONObject.toBean((JSONArray.fromObject(arrayQ.toString()).getJSONObject(i)),SmartMapQRCode.QRCode.class);
             JSONObject temp = new JSONObject(arrayQ.getString(i)); 
-            q.setQRCode(new Point((float)temp.getDouble("centre point x"),(float)temp.getDouble("centre point y")),temp.getString("content"));
+            q.setQRCode(new Point(temp.getDouble("centre point x"),temp.getDouble("centre point y")),temp.getString("content"));
             /*q.p.x = temp.getInt("centre point x");
             q.p.y = temp.getInt("centre point y");
             q.l = temp.getString("content");*/

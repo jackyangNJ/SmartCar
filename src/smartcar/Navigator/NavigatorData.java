@@ -11,20 +11,20 @@ package smartcar.Navigator;
  * @author Administrator
  */
 public class NavigatorData {
-    float v_x;
-    float v_y;
-    float a_x;
-    float a_y;
-    float x;
-    float y;
-    float angular;
-    float distance;
-    float angular_velocity;
+    double v_x;
+    double v_y;
+    double a_x;
+    double a_y;
+    double x;
+    double y;
+    double angular;
+    double distance;
+    double angular_velocity;
     
     public NavigatorData(){
         
     }
-    public NavigatorData(float v_x , float v_y ,float a_x,float a_y,float x,float y,float angular,float w) {
+    public NavigatorData(double v_x , double v_y ,double a_x,double a_y,double x,double y,double angular,double w) {
         this.v_x = v_x;
         this.v_y = v_y;
         this.a_x = a_x;
@@ -35,62 +35,62 @@ public class NavigatorData {
         this.angular_velocity = w;
     }
     
-    public float getv_x(){
+    public double getv_x(){
         return this.v_x;
     }
-    public void setv_x(float v_x){
+    public void setv_x(double v_x){
        this.v_x = v_x;
     }
     
-    public float getv_y(){
+    public double getv_y(){
         return this.v_y;
     }
-    public void setv_y(float v_y){
+    public void setv_y(double v_y){
        this.v_y = v_y;
     }
     
-    public float geta_x(){
+    public double geta_x(){
         return this.a_x;
     }
-    public void seta_x(float a_x){
+    public void seta_x(double a_x){
        this.a_x = a_x;
     }
     
     
-    public float geta_y(){
+    public double geta_y(){
         return this.a_y;
     }
-    public void seta_y(float a_y){
+    public void seta_y(double a_y){
        this.a_y = a_y;
     }
-    public float getx(){
+    public double getx(){
         return this.x;
     }
-    public void setx(float x){
+    public void setx(double x){
        this.x = x;
     }
-    public float gety(){
+    public double gety(){
         return this.y;
     }
-    public void sety(float y){
+    public void sety(double y){
        this.y = y;
     }
-    public float getangular(){
+    public double getangular(){
         return this.angular;
     }
-    public void setangular(float angular){
+    public void setangular(double angular){
        this.angular = angular;
     }
-    public float getdistance(){
+   /* public double getdistance(){
         return this.distance;
     }
-    public void setdistance(float distance){
+    public void setdistance(double distance){
        this.distance = distance;
-    }
-    public float getangular_velocity(){
+    }*/
+    public double getangular_velocity(){
         return this.angular_velocity;
     }
-    public void setangular_velocity(float w){
+    public void setangular_velocity(double w){
        this.angular_velocity = w;
     }
 }

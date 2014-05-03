@@ -69,9 +69,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         @Override
         public void SensorEventProcess(SensorEvent e) {
             SensorUltrasonicData sensorUltrasonicData = (SensorUltrasonicData) e.getData();
-            float dis1 = sensorUltrasonicData.getDistance1();
-            float dis2 = sensorUltrasonicData.getDistance2();
-            float dis3 = sensorUltrasonicData.getDistance3();
+            double dis1 = sensorUltrasonicData.getDistance1();
+            double dis2 = sensorUltrasonicData.getDistance2();
+            double dis3 = sensorUltrasonicData.getDistance3();
             logger.info("Receive Ultrasonic Data: 1:" + dis1 + " 2 :" + dis2 + " 3: " + dis3);
 
         }
@@ -94,7 +94,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         qrCode = new QRCode();
 
         //建立navigator,并校正传感器数据
-        navigator = new Navigator();
+        navigator = new Navigator(map);
         navigator.calibrateSensors();
         logger.info("calibrate sensors complete!");
 
@@ -167,9 +167,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
-                rotateToAbsoluteAngle(driveDirection, angleDeviation);
-            }
+//            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
+//                rotateToAbsoluteAngle(driveDirection, angleDeviation);
+//            }
             Motor.set_go();
         } else {
             /**

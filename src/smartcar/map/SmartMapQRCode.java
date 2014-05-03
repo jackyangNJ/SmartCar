@@ -29,10 +29,10 @@ public class SmartMapQRCode {
             System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
     }
-    void printQRCodes(float x,float y) {
+    void printQRCodes(Point p) {
         for(int i = 0;i < num;i++) {
-            float distance = (qrcodes.get(i).location.y - y) * (qrcodes.get(i).location.y - y) 
-                    + (qrcodes.get(i).location.x - x) * (qrcodes.get(i).location.x - x);
+            double distance = (qrcodes.get(i).location.y - p.y) * (qrcodes.get(i).location.y - p.y) 
+                    + (qrcodes.get(i).location.x - p.x) * (qrcodes.get(i).location.x - p.x);
             if(distance < 4)
             System.out.println(qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + "," + qrcodes.get(i).data);
         }
