@@ -12,7 +12,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
-import static smartcar.Sensor.SensorGyro.ON_TIMER_STOP;
 import smartcar.core.SystemCoreData;
 import spiLib.SPIFunc;
 import smartcar.core.SystemProperty;
@@ -38,6 +37,40 @@ public class SensorAcc implements SensorAccIf {
     private ArrayList<SensorListener> SensorListeners;
     Timer timer = new Timer("Acc");
 
+    
+
+    public CvKalman kalman;
+    private CvMat z_k;
+    private CvMat xy_axle;
+    
+    /**
+     * accData is the data after kalman filter
+     */
+    SensorAccData accData;
+    /**
+     * rawData is the data acquired from sensor
+     */
+    SensorAccData rawData;
+    /**
+     * meanData is mean value after calibration
+     */
+    SensorAccData meanData;
+    SPIFunc spi;
+
+    /**
+     * constant
+     */
+    public static final int frequency = Integer.parseInt(SystemProperty.getProperty("ACC.Frequency"));
+    private final String devicePath = SystemProperty.getProperty("ACC.DevFile");
+    private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("ACC.CalibrateDataNum"));
+    private static final int spiFrenquency = Integer.parseInt(SystemProperty.getProperty("ACC.SPI.Frequency"));
+    public static final double deltaT = (float)1/frequency;
+    
+    
+    
+    /**
+     * timertask
+     */
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
@@ -50,41 +83,17 @@ public class SensorAcc implements SensorAccIf {
             }
         }
     };
-
-    public CvKalman kalman;
-    private CvMat z_k;
-    private CvMat xy_axle;
-    public static final double time = 0.01;
-    /**
-     * accData is the data after kalman filter
-     */
-    SensorAccData accData;
-    /**
-     * rawData is the data acquired from sensor
-     */
-    SensorAccData rawData;
-    /**
-     * meanData is mean value after calibration
-     */
-    SensorAccData meanData = new SensorAccData();
-    SPIFunc spi;
-
-    /**
-     * constant
-     */
-    public static final int frequency = Integer.parseInt(SystemProperty.getProperty("ACC.Frequency"));
-    private final String routePath = SystemProperty.getProperty("ACC.DevFile");
-    private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("ACC.CalibrateDataNum"));
-
+    
     public SensorAcc() {
         //init SPI function
-        spi = new SPIFunc(routePath);
+        spi = new SPIFunc(devicePath,spiFrenquency);
         //config sensor ADXL362
         sensorConfig();
 
         accData = new SensorAccData();
         rawData = new SensorAccData();
-
+        meanData = new SensorAccData();
+        
         //init Kalman filter
         initKalmanFilter();
 
@@ -109,10 +118,10 @@ public class SensorAcc implements SensorAccIf {
                 }
             }
         }
-        kalman.transition_matrix().put(0, 2, time);
-        kalman.transition_matrix().put(1, 3, time);
-        kalman.transition_matrix().put(2, 4, time);
-        kalman.transition_matrix().put(3, 5, time);
+        kalman.transition_matrix().put(0, 2, deltaT);
+        kalman.transition_matrix().put(1, 3, deltaT);
+        kalman.transition_matrix().put(2, 4, deltaT);
+        kalman.transition_matrix().put(3, 5, deltaT);
 
         //initial measurement matric,2x6
         for (int i = 0; i < 2; i++) {
@@ -139,8 +148,8 @@ public class SensorAcc implements SensorAccIf {
         }
         logger.info("Sensor acc reset softly");
 
-        write((byte) 0x26, (byte) 0x20);
-        write((byte) 0x2c, (byte) 0x13);
+//        write((byte) 0x26, (byte) 0x20);
+//        write((byte) 0x2c, (byte) 0x13);
         //start acc measurements
         byte temp = (byte) this.read((byte) 0x2d);
         temp = (byte) (temp | 0x02);
@@ -162,41 +171,41 @@ public class SensorAcc implements SensorAccIf {
     }
 
     private void readzalxe() {
-        byte xalxeLow;
-        byte xalxeHigh;
-//        xalxeLow = (byte) this.read((byte) 0x12);
-//        xalxeHigh = (byte) this.read((byte) 0x13);
-//        int value = xalxeHigh << 8 | xalxeLow;
-        int value = (byte)this.read((byte)0x0A);
-        logger.info(value);
+        byte dataLow;
+        byte dataHigh;
+        dataLow = (byte) this.read((byte) 0x12);
+        dataHigh = (byte) this.read((byte) 0x13);
+        int value = (dataHigh << 8)+ dataLow;
+//        int value = (byte)this.read((byte)0x0A);
+        logger.info("z:"+value);
 //        rawData.seta_x(value);
     }
 
     private void readxalxe() {
-        byte xalxeLow;
-        byte xalxeHigh;
-//        xalxeLow = (byte) this.read((byte) 0x0e);
-//        xalxeHigh = (byte) this.read((byte) 0x0f);
-//        int value = xalxeHigh << 8 | xalxeLow;
-        int value = (byte) this.read((byte)0x08);
-        logger.info(value);
+        int xalxeLow;
+        int xalxeHigh;
+        xalxeLow = this.read((byte) 0x0e);
+        xalxeHigh = this.read((byte) 0x0f);
+        int value = (xalxeHigh << 8) + xalxeLow;
+//        int value = (byte) this.read((byte)0x08);
+//        logger.info(value);
         rawData.seta_x(value);
     }
 
     private void readyalxe() {
-//        byte yalxeLow;
-//        byte yalxeHigh;
-//        yalxeLow = (byte) this.read((byte) 0x10);
-//        yalxeHigh = (byte) this.read((byte) 0x11);
-//        int value = yalxeHigh << 8 | yalxeLow;
-        int value =  (byte) this.read((byte) 0x09);
+        int yalxeLow;
+        int yalxeHigh;
+        yalxeLow =  this.read((byte) 0x10);
+        yalxeHigh = this.read((byte) 0x11);
+        int value = (yalxeHigh << 8)+ yalxeLow;
+//        int value =  (byte) this.read((byte) 0x09);
         logger.info(value);
         rawData.seta_y(value);
     }
 
     private byte read(byte addr) {
         byte[] input = new byte[3];
-        input[0] = 0x0b;
+        input[0] = 0x0B;
         input[1] = addr;
         input[2] = 0x00;
         spi.RWBytes(input, 3);
@@ -205,7 +214,7 @@ public class SensorAcc implements SensorAccIf {
 
     private void write(byte addr, byte value) {
         byte[] output = new byte[3];
-        output[0] = 0x0a;
+        output[0] = 0x0A;
         output[1] = addr;
         output[2] = value;
         spi.RWBytes(output, 3);
@@ -213,9 +222,6 @@ public class SensorAcc implements SensorAccIf {
 
     private SensorAccData kalmanData(SensorAccData sensoraccdata) {
         SensorAccData accdata = new SensorAccData(0, 0, 0, 0, 0, 0);
-        if (kalman == null) {
-            logger.info("kalman is NULL !!!");
-        }
         xy_axle = opencv_video.cvKalmanPredict(kalman, null);
         z_k.put(0, 0, sensoraccdata.geta_x());
         z_k.put(1, 0, sensoraccdata.geta_y());
@@ -254,7 +260,6 @@ public class SensorAcc implements SensorAccIf {
 
     @Override
     public SensorAccData getSensorData() {
-//        return kalmanData(rawData);
         return this.accData;
     }
 
@@ -304,9 +309,17 @@ public class SensorAcc implements SensorAccIf {
         state = ON_TIMER_STOP;
         ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {
-            dataList.add(getSensorRawData());
+            getSensorRawData();
+            dataList.add(new SensorAccData(0, 0, 0, 0, rawData.geta_x(), rawData.geta_y()));
+            
+            try {
+                Thread.sleep(1000/frequency);
+            } catch (InterruptedException ex) {
+                logger.error(ex);
+            }
         }
         meanData = getMeanGyroData(dataList);
+        state = ON_TIMER_RUNNING;
     }
 
     /**

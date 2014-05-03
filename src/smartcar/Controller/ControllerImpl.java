@@ -11,6 +11,7 @@ import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Motor;
+import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
@@ -18,6 +19,7 @@ import smartcar.map.SmartMapInterface;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
+import smartcar.core.Utils;
 import smartcar.map.SmartMapData;
 
 /**
@@ -31,11 +33,20 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         AUTO, MANUAL
     };
 
-    public static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
-    private DriveModeType driveMode = DriveModeType.AUTO;
+    /**
+     * DriveStrategy 中，SIMPLE是在小车的行驶过程中，不会转弯，意即直来直去，只会在静止的时候转动角度，
+     * COMPLICATE则组合以上策略，会采用斜着走的方式
+     */
+    enum DriveStrategyType {
+
+        SIMPLE, COMPLICATE
+    }
+    static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
+    DriveModeType driveMode = DriveModeType.MANUAL;
+    DriveStrategyType driveStrategy = DriveStrategyType.SIMPLE;
 
     private SmartMapInterface map;
-    private Navigator navigator;
+    private NavigatorIf navigator;
     private SensorUltrasonic sensorUltrasonic;
     private QRCode qrCode;
     private Timer controlerrtTimer;
@@ -43,8 +54,12 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     private boolean needToSchedulePath = false;
     private SmartMapData scheduledPath;
 
-    //Parameters 
-    private static int RunFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
+    /**
+     * constants
+     */
+    private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.eventCheckFrequency"));
+    private static final double positionDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.PositionDeviation"));
+    private static final double angleDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.AngleDeviation"));
 
     /**
      * 超声波事件处理函数
@@ -74,9 +89,14 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     public ControllerImpl(SmartMap map) {
         this.map = map;
-        navigator = new Navigator();
+
         sensorUltrasonic = new SensorUltrasonic();
         qrCode = new QRCode();
+
+        //建立navigator,并校正传感器数据
+        navigator = new Navigator();
+        navigator.calibrateSensors();
+        logger.info("calibrate sensors complete!");
 
         //连接事件处理程序
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
@@ -84,7 +104,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
         //启动controller线程
         controlerrtTimer = new Timer("Controller");
-        controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / RunFrequency);
+        controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / eventCheckFrequency);
         logger.info("starting Controller TimerTask ");
     }
 
@@ -115,37 +135,80 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         } else {
             mannualDriveDealer();
         }
-
     }
 
     private void autoDriveDealer() {
         //规划路径
         logger.info("Enter autoDriveDealer");
-        if (needToSchedulePath) {
+        if (scheduledPath == null) {
             logger.info("Schedule Path");
-            needToSchedulePath = false;
             Point currentLocation = SystemCoreData.getLocation();
             scheduledPath = map.getPath(currentLocation, destination);
         }
-         
-          
+        setMotorCmdAccordingSchedulePath();
+
     }
+
+    /**
+     *
+     */
+    private void setMotorCmdAccordingSchedulePath() {
+        Point currentLocation = SystemCoreData.getLocation();
+        //检查是否到终点
+        if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
+            return;
+        }
+
+        //更新schedulePath,因为schedulePath是一个嵌套的数据结构
+        if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
+            scheduledPath = scheduledPath.getChild();
+        }
+
+        //检查是否旋转车头
+        if (driveStrategy == DriveStrategyType.SIMPLE) {
+            double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
+            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
+                rotateToAbsoluteAngle(driveDirection, angleDeviation);
+            }
+            Motor.set_go();
+        } else {
+            /**
+             * TODO
+             */
+        }
+
+    }
+
     /**
      * 检查小车当前位置是否存在二维码信息
-     * @return 
+     *
+     * @return
      */
     private boolean checkQRCode() {
         return false;
     }
 
     /**
-     * 旋转小车到一定角度，deviation指明了旋转的正负误差
+     * 旋转小车到一定角度，deviation指明了旋转的正负误差, 当小车旋转角度的偏差在误差值内时，停止旋转，
+     * 这里旋转的策略总是往旋转最小角度的方向旋转
      *
-     * @param angular
+     * @param angle 表示绝对旋转角度，而非相对角度
      * @param deviation
      */
-    private void rotateToAngular(float angular, float deviation) {
-
+    public void rotateToAbsoluteAngle(double angle, double deviation) {
+        while (Math.abs(SystemCoreData.getAngle() - angle) > deviation) {
+            if (SystemCoreData.getAngle() > angle) {
+                if (Math.abs(SystemCoreData.getAngle() - angle) < 180) {
+                    Motor.set_clockwise();
+                } else {
+                    Motor.set_counterclockwise();
+                }
+            } else if (Math.abs(SystemCoreData.getAngle() - angle) < 180) {
+                Motor.set_counterclockwise();
+            } else {
+                Motor.set_clockwise();
+            }
+        }
     }
 
     private void mannualDriveDealer() {
@@ -162,7 +225,6 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         logger.info("Change to Auto Drive Mode");
         driveMode = DriveModeType.AUTO;
         this.destination = destination;
-        needToSchedulePath = true;
 
     }
 

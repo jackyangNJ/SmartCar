@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
@@ -61,14 +59,15 @@ public class SensorGyro implements SensorGyroIf {
     private final byte OUT_Z_H_addr = 0x2D;
     private final byte L3G4200D_CTRL_REG1 = 0x20;
     private final byte L3G4300D_ID = (byte) 0xd3;
-    private static final String routePath = SystemProperty.getProperty("Gyro.DevFile");
+    private static final String devicePath = SystemProperty.getProperty("Gyro.DevFile");
     private static final int readFrequency = Integer.parseInt(SystemProperty.getProperty("Gyro.Frequency"));
     private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("GYRO.CalibrateDataNum"));
+    private static final int spiFrequency = Integer.parseInt(SystemProperty.getProperty("Gyro.SPI.Frequency"));
     private CvMat z_k;
     //预测值
     private CvMat y_k;
     private CvKalman kalman;
-    public static final double deltaT = 0.01;
+    public static final double deltaT = (float)1/readFrequency;
 
     private final Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
@@ -78,12 +77,7 @@ public class SensorGyro implements SensorGyroIf {
                 read_HoriAngleSpeed();
                 //calibrate data                
                 rawData = calibrateRawData(rawData, meanData);
-//                logger.info(rawData.getHori_angleSpeed());
-                logger.info(rawData.getHori_angleSpeed());
-                cal_angualr();
-//                logger.info(rawData.getHori_angle());
                 gyroData = kalmanData(rawData);
-                logger.info(gyroData.getHori_angle());
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
         }
@@ -93,7 +87,7 @@ public class SensorGyro implements SensorGyroIf {
         gyroData = new SensorGyroData();
         rawData = new SensorGyroData();
         meanData = new SensorGyroData();
-        spifunc = new SPIFunc(routePath);
+        spifunc = new SPIFunc(devicePath,spiFrequency);
         
 
         //初始化kalman
@@ -113,7 +107,7 @@ public class SensorGyro implements SensorGyroIf {
         try {
             Thread.sleep(10);
         } catch (InterruptedException ex) {
-            logger.equals(ex);
+            logger.error(ex);
         }
 
         if (!id_true()) {
@@ -153,7 +147,6 @@ public class SensorGyro implements SensorGyroIf {
         byte Z_H = gyr_read(OUT_Z_H_addr);
         int z = Z_H << 8 | Z_L;        
         rawData.setHori_angleSpeed((float) z * UNIT / 1000);
-        //logger.info(rawData.getHori_angleSpeed());
     }
 
     /**
@@ -272,12 +265,13 @@ public class SensorGyro implements SensorGyroIf {
         while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {            
         }
         //pause timer task
-        logger.info("calibrate!!!!!!!");
+        logger.debug("calibrate starting!!!!!!!");
         setState(ON_TIMER_STOP);
         ArrayList<SensorGyroData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {            //timeval      
             read_HoriAngleSpeed();
             dataList.add(new SensorGyroData(rawData.getHori_angleSpeed(), 0));
+            
             try {
                 Thread.sleep(1000/readFrequency);
             } catch (InterruptedException ex) {
@@ -315,7 +309,7 @@ public class SensorGyro implements SensorGyroIf {
     private SensorGyroData calibrateRawData(SensorGyroData rawData, SensorGyroData meanData) {        
         SensorGyroData newData = new SensorGyroData();
         newData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
-        newData.setHori_angle(rawData.getHori_angle());
+//        newData.setHori_angle(rawData.getHori_angle());
         return newData;
     }
 
@@ -326,8 +320,4 @@ public class SensorGyro implements SensorGyroIf {
         this.state = state;
     }
     
-    public void cal_angualr(){            
-        float angular = rawData.getHori_angle()+rawData.getHori_angleSpeed()/readFrequency;
-        rawData.setHori_angle(angular);
-    }
 }

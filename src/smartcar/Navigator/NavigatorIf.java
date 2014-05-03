@@ -35,4 +35,9 @@ public interface NavigatorIf {
     * @return 
     */
    public SensorHallData getSensorHallData();
+   
+   /**
+    * 静止矫正传感器数据
+    */
+   public void calibrateSensors();
 }

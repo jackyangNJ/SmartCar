@@ -19,10 +19,10 @@ public class SystemCoreData {
     private static Point velocity;
     //current accelerater
     private static Point accelerater;
-    //current angular
-    private static float angular;
-    //current angular_velocity
-    private static float angular_velocity;
+    //current angle
+    private static float angle;
+    //current angle_velocity
+    private static float angle_velocity;
 
     public static Point getLocation() {
         return location;
@@ -48,20 +48,20 @@ public class SystemCoreData {
         SystemCoreData.accelerater = accelerater;
     }
 
-    public static float getAngular() {
-        return angular;
+    public static float getAngle() {
+        return angle;
     }
 
-    public static void setAngular(float angular) {
-        SystemCoreData.angular = angular;
+    public static void setAngle(float angle) {
+        SystemCoreData.angle = angle;
     }
 
-    public static float getAngular_velocity() {
-        return angular_velocity;
+    public static float getAngle_velocity() {
+        return angle_velocity;
     }
 
-    public static void setAngular_velocity(float angular_velocity) {
-        SystemCoreData.angular_velocity = angular_velocity;
+    public static void setAngule_velocity(float angle_velocity) {
+        SystemCoreData.angle_velocity = angle_velocity;
     }
 
     public static int getSystemState() {

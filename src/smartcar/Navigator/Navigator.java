@@ -268,4 +268,11 @@ public class Navigator implements NavigatorIf{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void calibrateSensors() {
+        sensorAcc.calibrate();
+        sensorGyro.calibrate();
+        //TODO
+    }
+
 }

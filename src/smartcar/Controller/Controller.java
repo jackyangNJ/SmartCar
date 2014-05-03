@@ -1,7 +1,6 @@
 package smartcar.Controller;
 
 import smartcar.core.Point;
-import smartcar.map.SmartMap;
 
 /**
  *
@@ -12,7 +11,7 @@ public interface Controller {
     /**
      * 进入自动驾驶模式，由小车自动行驶到指定的位置
      *
-     * @param location
+     * @param destination
      */
     public void setCarAutoDriveDestination(Point destination);
 
