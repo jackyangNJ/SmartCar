@@ -69,9 +69,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         @Override
         public void SensorEventProcess(SensorEvent e) {
             SensorUltrasonicData sensorUltrasonicData = (SensorUltrasonicData) e.getData();
-            float dis1 = sensorUltrasonicData.getDistance1();
-            float dis2 = sensorUltrasonicData.getDistance2();
-            float dis3 = sensorUltrasonicData.getDistance3();
+            double dis1 = sensorUltrasonicData.getDistance1();
+            double dis2 = sensorUltrasonicData.getDistance2();
+            double dis3 = sensorUltrasonicData.getDistance3();
             logger.info("Receive Ultrasonic Data: 1:" + dis1 + " 2 :" + dis2 + " 3: " + dis3);
 
         }
