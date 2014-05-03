@@ -4,17 +4,17 @@ public class SensorHallData {
     /**
      * 标识行走距离
      */
-    float  DriveDistance;
+    double  DriveDistance;
     
-    public SensorHallData(float distance){
+    public SensorHallData(double distance){
         this.DriveDistance = distance;
     }
     
     
-    public void setDriveDistance(float distance){
+    public void setDriveDistance(double distance){
         this.DriveDistance = distance;
     }
-    public float getDriveDistance(){
+    public double getDriveDistance(){
         return this.DriveDistance;
     }
 }

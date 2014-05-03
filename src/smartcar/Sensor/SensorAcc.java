@@ -64,7 +64,7 @@ public class SensorAcc implements SensorAccIf {
     private final String devicePath = SystemProperty.getProperty("ACC.DevFile");
     private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("ACC.CalibrateDataNum"));
     private static final int spiFrenquency = Integer.parseInt(SystemProperty.getProperty("ACC.SPI.Frequency"));
-    public static final double deltaT = (float)1/frequency;
+    public static final double deltaT = (double)1/frequency;
     
     
     
@@ -226,12 +226,12 @@ public class SensorAcc implements SensorAccIf {
         z_k.put(0, 0, sensoraccdata.geta_x());
         z_k.put(1, 0, sensoraccdata.geta_y());
         opencv_video.cvKalmanCorrect(kalman, z_k);
-        accdata.seta_x((float) xy_axle.get(4, 0));
-        accdata.seta_y((float) xy_axle.get(5, 0));
-        accdata.setv_x((float) xy_axle.get(2, 0));
-        accdata.setv_y((float) xy_axle.get(3, 0));
-        accdata.setx((float) xy_axle.get(0, 0));
-        accdata.sety((float) xy_axle.get(1, 0));
+        accdata.seta_x((double) xy_axle.get(4, 0));
+        accdata.seta_y((double) xy_axle.get(5, 0));
+        accdata.setv_x((double) xy_axle.get(2, 0));
+        accdata.setv_y((double) xy_axle.get(3, 0));
+        accdata.setx((double) xy_axle.get(0, 0));
+        accdata.sety((double) xy_axle.get(1, 0));
         return accdata;
     }
 

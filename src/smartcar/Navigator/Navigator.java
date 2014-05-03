@@ -24,10 +24,10 @@ import smartcar.core.SystemCoreData;
  */
 public class Navigator implements NavigatorIf{
     
-    private static final float possibility_hall = 1/2;
-    private static final float possibility_acc = 1/2;
-    private static final float possibility_gory = 1/2;
-    float frequency;
+    private static final double possibility_hall = 1/2;
+    private static final double possibility_acc = 1/2;
+    private static final double possibility_gory = 1/2;
+    double frequency;
     SmartMap map;
     //传感器对象
     SensorHallIf sensorHall = new SensorHall();
@@ -87,23 +87,23 @@ public class Navigator implements NavigatorIf{
             
             // s not ensure
             sensorHallData = (SensorHallData)e.getData();
-            float s = sensorHallData.getDriveDistance();
+            double s = sensorHallData.getDriveDistance();
         
-            float sum = 0;  
+            double sum = 0;  
              // 遍历求和  
             for (int i = 0, size = list.size(); i < size; i++) {  
-                 sum += (float)list.get(i);  
+                 sum += (double)list.get(i);  
             }  
-            float averageangular = sum / list.size();  
-            float x = nevigatorData.getx() + (float)(s * Math.cos((double) averageangular));
+            double averageangular = sum / list.size();  
+            double x = nevigatorData.getx() + (double)(s * Math.cos((double) averageangular));
             nevigatorData.setx(x);
-            float y = nevigatorData.gety() + (float)(s * Math.sin((double) averageangular));
+            double y = nevigatorData.gety() + (double)(s * Math.sin((double) averageangular));
             nevigatorData.sety(y);
             // t not ensure
             if(SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL){
-                float vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (float)(s * Math.cos((double) averageangular))* frequency;
+                double vx = possibility_hall * nevigatorData.getv_x() + (1 - possibility_hall) * (double)(s * Math.cos((double) averageangular))* frequency;
                 nevigatorData.setv_x(vx);
-                float vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (float)(s * Math.sin((double) averageangular))* frequency;
+                double vy = possibility_hall * nevigatorData.getv_y() + (1 - possibility_hall) * (double)(s * Math.sin((double) averageangular))* frequency;
                 nevigatorData.setv_y(vy);
             }
             else{
@@ -143,16 +143,16 @@ public class Navigator implements NavigatorIf{
             sensorAccRawData = (SensorAccData)e.getData();
            
             if(SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL){
-                float vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccRawData.getv_x();
+                double vx = possibility_acc * nevigatorData.getv_x() + (1 - possibility_acc) * sensorAccRawData.getv_x();
                 nevigatorData.setv_x(vx);
                 sensorAccData.setv_x(vx);
-                float vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccRawData.getv_y();
+                double vy = possibility_acc * nevigatorData.getv_y() + (1 - possibility_acc) * sensorAccRawData.getv_y();
                 nevigatorData.setv_y(vy);
                 sensorAccData.setv_x(vx);
-                float ax = sensorAccRawData.geta_x();
+                double ax = sensorAccRawData.geta_x();
                 nevigatorData.seta_x(ax);
                 sensorAccData.setv_x(vx);
-                float ay = sensorAccRawData.getv_y();
+                double ay = sensorAccRawData.getv_y();
                 nevigatorData.seta_y(ay);
                 sensorAccData.setv_x(vx);
                 sensorAccData.setx(nevigatorData.getx());
