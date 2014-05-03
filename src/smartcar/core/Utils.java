@@ -5,6 +5,12 @@ package smartcar.core;
  * @author jack
  */
 public class Utils {
+    /**
+     * 获取两个point之间的距离
+     * @param srcPoint
+     * @param dstPoint
+     * @return 
+     */
     public static double getDistance(Point srcPoint,Point dstPoint){
         double disX=srcPoint.getX() - dstPoint.getX();
         double disY=srcPoint.getY()-dstPoint.getY();

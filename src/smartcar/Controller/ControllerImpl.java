@@ -94,7 +94,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         qrCode = new QRCode();
 
         //建立navigator,并校正传感器数据
-        navigator = new Navigator();
+        navigator = new Navigator(map);
         navigator.calibrateSensors();
         logger.info("calibrate sensors complete!");
 
