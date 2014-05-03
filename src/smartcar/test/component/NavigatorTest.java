@@ -31,7 +31,7 @@ public class NavigatorTest {
             System.out.println("x: " + navigatorTest.getNavigatorDate().getx());
             System.out.println("y: " + navigatorTest.getNavigatorDate().gety());
             System.out.println("angular: " + navigatorTest.getNavigatorDate().getangular());
-            System.out.println("distance: " + navigatorTest.getNavigatorDate().getdistance());
+         //   System.out.println("distance: " + navigatorTest.getNavigatorDate().getdistance());
             Thread.sleep(1000);
         }
     }
