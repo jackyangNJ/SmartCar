@@ -1,27 +1,30 @@
 package smartcar.Sensor;
 
 import com.googlecode.javacv.cpp.opencv_core;
-import smartcar.Event.SensorListener;
+import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_video;
-import com.googlecode.javacv.cpp.opencv_core.*;
-import com.googlecode.javacv.cpp.opencv_video.*;
-import java.util.Timer;
-import java.util.TimerTask;
+import com.googlecode.javacv.cpp.opencv_video.CvKalman;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
+import smartcar.Event.SensorListener;
 import smartcar.core.SystemCoreData;
-import spiLib.SPIFunc;
 import smartcar.core.SystemProperty;
+import spiLib.SPIFunc;
 
 /**
  *
  * @author jack
  */
 public class SensorAcc implements SensorAccIf {
-
+   
+    private static int count;
+    private SensorAccData temp_data;
     public static Log logger = LogFactory.getLog(SensorAcc.class);
     int state = ON_TIMER_RUNNING;
     /**
@@ -76,20 +79,39 @@ public class SensorAcc implements SensorAccIf {
         public void run() {
             logger.debug("timer triggered");
             if (state == ON_TIMER_RUNNING) {
-                readAccData();
+                count++;
+                readAccData();                
                 rawData = calibrateRawData(rawData, meanData);
-                accData = kalmanData(rawData);
+                if(count%10 != 0){
+                    temp_data.seta_x(temp_data.geta_x()+rawData.geta_x());
+                    temp_data.seta_y(temp_data.geta_y()+rawData.geta_y());
+                }
+                else{
+                    temp_data.seta_x(temp_data.geta_x()/10);
+                    temp_data.seta_y(temp_data.geta_y()/10);
+                    accData = kalmanData(temp_data); 
+                    logger.info(accData.geta_x()+"---");
+                    logger.info(accData.geta_y()+"---");                
+                    logger.info(accData.getv_x());
+                    logger.info(accData.getv_y());
+                    logger.info("######"+accData.x);
+                    logger.info("######"+accData.y);
+                    temp_data.seta_x(0);
+                    temp_data.seta_y(0);
+                }
+//                logger.info(z_k);                                
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, accData));
             }
         }
     };
     
     public SensorAcc() {
-        //init SPI function
+        count = 0;
+        //init SPI function        
         spi = new SPIFunc(devicePath,spiFrenquency);
         //config sensor ADXL362
         sensorConfig();
-
+         temp_data = new SensorAccData();
         accData = new SensorAccData();
         rawData = new SensorAccData();
         meanData = new SensorAccData();
@@ -98,9 +120,51 @@ public class SensorAcc implements SensorAccIf {
         initKalmanFilter();
 
         //start timely work
-        timer.scheduleAtFixedRate(task, 0, 1000 / frequency);
+        timer.scheduleAtFixedRate(task, 1000, 1000 / frequency);
     }
 
+    private void changeKalmanFilter(float x , float y){
+        rawData.seta_x(0);
+        rawData.seta_y(0);
+        rawData.setv_x(0);
+        rawData.setv_y(0);
+        rawData.setx(x);
+        rawData.sety(y);
+        kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0);
+        z_k = CvMat.create(2, 1, opencv_core.CV_32FC1);
+
+        //initial transition matrix,6x6,对角线赋值为1
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (i != j) {
+                    kalman.transition_matrix().put(i, j, 0);
+                } else {
+                    kalman.transition_matrix().put(i, j, 1);
+                }
+            }
+        }
+        kalman.transition_matrix().put(0, 2, 1/frequency);
+        kalman.transition_matrix().put(1, 3, 1/frequency);
+        kalman.transition_matrix().put(2, 4, 1/frequency);
+        kalman.transition_matrix().put(3, 5, 1/frequency);
+
+        //initial measurement matric,2x6
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 6; j++) {
+                kalman.measurement_matrix().put(i, j, 0);
+            }
+        }
+        kalman.measurement_matrix().put(0, 4, 1);
+        kalman.measurement_matrix().put(1, 5, 1);
+
+        //initial cov parameter
+        opencv_core.cvSetIdentity(kalman.process_noise_cov(), opencv_core.cvRealScalar(1e-5));
+        opencv_core.cvSetIdentity(kalman.measurement_noise_cov(), opencv_core.cvRealScalar(1e-5));
+        opencv_core.cvSetIdentity(kalman.error_cov_post(), opencv_core.cvRealScalar(1));
+    }
+
+    
+    
     /**
      * This is a 6 dimention Kalamn struct,including posX,posY,vX,vY,accX,accY
      */
@@ -167,7 +231,7 @@ public class SensorAcc implements SensorAccIf {
     private void readAccData() {
         readxalxe();
         readyalxe();
-        readzalxe();
+        readzalxe();        
     }
 
     private void readzalxe() {
@@ -177,7 +241,7 @@ public class SensorAcc implements SensorAccIf {
         dataHigh = (byte) this.read((byte) 0x13);
         int value = (dataHigh << 8)+ dataLow;
 //        int value = (byte)this.read((byte)0x0A);
-        logger.info("z:"+value);
+//        logger.info("z:"+value);
 //        rawData.seta_x(value);
     }
 
@@ -189,7 +253,7 @@ public class SensorAcc implements SensorAccIf {
         int value = (xalxeHigh << 8) + xalxeLow;
 //        int value = (byte) this.read((byte)0x08);
 //        logger.info(value);
-        rawData.seta_x(value);
+        rawData.seta_x((float) (value*0.0098));
     }
 
     private void readyalxe() {
@@ -199,8 +263,8 @@ public class SensorAcc implements SensorAccIf {
         yalxeHigh = this.read((byte) 0x11);
         int value = (yalxeHigh << 8)+ yalxeLow;
 //        int value =  (byte) this.read((byte) 0x09);
-        logger.info(value);
-        rawData.seta_y(value);
+//        logger.info(value);
+        rawData.seta_y((float) (value*0.0098));
     }
 
     private byte read(byte addr) {
@@ -309,8 +373,8 @@ public class SensorAcc implements SensorAccIf {
         state = ON_TIMER_STOP;
         ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {
-            getSensorRawData();
-            dataList.add(new SensorAccData(0, 0, 0, 0, rawData.geta_x(), rawData.geta_y()));
+            readAccData();
+            dataList.add(new SensorAccData(0, 0,rawData.geta_x(), rawData.geta_y(),0,0));
             
             try {
                 Thread.sleep(1000/frequency);
@@ -318,7 +382,7 @@ public class SensorAcc implements SensorAccIf {
                 logger.error(ex);
             }
         }
-        meanData = getMeanGyroData(dataList);
+        meanData = getMeanGyroData(dataList);        
         state = ON_TIMER_RUNNING;
     }
 
@@ -349,6 +413,8 @@ public class SensorAcc implements SensorAccIf {
             data.seta_x(sensorAccData.geta_x() / size + data.geta_x());
             data.seta_y(sensorAccData.geta_y() / size + data.geta_y());
         }
-        return data;
+        logger.info(data.geta_x()+"!!!!!!!!!!!!");
+        logger.info(data.geta_y()+"!!!!!!!!!!!!");
+        return data;        
     }
 }

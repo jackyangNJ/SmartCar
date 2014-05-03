@@ -78,6 +78,8 @@ public class SensorGyro implements SensorGyroIf {
                 //calibrate data                
                 rawData = calibrateRawData(rawData, meanData);
                 gyroData = kalmanData(rawData);
+                logger.info(gyroData.getHori_angleSpeed());
+                logger.info(gyroData.getHori_angle());
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
         }
@@ -116,6 +118,34 @@ public class SensorGyro implements SensorGyroIf {
         }
     }
 
+    private void changeKalmanFilter(float hori_angl) {
+        //创建kalman
+        
+        rawData.setHori_angle(hori_angl);
+        rawData.setHori_angleSpeed(0);
+        kalman = opencv_video.cvCreateKalman(2, 1, 0);
+
+        z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
+        z_k.put(0, 0, 1);
+
+//        final float F[][] = {{1, (float) frequency}, {0, 1}};/会变化
+        //initial transition matrix(2x2)
+        kalman.transition_matrix().put(0, 0, 1);
+        kalman.transition_matrix().put(0, 1, deltaT);
+        kalman.transition_matrix().put(1, 0, 0);
+        kalman.transition_matrix().put(1, 1, 1);
+
+        //initial measurement matrix(1x2)
+        kalman.measurement_matrix().put(0, 0, 0);
+        kalman.measurement_matrix().put(0, 1, 1);
+
+        cvSetIdentity(kalman.process_noise_cov(), cvRealScalar(1e-5));
+        cvSetIdentity(kalman.measurement_noise_cov(), cvRealScalar(1e-5));
+        cvSetIdentity(kalman.error_cov_post(), cvRealScalar(1));
+    }
+
+    
+    
     private void initKalmanFilter() {
         //创建kalman
         kalman = opencv_video.cvCreateKalman(2, 1, 0);
