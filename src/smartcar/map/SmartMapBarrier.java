@@ -16,7 +16,7 @@ import smartcar.core.Point;
 public class SmartMapBarrier {
     int num=0;//障碍物个数
     ArrayList<Barrier> barriers = new ArrayList<Barrier>();
-    void setBarrier(Point p,float length,float width) {
+    void setBarrier(Point p,double length,double width) {
         Barrier b = new Barrier();
         b.p = new Point(p.x,p.y);
         b.length = length;
@@ -31,10 +31,10 @@ public class SmartMapBarrier {
                     + "," + barriers.get(i).width);
         }
     }
-    void printBarriers(float x,float y) {
+    void printBarriers(Point p) {
         for(int i = 0;i < num;i++) {
-            float distance = (barriers.get(i).p.y - y) * (barriers.get(i).p.y - y) 
-                    + (barriers.get(i).p.x - x) * (barriers.get(i).p.x - x);
+            double distance = (barriers.get(i).p.y - p.y) * (barriers.get(i).p.y - p.y) 
+                    + (barriers.get(i).p.x - p.x) * (barriers.get(i).p.x - p.x);
             if(distance < 4)
             System.out.println(barriers.get(i).p.x + "," + barriers.get(i).p.y + "," + barriers.get(i).length
                     + "," + barriers.get(i).width);
@@ -42,7 +42,7 @@ public class SmartMapBarrier {
     }
     static class Barrier {
         Point p;
-        float length;
-        float width;
+        double length;
+        double width;
     }
 }
