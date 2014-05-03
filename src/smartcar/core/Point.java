@@ -5,25 +5,25 @@ package smartcar.core;
  * @author Administrator
  */
 public class Point {
-    public float x;//横坐标
-    public float y;//纵坐标
-    public Point(float x,float y) {
+    public double x;//横坐标
+    public double y;//纵坐标
+    public Point(double x,double y) {
         this.x = x;
         this.y = y;
     }
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 }
