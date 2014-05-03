@@ -167,9 +167,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
-                rotateToAbsoluteAngle(driveDirection, angleDeviation);
-            }
+//            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
+//                rotateToAbsoluteAngle(driveDirection, angleDeviation);
+//            }
             Motor.set_go();
         } else {
             /**
