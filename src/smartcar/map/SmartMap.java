@@ -5,6 +5,7 @@ package smartcar.map;
  * @author cgirls
  */
 
+import smartcar.map.SmartMapInterface;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +30,8 @@ import smartcar.core.Point;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//Node对象用于封装节点信息，包括名字和子节点
+
 
 
 //Dijkstra对象用于计算起始节点到所有其他节点的最短路径
@@ -51,17 +54,17 @@ class Dijkstra {
     			}
     		}*/
         //初始路径,因没有A->E这条路径,所以path(E)设置为Double.MAX_VALUE 
-        path.put("m10", 1.0); 
+        path.put("(1,0)", 1.0); 
        // path.put("m10", 1.0);
-        pathInfo.put("m10", "m00->m10"); 
+        pathInfo.put("(1,0)", "(0,0)->(1,0)"); 
         //pathInfo.put("m10", "m00->m10");
-        path.put("m01", 1.0);
+        path.put("(0,1)", 1.0);
        // path.put("m020", 1.0);
-        pathInfo.put("m01", "m00->m01"); 
+        pathInfo.put("(0,1)", "(0,0)->(0,1)"); 
        // pathInfo.put("m020", "m00->m020");
-        path.put("m11", Math.sqrt(2.0)); 
+        path.put("(1,1)", Math.sqrt(2.0)); 
        // path.put("m021", Math.sqrt(2.0));
-        pathInfo.put("m11", "m00->m11");
+        pathInfo.put("(1,1)", "(0,0)->(1,1)");
       //  pathInfo.put("m021", "m00->m021"); 
         for(int i = 0; i < GridMap.length; i ++){
 			
@@ -75,45 +78,45 @@ class Dijkstra {
 				
 				if(GridMap[i][j].getblack()==false){//不能为障碍物
 					if(i == x + 1 && j == y){
-							path.put("m" + i + j, 1.0); 
-					        pathInfo.put("m" + i + j, "m" + x + y + "->" + "m" + i + j); 
+							path.put("(" + i + "," + j + ")", 1.0); 
+					        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 					else if(i == x && j == y + 1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 					else if(i == x + 1 && j == y + 1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x && j == y - 1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y - 1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y + 1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x + 1 && j == y -1){
-						path.put("m" + i + j, 1.0); 
-				        pathInfo.put("m" + i + j, "m" + x + y + " ->" + "m" + i + j); 
+						path.put("(" + i + "," + j + ")", 1.0); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
 					}
 					else{
-						path.put("m" + i + j, Double.MAX_VALUE); 
-		        	    pathInfo.put("m" + i + j, "m00"); 
+						path.put("(" + i + "," + j + ")", Double.MAX_VALUE); 
+		        	    pathInfo.put("(" + i + "," + j + ")", "m00"); 
 					}
 				}
 			}
@@ -132,14 +135,16 @@ class Dijkstra {
         if(nearest==null){ 
             return; 
         } 
+       // System.out.println("nearest.name" + nearest.getName());
         close.add(nearest); 
         open.remove(nearest); 
         Map<Node,Double> childs=nearest.getChild(); 
         for(Node child:childs.keySet()){ 
             if(open.contains(child)){//如果子节点在open中 
+                //System.out.println("child.name" + child.getName());
                 Double newCompute=path.get(nearest.getName())+childs.get(child); 
-         //       System.out.println("111:" + child.getName());
-           //     System.out.println("222:" + newCompute);
+                //System.out.println("111:" + child.getName());
+               // System.out.println("222:" + newCompute);
                 if(path.get(child.getName())>newCompute){//之前设置的距离大于新计算出来的距离 
                     path.put(child.getName(), newCompute); 
                     pathInfo.put(child.getName(), pathInfo.get(nearest.getName()) + "->" + child.getName()); 
@@ -159,12 +164,17 @@ class Dijkstra {
         	//System.out.println(ending.getName()+"name");
         	//System.out.println(pathInfo.getKey()+"key");
         	if(ending.getName().equals(pathInfo.getKey())){
-        		//System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
-                        //System.out.println("~~~~\n");
-                        String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
-                        for(int i = 0;i < path.length;i++) {           
-                            int x = Integer.parseInt(String.valueOf(path[i].charAt(1)));
-                            int y = Integer.parseInt(String.valueOf(path[i].charAt(2)));
+        		System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
+                        System.out.println("~~~~\n");
+                       /* String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
+                        for(int i = 0;i < path.length;i++) {
+                            System.out.println(path[i]);
+                            String str = path[i].substring(1, path[i].length()-2);
+                            System.out.println(str);
+                            String a[] = str.split(",");
+                           // System.out.println(a[0] + ".........." + a[1]);
+                            int x = Integer.parseInt(a[0]);
+                            int y = Integer.parseInt(a[1]);
                             Point p = new Point(x,y);
                             path_nodes.add(p);
                         }
@@ -181,7 +191,7 @@ class Dijkstra {
                             data_part.child = null;
                             data.add(data_part);
                             data.get(i - 1).child = data_part;
-                        } 
+                        } */
                 }
         }
         return data;
@@ -229,7 +239,7 @@ public class SmartMap implements SmartMapInterface {
         json(b,q);
         for(int i = 0; i < numofx; i ++){	
             for(int j=0; j< numofy; j++){			
-                GridMap[i][j]=new Node("m" + i + j); //give name
+                GridMap[i][j]=new Node("(" + i + "," + j + ")"); //give name
 				
             }
         }
@@ -332,7 +342,7 @@ public class SmartMap implements SmartMapInterface {
             
     } 
 
-    @Override
+  
     public SmartMapBarrier getBarrierInformation() {
         logger.info("get barriers information of the map");
         SmartMap s = new SmartMap();
@@ -344,7 +354,7 @@ public class SmartMap implements SmartMapInterface {
         return b;
     }
 
-    @Override
+  
     public SmartMapQRCode getQRCodeInformation() {
         logger.info("get qrcodes information of the map");
         SmartMap s = new SmartMap();
@@ -356,7 +366,7 @@ public class SmartMap implements SmartMapInterface {
         return q;
     }
 
-    @Override
+
     public SmartMapBarrier getBarrierInformation(Point p) {
         logger.info("get barriers information near the point");
         SmartMap s = new SmartMap();
@@ -368,7 +378,7 @@ public class SmartMap implements SmartMapInterface {
         return b;
     }
 
-    @Override
+
     public SmartMapQRCode getQRCodeInformation(Point p) {
         logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
@@ -380,7 +390,7 @@ public class SmartMap implements SmartMapInterface {
         return q;
     }
 
-    @Override
+
     public SmartMapQRCode getQRCodeInformation(String str) {
         logger.info("get qrcodes information");
         SmartMap s = new SmartMap();
@@ -392,7 +402,7 @@ public class SmartMap implements SmartMapInterface {
         return q;
     }
     
-    @Override
+
     public SmartMapData getPath(Point start, Point end) {
         logger.info("get the path between two points");
         try {
@@ -400,10 +410,12 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String name = "m" + String.valueOf((int)end.x) + String.valueOf((int)end.y);
+        String name = "(" + String.valueOf((int)end.x) + "," + String.valueOf((int)end.y) + ")";
+        //System.out.println(name);
         Node ending = new Node(name);
         Dijkstra test = new Dijkstra(); 
-        Node starting = test.init((int)start.x,(int)start.y,GridMap); 
+        Node starting = test.init((int)start.x,(int)start.y,GridMap);
+       // System.out.println(starting.getName());
         test.computePath(starting); 
         ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();
         data = test.printPathInfo(ending);//未合并
@@ -437,7 +449,7 @@ public class SmartMap implements SmartMapInterface {
         return d;
     }
 
-    @Override
+
     public SmartMapInfo getMap() {
         logger.info("get information of the map");
         try {
@@ -455,7 +467,7 @@ public class SmartMap implements SmartMapInterface {
     public void json(SmartMapBarrier b,SmartMapQRCode q) throws FileNotFoundException, IOException {
         logger.info("read the json file");
 
-        String data = ReadFile("D:\\2013\\s\\SmartCar\\src\\config\\newjson.json");
+        String data = ReadFile("../SmartCar/src/config/newjson.json");
         //System.out.println(data);
         JSONObject jsonObj = JSONObject.fromString(data);
         //得到barrier对象
@@ -465,11 +477,11 @@ public class SmartMap implements SmartMapInterface {
         for(int i = 0;i < arrayB.length();i++){
             //= (SmartMapBarrier.Barrier)JSONObject.toBean((JSONArray.fromObject(arrayB.toString()).getJSONObject(i)),SmartMapBarrier.Barrier.class);
             JSONObject temp = new JSONObject(arrayB.getString(i));
-            b.setBarrier(new Point(temp.getDouble("centre point x"),temp.getDouble("centre point y")),temp.getDouble("length"), temp.getDouble("width"));
-            /*b.p.x = temp.getDouble("centre point x");
-            b.p.y = temp.getDouble("centre point y");
-            b.width = temp.getDouble("width");
-            b.length = temp.getDouble("length");*/
+            b.setBarrier(new Point((double)temp.getDouble("centre point x"),(double)temp.getDouble("centre point y")),(double)temp.getDouble("length"), (double)temp.getDouble("width"));
+            /*b.p.x = (double)temp.getDouble("centre point x");
+            b.p.y = (double)temp.getDouble("centre point y");
+            b.width = (double)temp.getDouble("width");
+            b.length = (double)temp.getDouble("length");*/
             //System.out.println(b.num);
         }
         //得到qrcode集合
@@ -479,7 +491,7 @@ public class SmartMap implements SmartMapInterface {
         for(int i = 0;i < arrayQ.length();i++){
             //(SmartMapQRCode.QRCode)JSONObject.toBean((JSONArray.fromObject(arrayQ.toString()).getJSONObject(i)),SmartMapQRCode.QRCode.class);
             JSONObject temp = new JSONObject(arrayQ.getString(i)); 
-            q.setQRCode(new Point(temp.getDouble("centre point x"),temp.getDouble("centre point y")),temp.getString("content"));
+            q.setQRCode(new Point((double)temp.getDouble("centre point x"),(double)temp.getDouble("centre point y")),temp.getString("content"));
             /*q.p.x = temp.getInt("centre point x");
             q.p.y = temp.getInt("centre point y");
             q.l = temp.getString("content");*/
