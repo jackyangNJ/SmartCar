@@ -7,7 +7,6 @@ package smartcar.test.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import smartcar.Navigator.Navigator;
 import smartcar.map.SmartMap;
 import smartcar.test.sensor.CameraTest;
