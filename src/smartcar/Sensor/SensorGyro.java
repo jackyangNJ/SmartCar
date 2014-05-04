@@ -118,7 +118,7 @@ public class SensorGyro implements SensorGyroIf {
         }
     }
 
-    private void changeKalmanFilter(float hori_angl) {
+    private void changeKalmanFilter(double hori_angl) {
         //创建kalman
         
         rawData.setHori_angle(hori_angl);
@@ -128,7 +128,6 @@ public class SensorGyro implements SensorGyroIf {
         z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
         z_k.put(0, 0, 1);
 
-//        final float F[][] = {{1, (float) frequency}, {0, 1}};/会变化
         //initial transition matrix(2x2)
         kalman.transition_matrix().put(0, 0, 1);
         kalman.transition_matrix().put(0, 1, deltaT);
@@ -153,7 +152,6 @@ public class SensorGyro implements SensorGyroIf {
         z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
         z_k.put(0, 0, 1);
 
-//        final double F[][] = {{1, (double) frequency}, {0, 1}};//时间会变化
         //initial transition matrix(2x2)
         kalman.transition_matrix().put(0, 0, 1);
         kalman.transition_matrix().put(0, 1, deltaT);

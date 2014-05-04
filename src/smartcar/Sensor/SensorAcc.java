@@ -123,7 +123,7 @@ public class SensorAcc implements SensorAccIf {
         timer.scheduleAtFixedRate(task, 1000, 1000 / frequency);
     }
 
-    private void changeKalmanFilter(float x , float y){
+    private void changeKalmanFilter(double  x , double y){
         rawData.seta_x(0);
         rawData.seta_y(0);
         rawData.setv_x(0);
@@ -253,7 +253,7 @@ public class SensorAcc implements SensorAccIf {
         int value = (xalxeHigh << 8) + xalxeLow;
 //        int value = (byte) this.read((byte)0x08);
 //        logger.info(value);
-        rawData.seta_x((float) (value*0.0098));
+        rawData.seta_x((double) (value*0.0098));
     }
 
     private void readyalxe() {
@@ -264,7 +264,7 @@ public class SensorAcc implements SensorAccIf {
         int value = (yalxeHigh << 8)+ yalxeLow;
 //        int value =  (byte) this.read((byte) 0x09);
 //        logger.info(value);
-        rawData.seta_y((float) (value*0.0098));
+        rawData.seta_y((double) (value*0.0098));
     }
 
     private byte read(byte addr) {
