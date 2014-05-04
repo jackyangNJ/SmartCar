@@ -210,12 +210,12 @@ public class Navigator implements NavigatorIf {
         @Override
         public void SensorEventProcess(SensorEvent e) {
             sensorGyroData = (SensorGyroData) e.getData();
-            navigatorData.setangular((float) sensorGyroData.getHori_angle());
+            navigatorData.setangular( sensorGyroData.getHori_angle());
             if (list_angular.size() >= 10) {
                 list_angular.remove(0);
             }
             
-            float curangulat = (float) (possibility_gory * navigatorData.getangular() + (1 - possibility_gory) * sensorGyroData.getHori_angle());
+            double curangulat = (double) (possibility_gory * navigatorData.getangular() + (1 - possibility_gory) * sensorGyroData.getHori_angle());
             list_angular.add(curangulat);
             double sum = 0.0;
             // 遍历求和  
