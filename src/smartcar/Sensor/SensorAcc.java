@@ -4,7 +4,6 @@ import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_video;
 import com.googlecode.javacv.cpp.opencv_video.CvKalman;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -13,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
 import spiLib.SPIFunc;
@@ -22,7 +22,7 @@ import spiLib.SPIFunc;
  * @author jack
  */
 public class SensorAcc implements SensorAccIf {
-   
+
     private static int count;
     private SensorAccData temp_data;
     public static Log logger = LogFactory.getLog(SensorAcc.class);
@@ -40,12 +40,11 @@ public class SensorAcc implements SensorAccIf {
     private ArrayList<SensorListener> SensorListeners;
     Timer timer = new Timer("Acc");
 
-    
-
+    //kalman
     public CvKalman kalman;
     private CvMat z_k;
     private CvMat xy_axle;
-    
+
     /**
      * accData is the data after kalman filter
      */
@@ -58,6 +57,12 @@ public class SensorAcc implements SensorAccIf {
      * meanData is mean value after calibration
      */
     SensorAccData meanData;
+    /**
+     * 记录小车的偏移距离
+     */
+    Point biasPosition;
+
+    //SPI controller
     SPIFunc spi;
 
     /**
@@ -67,10 +72,8 @@ public class SensorAcc implements SensorAccIf {
     private final String devicePath = SystemProperty.getProperty("ACC.DevFile");
     private static final int calibrationDataNum = Integer.parseInt(SystemProperty.getProperty("ACC.CalibrateDataNum"));
     private static final int spiFrenquency = Integer.parseInt(SystemProperty.getProperty("ACC.SPI.Frequency"));
-    public static final double deltaT = (double)1/frequency;
-    
-    
-    
+    public static final double deltaT = (double) 1 / frequency;
+
     /**
      * timertask
      */
@@ -80,42 +83,41 @@ public class SensorAcc implements SensorAccIf {
             logger.debug("timer triggered");
             if (state == ON_TIMER_RUNNING) {
                 count++;
-                readAccData();                
+                readAccData();
+                //测量值减去均值
                 rawData = calibrateRawData(rawData, meanData);
-                if(count%10 != 0){
-                    temp_data.seta_x(temp_data.geta_x()+rawData.geta_x());
-                    temp_data.seta_y(temp_data.geta_y()+rawData.geta_y());
-                }
-                else{
-                    temp_data.seta_x(temp_data.geta_x()/10);
-                    temp_data.seta_y(temp_data.geta_y()/10);
-                    accData = kalmanData(temp_data); 
-                    logger.info(accData.geta_x()+"---");
-                    logger.info(accData.geta_y()+"---");                
-                    logger.info(accData.getv_x());
-                    logger.info(accData.getv_y());
-                    logger.info("######"+accData.x);
-                    logger.info("######"+accData.y);
+                if (count % 10 != 0) {
+                    temp_data.seta_x(temp_data.geta_x() + rawData.geta_x());
+                    temp_data.seta_y(temp_data.geta_y() + rawData.geta_y());
+                } else {
+                    temp_data.seta_x(temp_data.geta_x() / 10);
+                    temp_data.seta_y(temp_data.geta_y() / 10);
+                    accData = kalmanData(temp_data);
+//                    logger.info(accData.geta_x()+"---");
+//                    logger.info(accData.geta_y()+"---");                
+//                    logger.info(accData.getv_x());
+//    /                logger.info(accData.getv_y());
+//                    logger.info("######"+accData.x);
+//                    logger.info("######"+accData.y);
                     temp_data.seta_x(0);
                     temp_data.seta_y(0);
                 }
-//                logger.info(z_k);                                
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ACC_TYPE, accData));
             }
         }
     };
-    
+
     public SensorAcc() {
         count = 0;
         //init SPI function        
-        spi = new SPIFunc(devicePath,spiFrenquency);
+        spi = new SPIFunc(devicePath, spiFrenquency);
         //config sensor ADXL362
         sensorConfig();
-         temp_data = new SensorAccData();
+        temp_data = new SensorAccData();
         accData = new SensorAccData();
         rawData = new SensorAccData();
         meanData = new SensorAccData();
-        
+        biasPosition = new Point(0, 0);
         //init Kalman filter
         initKalmanFilter();
 
@@ -123,50 +125,29 @@ public class SensorAcc implements SensorAccIf {
         timer.scheduleAtFixedRate(task, 1000, 1000 / frequency);
     }
 
-    private void changeKalmanFilter(double  x , double y){
-        rawData.seta_x(0);
-        rawData.seta_y(0);
-        rawData.setv_x(0);
-        rawData.setv_y(0);
-        rawData.setx(x);
-        rawData.sety(y);
-        kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0);
-        z_k = CvMat.create(2, 1, opencv_core.CV_32FC1);
+    public SensorAcc(Point biasPosintion) {
+        count = 0;
+        //init SPI function        
+        spi = new SPIFunc(devicePath, spiFrenquency);
+        //config sensor ADXL362
+        sensorConfig();
+        temp_data = new SensorAccData();
+        accData = new SensorAccData();
+        rawData = new SensorAccData();
+        meanData = new SensorAccData();
+        this.biasPosition = biasPosintion;
 
-        //initial transition matrix,6x6,对角线赋值为1
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                if (i != j) {
-                    kalman.transition_matrix().put(i, j, 0);
-                } else {
-                    kalman.transition_matrix().put(i, j, 1);
-                }
-            }
-        }
-        kalman.transition_matrix().put(0, 2, 1/frequency);
-        kalman.transition_matrix().put(1, 3, 1/frequency);
-        kalman.transition_matrix().put(2, 4, 1/frequency);
-        kalman.transition_matrix().put(3, 5, 1/frequency);
+        //init Kalman filter
+        initKalmanFilter();
 
-        //initial measurement matric,2x6
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 6; j++) {
-                kalman.measurement_matrix().put(i, j, 0);
-            }
-        }
-        kalman.measurement_matrix().put(0, 4, 1);
-        kalman.measurement_matrix().put(1, 5, 1);
-
-        //initial cov parameter
-        opencv_core.cvSetIdentity(kalman.process_noise_cov(), opencv_core.cvRealScalar(1e-5));
-        opencv_core.cvSetIdentity(kalman.measurement_noise_cov(), opencv_core.cvRealScalar(1e-5));
-        opencv_core.cvSetIdentity(kalman.error_cov_post(), opencv_core.cvRealScalar(1));
+        //start timely work
+        timer.scheduleAtFixedRate(task, 1000, 1000 / frequency);
     }
 
-    
-    
     /**
      * This is a 6 dimention Kalamn struct,including posX,posY,vX,vY,accX,accY
+     *
+     * @param pos
      */
     private void initKalmanFilter() {
         kalman = com.googlecode.javacv.cpp.opencv_video.cvCreateKalman(6, 2, 0);
@@ -231,7 +212,7 @@ public class SensorAcc implements SensorAccIf {
     private void readAccData() {
         readxalxe();
         readyalxe();
-        readzalxe();        
+        readzalxe();
     }
 
     private void readzalxe() {
@@ -239,7 +220,7 @@ public class SensorAcc implements SensorAccIf {
         byte dataHigh;
         dataLow = (byte) this.read((byte) 0x12);
         dataHigh = (byte) this.read((byte) 0x13);
-        int value = (dataHigh << 8)+ dataLow;
+        int value = (dataHigh << 8) + dataLow;
 //        int value = (byte)this.read((byte)0x0A);
 //        logger.info("z:"+value);
 //        rawData.seta_x(value);
@@ -253,18 +234,18 @@ public class SensorAcc implements SensorAccIf {
         int value = (xalxeHigh << 8) + xalxeLow;
 //        int value = (byte) this.read((byte)0x08);
 //        logger.info(value);
-        rawData.seta_x((double) (value*0.0098));
+        rawData.seta_x((double) (value * 0.0098));
     }
 
     private void readyalxe() {
         int yalxeLow;
         int yalxeHigh;
-        yalxeLow =  this.read((byte) 0x10);
+        yalxeLow = this.read((byte) 0x10);
         yalxeHigh = this.read((byte) 0x11);
-        int value = (yalxeHigh << 8)+ yalxeLow;
+        int value = (yalxeHigh << 8) + yalxeLow;
 //        int value =  (byte) this.read((byte) 0x09);
 //        logger.info(value);
-        rawData.seta_y((double) (value*0.0098));
+        rawData.seta_y((double) (value * 0.0098));
     }
 
     private byte read(byte addr) {
@@ -294,8 +275,10 @@ public class SensorAcc implements SensorAccIf {
         accdata.seta_y((double) xy_axle.get(5, 0));
         accdata.setv_x((double) xy_axle.get(2, 0));
         accdata.setv_y((double) xy_axle.get(3, 0));
-        accdata.setx((double) xy_axle.get(0, 0));
-        accdata.sety((double) xy_axle.get(1, 0));
+        //加上偏移值
+        accdata.setx((double) xy_axle.get(0, 0) + biasPosition.getX());
+        accdata.sety((double) xy_axle.get(1, 0) + biasPosition.getY());
+
         return accdata;
     }
 
@@ -307,7 +290,7 @@ public class SensorAcc implements SensorAccIf {
         logger.info("Reg 0x24 " + read((byte) 0x24));
         logger.info("Reg 0x25 " + read((byte) 0x25));
         logger.info("Reg 0x26 " + read((byte) 0x26));
-        logger.info("Reg 0x27 "  + read((byte) 0x27));
+        logger.info("Reg 0x27 " + read((byte) 0x27));
         logger.info("Reg 0x28 " + read((byte) 0x28));
         logger.info("Reg 0x29 " + read((byte) 0x29));
         logger.info("Reg 0x2A " + read((byte) 0x2A));
@@ -374,15 +357,15 @@ public class SensorAcc implements SensorAccIf {
         ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
         for (int i = 0; i < calibrationDataNum; i++) {
             readAccData();
-            dataList.add(new SensorAccData(0, 0,rawData.geta_x(), rawData.geta_y(),0,0));
-            
+            dataList.add(new SensorAccData(0, 0, rawData.geta_x(), rawData.geta_y(), 0, 0));
+
             try {
-                Thread.sleep(1000/frequency);
+                Thread.sleep(1000 / frequency);
             } catch (InterruptedException ex) {
                 logger.error(ex);
             }
         }
-        meanData = getMeanGyroData(dataList);        
+        meanData = getMeanGyroData(dataList);
         state = ON_TIMER_RUNNING;
     }
 
@@ -413,8 +396,17 @@ public class SensorAcc implements SensorAccIf {
             data.seta_x(sensorAccData.geta_x() / size + data.geta_x());
             data.seta_y(sensorAccData.geta_y() / size + data.geta_y());
         }
-        logger.info(data.geta_x()+"!!!!!!!!!!!!");
-        logger.info(data.geta_y()+"!!!!!!!!!!!!");
-        return data;        
+        return data;
+    }
+
+    /**
+     * 设置小车的偏移距离（用于设置小车的最初位置）
+     *
+     * @param biasPosition
+     */
+    public void setBiasPosition(Point biasPosition) {
+        this.biasPosition = biasPosition;
+        rawData = new SensorAccData();
+        accData = new SensorAccData();
     }
 }
