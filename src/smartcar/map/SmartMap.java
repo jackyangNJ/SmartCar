@@ -333,10 +333,14 @@ public class SmartMap implements SmartMapInterface {
         SmartMap s = new SmartMap();
         SmartMapData d = new SmartMapData();
         d = s.getPath(new Point(1,2), new Point(4,3));
-        System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y);
-        d = d.child;
+        //System.out.print(d.getAngle() + "\n");
+        //System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
+        //d = d.child;
         while(d != null) {
-            System.out.print("->" + d.end.x + "," + d.end.y);
+            //System.out.print(d.getAngle() + "\n");
+            //System.out.print("->" + d.end.x + "," + d.end.y);
+            System.out.print(d.getAngle() + "\n");
+            System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
             d = d.child;
         }
         /*double f = 1.9f;

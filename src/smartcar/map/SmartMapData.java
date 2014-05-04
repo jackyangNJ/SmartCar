@@ -39,4 +39,12 @@ public class SmartMapData {//封装每一条小路径
         s.end = child.end;
         return s;
     }
+    public double getAngle() {
+        double y_t = end.y - start.y;
+        double x_t = end.x - start.x;
+        if(x_t == 0)
+            return 90;
+        else
+            return Math.atan(y_t/x_t) * (180 / Math.PI);
+    }
 }
