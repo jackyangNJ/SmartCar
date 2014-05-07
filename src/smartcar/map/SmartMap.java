@@ -29,6 +29,9 @@ import smartcar.core.Point;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
+import smartcar.core.SystemProperty;
+import smartcar.test.sensor.testArduinoBridge;
 
 //Node对象用于封装节点信息，包括名字和子节点
 
@@ -83,36 +86,36 @@ class Dijkstra {
 					}
 					else if(i == x && j == y + 1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 					else if(i == x + 1 && j == y + 1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x && j == y - 1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y - 1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x - 1 && j == y + 1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 				
 					else if(i == x + 1 && j == y -1){
 						path.put("(" + i + "," + j + ")", 1.0); 
-				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + " ->" + "(" + i + "," + j + ")"); 
+				        pathInfo.put("(" + i + "," + j + ")", "(" + x + "," + y + ")" + "->" + "(" + i + "," + j + ")"); 
 					}
 					else{
 						path.put("(" + i + "," + j + ")", Double.MAX_VALUE); 
@@ -165,16 +168,18 @@ class Dijkstra {
         	//System.out.println(pathInfo.getKey()+"key");
         	if(ending.getName().equals(pathInfo.getKey())){
         		System.out.println(pathInfo.getKey() + ":" + pathInfo.getValue()); 
-                        System.out.println("~~~~\n");
-                       /* String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
+                        //System.out.println("~~~~\n");
+                        String[] path = pathInfo.getValue().split("->");//将各个结点放入数组
                         for(int i = 0;i < path.length;i++) {
-                            System.out.println(path[i]);
-                            String str = path[i].substring(1, path[i].length()-2);
-                            System.out.println(str);
+                            //System.out.println(path[i]);
+                            String str = path[i].substring(1, path[i].length()-1);
+                            //System.out.println(str);
                             String a[] = str.split(",");
-                           // System.out.println(a[0] + ".........." + a[1]);
-                            int x = Integer.parseInt(a[0]);
-                            int y = Integer.parseInt(a[1]);
+                            //System.out.println(a[0] + ".........." + a[1]);
+                            SmartMap s = new SmartMap();
+                            double grid = s.getGrid();
+                            double x = Integer.parseInt(a[0]) * grid + grid / 2;
+                            double y = Integer.parseInt(a[1]) * grid + grid / 2;
                             Point p = new Point(x,y);
                             path_nodes.add(p);
                         }
@@ -191,7 +196,7 @@ class Dijkstra {
                             data_part.child = null;
                             data.add(data_part);
                             data.get(i - 1).child = data_part;
-                        } */
+                        } 
                 }
         }
         return data;
@@ -224,12 +229,12 @@ public class SmartMap implements SmartMapInterface {
     public static Log logger = LogFactory.getLog(SmartMap.class.getName());
     
     
-    final double width = 10;
-    final double length = 10;
-    final double grid = 2;
+    private final double width = Double.parseDouble(SystemProperty.getProperty("Room.width"));
+    private final double length = Double.parseDouble(SystemProperty.getProperty("Room.length"));
+    private final double grid = Double.parseDouble(SystemProperty.getProperty("Map.Grid.Size"));
     //int numofgrid = (int)(width * length / (grid * grid));
-    int numofy=(int)(width/grid);
-    int numofx=(int)(length/grid);
+    private int numofx=(int)(width/grid);
+    private int numofy=(int)(length/grid);
     Node[][] GridMap = new Node[numofx][numofy];
     SmartMapBarrier b = new SmartMapBarrier();
     SmartMapQRCode q = new SmartMapQRCode();
@@ -320,19 +325,22 @@ public class SmartMap implements SmartMapInterface {
 	//return GridMap;		
     }
 
-    
+    public double getGrid() {
+        return grid;
+    }
     public static void main(String[] args) throws IOException { 
-    	 
+    	PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap s = new SmartMap();
         SmartMapData d = new SmartMapData();
         d = s.getPath(new Point(1,2), new Point(4,3));
-        System.out.print((int)d.start.x);
-        System.out.print((int)d.start.y + "->" + (int)d.end.x);
-        System.out.print((int)d.end.y);
-        d = d.child;
+        //System.out.print(d.getAngle() + "\n");
+        //System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
+        //d = d.child;
         while(d != null) {
-            System.out.print("->" + (int)d.end.x);
-            System.out.print((int)d.end.y);
+            //System.out.print(d.getAngle() + "\n");
+            //System.out.print("->" + d.end.x + "," + d.end.y);
+            System.out.print(d.getAngle() + "\n");
+            System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
             d = d.child;
         }
         /*double f = 1.9f;
