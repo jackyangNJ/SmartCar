@@ -64,6 +64,9 @@ public class Navigator implements NavigatorIf {
             double s = sensorHallData.getDriveDistance();
             double sum = 0.0;
             double x = navigatorData.getx() + (double) (s * Math.cos((double) sensorGyroData.getHori_angle()));
+            //for test
+            System.out.println("navigatorData.getx():" + navigatorData.getx());
+            System.out.println("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());
             if ( list_x.size() >= 10) {
                  list_x.remove(0);
             }
@@ -72,6 +75,7 @@ public class Navigator implements NavigatorIf {
                 sum += (double)  list_x.get(i);
             }
             double averagex = sum /  list_x.size();
+            System.out.println("averagex:" + averagex);
             navigatorData.setx(averagex);
             sum = 0.0;
             double y = navigatorData.gety() + (double) (s * Math.sin((double) sensorGyroData.getHori_angle()));
@@ -84,7 +88,7 @@ public class Navigator implements NavigatorIf {
             }
             double averagey = sum /  list_y.size();
             navigatorData.sety(averagey);
-          
+            System.out.println("averagey:" + averagey);
             double vx = 0;
             double vy = 0;
             if (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
@@ -96,6 +100,8 @@ public class Navigator implements NavigatorIf {
                 vx = 0;
                 vy = 0;
             }
+            System.out.println("vy:" + vy);
+            System.out.println("vx:" + vx);
             navigatorData.setv_y(vy);
             navigatorData.setv_x(vx);
             //navigatorData.setdistance(sensorHallData.getDriveDistance());
