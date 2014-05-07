@@ -6,6 +6,14 @@ import smartcar.map.SmartMap;
 
 public interface InteractorIf {
     //??????????????????????????????????????干什么的
+    public static final int FORWARD = 1;
+    public static final int BACK = 2;
+    public static final int LEFT = 3;
+    public static final int RIGHT = 4;
+    public static final int CLOCKWISE = 5;
+    public static final int COUNTERCLOCKWISE = 6;
+    public static final int STOP = 7;
+    
     public void setOperation(int op);
     
     /**

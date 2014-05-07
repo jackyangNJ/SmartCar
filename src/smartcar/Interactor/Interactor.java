@@ -18,7 +18,28 @@ public class Interactor implements InteractorIf {
 
     @Override
     public void setOperation(int op) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(op == FORWARD) {
+            setCar(50,0);
+        }
+        else if(op == BACK) {
+            setCar(-50,0);
+        }
+        else if(op == LEFT) {
+            setCar(50,-90);
+        }
+        else if(op == RIGHT) {
+            setCar(50,90);
+        }
+        else if(op == CLOCKWISE) {
+            setCarClockwise();
+        }
+        else if(op == COUNTERCLOCKWISE) {
+            setCarCounterClockwise();
+        }
+        else if(op == STOP) {
+            setCar(0,0);
+        }
+        
     }
 
     @Override
