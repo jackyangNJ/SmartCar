@@ -85,7 +85,7 @@ public class SensorAcc implements SensorAccIf {
                 count++;
                 readAccData();
                 //测量值减去均值
-                rawData = calibrateRawData(rawData, meanData);
+                calibrateRawData(meanData);
                 if (count % 10 != 0) {
                     temp_data.seta_x(temp_data.geta_x() + rawData.geta_x());
                     temp_data.seta_y(temp_data.geta_y() + rawData.geta_y());
@@ -108,24 +108,17 @@ public class SensorAcc implements SensorAccIf {
     };
 
     public SensorAcc() {
-        count = 0;
-        //init SPI function        
-        spi = new SPIFunc(devicePath, spiFrenquency);
-        //config sensor ADXL362
-        sensorConfig();
-        temp_data = new SensorAccData();
-        accData = new SensorAccData();
-        rawData = new SensorAccData();
-        meanData = new SensorAccData();
-        biasPosition = new Point(0, 0);
-        //init Kalman filter
-        initKalmanFilter();
-
-        //start timely work
-        timer.scheduleAtFixedRate(task, 1000, 1000 / frequency);
+        init(new Point(0, 0));
     }
 
     public SensorAcc(Point biasPosintion) {
+        init(biasPosition);
+    }
+    /**
+     * 初始化函数
+     * @param biasPosition 
+     */
+    private void init(Point biasPosition) {
         count = 0;
         //init SPI function        
         spi = new SPIFunc(devicePath, spiFrenquency);
@@ -135,8 +128,7 @@ public class SensorAcc implements SensorAccIf {
         accData = new SensorAccData();
         rawData = new SensorAccData();
         meanData = new SensorAccData();
-        this.biasPosition = biasPosintion;
-
+        this.biasPosition = biasPosition;
         //init Kalman filter
         initKalmanFilter();
 
@@ -192,9 +184,6 @@ public class SensorAcc implements SensorAccIf {
             logger.error(ex);
         }
         logger.info("Sensor acc reset softly");
-
-//        write((byte) 0x26, (byte) 0x20);
-//        write((byte) 0x2c, (byte) 0x13);
         //start acc measurements
         byte temp = (byte) this.read((byte) 0x2d);
         temp = (byte) (temp | 0x02);
@@ -376,11 +365,10 @@ public class SensorAcc implements SensorAccIf {
      * @param meanData
      * @return 返回矫正后的传感器测量值
      */
-    private SensorAccData calibrateRawData(SensorAccData rawData, SensorAccData meanData) {
-        SensorAccData newData = new SensorAccData();
-        newData.seta_x(rawData.geta_x() - meanData.geta_x());
-        newData.seta_y(rawData.geta_y() - meanData.geta_y());
-        return newData;
+    private SensorAccData calibrateRawData(SensorAccData meanData) {
+        rawData.seta_x(rawData.geta_x() - meanData.geta_x());
+        rawData.seta_y(rawData.geta_y() - meanData.geta_y());
+        return rawData;
     }
 
     /**
@@ -404,8 +392,10 @@ public class SensorAcc implements SensorAccIf {
      *
      * @param biasPosition
      */
+    @Override
     public void setBiasPosition(Point biasPosition) {
         this.biasPosition = biasPosition;
+        initKalmanFilter();
         rawData = new SensorAccData();
         accData = new SensorAccData();
     }

@@ -38,4 +38,10 @@ public interface SensorGyroIf {
      * 用于静止时传感器校准
      */
     void calibrate();
+    
+    /**
+     * 设置偏移角度
+     * @param angle
+     */
+    void setBiasAngle(double angle);
 }

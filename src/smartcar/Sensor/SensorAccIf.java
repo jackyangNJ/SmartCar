@@ -1,6 +1,7 @@
 package smartcar.Sensor;
 
 import smartcar.Event.SensorListener;
+import smartcar.core.Point;
 
 /**
  * 刚哥fuck here
@@ -35,4 +36,6 @@ public interface SensorAccIf {
      * 用于静止时传感器校准
      */
     void calibrate();
+    
+    public void setBiasPosition(Point biasPosition);
 }

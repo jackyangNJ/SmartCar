@@ -50,6 +50,10 @@ public class SensorGyro implements SensorGyroIf {
      * meanData is the mean data after the excution of calibration
      */
     SensorGyroData meanData;
+    /**
+     * 设置初始偏移角度
+     */
+    double biasAngle;
 
     /**
      * constant
@@ -67,7 +71,7 @@ public class SensorGyro implements SensorGyroIf {
     //预测值
     private CvMat y_k;
     private CvKalman kalman;
-    public static final double deltaT = (double)1/readFrequency;
+    public static final double deltaT = (double) 1 / readFrequency;
 
     private final Timer timer = new Timer("gyro");
     TimerTask task = new TimerTask() {
@@ -76,7 +80,7 @@ public class SensorGyro implements SensorGyroIf {
             if (state == ON_TIMER_RUNNING) {
                 read_HoriAngleSpeed();
                 //calibrate data                
-                rawData = calibrateRawData(rawData, meanData);
+                calibrateRawData(meanData);
                 gyroData = kalmanData(rawData);
                 logger.info(gyroData.getHori_angleSpeed());
                 logger.info(gyroData.getHori_angle());
@@ -86,19 +90,22 @@ public class SensorGyro implements SensorGyroIf {
     };
 
     public SensorGyro() {
+        this(0);
+    }
+
+    public SensorGyro(double biasAngle) {
         gyroData = new SensorGyroData();
         rawData = new SensorGyroData();
         meanData = new SensorGyroData();
-        spifunc = new SPIFunc(devicePath,spiFrequency);
-        
-
+        spifunc = new SPIFunc(devicePath, spiFrequency);
+        this.biasAngle = biasAngle;
         //初始化kalman
         initKalmanFilter();
 
         //初始化sensor
         sensorConfig();
-        
-        timer.scheduleAtFixedRate(task, 0, 1000/readFrequency);
+
+        timer.scheduleAtFixedRate(task, 0, 1000 / readFrequency);
     }
 
     private void sensorConfig() {
@@ -118,33 +125,6 @@ public class SensorGyro implements SensorGyroIf {
         }
     }
 
-    private void changeKalmanFilter(double hori_angl) {
-        //创建kalman
-        
-        rawData.setHori_angle(hori_angl);
-        rawData.setHori_angleSpeed(0);
-        kalman = opencv_video.cvCreateKalman(2, 1, 0);
-
-        z_k = CvMat.create(1, 1, com.googlecode.javacv.cpp.opencv_core.CV_32FC1);
-        z_k.put(0, 0, 1);
-
-        //initial transition matrix(2x2)
-        kalman.transition_matrix().put(0, 0, 1);
-        kalman.transition_matrix().put(0, 1, deltaT);
-        kalman.transition_matrix().put(1, 0, 0);
-        kalman.transition_matrix().put(1, 1, 1);
-
-        //initial measurement matrix(1x2)
-        kalman.measurement_matrix().put(0, 0, 0);
-        kalman.measurement_matrix().put(0, 1, 1);
-
-        cvSetIdentity(kalman.process_noise_cov(), cvRealScalar(1e-5));
-        cvSetIdentity(kalman.measurement_noise_cov(), cvRealScalar(1e-5));
-        cvSetIdentity(kalman.error_cov_post(), cvRealScalar(1));
-    }
-
-    
-    
     private void initKalmanFilter() {
         //创建kalman
         kalman = opencv_video.cvCreateKalman(2, 1, 0);
@@ -173,7 +153,7 @@ public class SensorGyro implements SensorGyroIf {
     public void read_HoriAngleSpeed() {
         byte Z_L = gyr_read(OUT_Z_L_addr);
         byte Z_H = gyr_read(OUT_Z_H_addr);
-        int z = Z_H << 8 | Z_L;        
+        int z = Z_H << 8 | Z_L;
         rawData.setHori_angleSpeed((double) z * UNIT / 1000);
     }
 
@@ -274,7 +254,8 @@ public class SensorGyro implements SensorGyroIf {
         y_k = opencv_video.cvKalmanPredict(kalman, null);
         z_k.put(0, 0, (GyroData.getHori_angleSpeed()));
         opencv_video.cvKalmanCorrect(kalman, z_k);
-        speed.setHori_angle((double) y_k.get(0, 0));
+        //加上偏移值
+        speed.setHori_angle((double) y_k.get(0, 0) + biasAngle);
         speed.setHori_angleSpeed((double) y_k.get(1, 0));
         return speed;
     }
@@ -290,7 +271,7 @@ public class SensorGyro implements SensorGyroIf {
     @Override
     public void calibrate() {
         //wait until car is still
-        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {            
+        while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
         }
         //pause timer task
         logger.debug("calibrate starting!!!!!!!");
@@ -299,17 +280,16 @@ public class SensorGyro implements SensorGyroIf {
         for (int i = 0; i < calibrationDataNum; i++) {            //timeval      
             read_HoriAngleSpeed();
             dataList.add(new SensorGyroData(rawData.getHori_angleSpeed(), 0));
-            
+
             try {
-                Thread.sleep(1000/readFrequency);
+                Thread.sleep(1000 / readFrequency);
             } catch (InterruptedException ex) {
                 logger.error(ex);
             }
-               
+
         }
-        meanData = getMeanGyroData(dataList);     
+        meanData = getMeanGyroData(dataList);
         setState(ON_TIMER_RUNNING);
-        
     }
 
     /**
@@ -330,15 +310,12 @@ public class SensorGyro implements SensorGyroIf {
     /**
      * 获取矫正后的数据，即用rawData中的测量加速度减去meanData中的平均加速度
      *
-     * @param rawData
      * @param meanData
      * @return 返回矫正后的传感器测量值
      */
-    private SensorGyroData calibrateRawData(SensorGyroData rawData, SensorGyroData meanData) {        
-        SensorGyroData newData = new SensorGyroData();
-        newData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
-//        newData.setHori_angle(rawData.getHori_angle());
-        return newData;
+    private SensorGyroData calibrateRawData(SensorGyroData meanData) {
+        rawData.setHori_angleSpeed(rawData.getHori_angleSpeed() - meanData.getHori_angleSpeed());
+        return rawData;
     }
 
     /**
@@ -347,5 +324,12 @@ public class SensorGyro implements SensorGyroIf {
     public void setState(int state) {
         this.state = state;
     }
-    
+
+    @Override
+    public void setBiasAngle(double angle) {
+        this.biasAngle = angle;
+        initKalmanFilter();
+        rawData = new SensorGyroData();
+        gyroData = new SensorGyroData();
+    }
 }
