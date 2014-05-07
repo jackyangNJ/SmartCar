@@ -96,29 +96,8 @@ public class Navigator implements NavigatorIf {
                 vx = 0;
                 vy = 0;
             }
-            if ( list_vy.size() >= 10) {
-                 list_vy.remove(0);
-            }
-            list_vy.add(vy);
-            sum = 0.0;
-            for (int i = 0, size =  list_vy.size(); i < size; i++) {
-                sum += (double)  list_vy.get(i);
-            }
-            double averagevy = sum /  list_y.size();
-            navigatorData.setv_y(averagevy);
-            
-            
-            
-            if ( list_vx.size() >= 10) {
-                 list_vx.remove(0);
-            }
-            list_vx.add(vx);
-            sum = 0.0;
-            for (int i = 0, size =  list_vx.size(); i < size; i++) {
-                sum += (double)  list_vx.get(i);
-            }
-            double averagevx = sum /  list_vx.size();
-            navigatorData.setv_x(averagevx);
+            navigatorData.setv_y(vy);
+            navigatorData.setv_x(vx);
             //navigatorData.setdistance(sensorHallData.getDriveDistance());
 
         }

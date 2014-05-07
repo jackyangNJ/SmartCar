@@ -23,11 +23,11 @@ public class NavigatorTest {
         while (true) {
             logger.info("a.x: " + navigatorTest.getNavigatorDate().geta_x());
             logger.info("a.y: " + navigatorTest.getNavigatorDate().geta_y());
-            System.out.println("v.x: " + navigatorTest.getNavigatorDate().getv_x());
-            System.out.println("v.y: " + navigatorTest.getNavigatorDate().getv_y());
-            System.out.println("x: " + navigatorTest.getNavigatorDate().getx());
-            System.out.println("y: " + navigatorTest.getNavigatorDate().gety());
-            System.out.println("angular: " + navigatorTest.getNavigatorDate().getangular());
+            logger.info("v.x: " + navigatorTest.getNavigatorDate().getv_x());
+            logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
+            logger.info("x: " + navigatorTest.getNavigatorDate().getx());
+            logger.info("y: " + navigatorTest.getNavigatorDate().gety());
+           logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
          //   System.out.println("distance: " + navigatorTest.getNavigatorDate().getdistance());
             Thread.sleep(1000);
         }
