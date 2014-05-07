@@ -46,7 +46,7 @@ public class SmartMapInfo {
         this.numofy = numofy;
     }
     
-    int getNumofy() {//二维数组的行数
+    public int getNumofy() {//二维数组的行数
         return numofy;
     }
     
@@ -54,7 +54,7 @@ public class SmartMapInfo {
         this.numofx = numofx;
     }
     
-    int getNumofx() {//二维数组的列数
+    public int getNumofx() {//二维数组的列数
         return numofx;
     }
     
@@ -62,7 +62,7 @@ public class SmartMapInfo {
         this.GridMap = GridMap;
     }
     
-    Node[][] getMap() {//表示地图的二维数组
+    public Node[][] getMap() {//表示地图的二维数组
         return GridMap;
     }
 }
