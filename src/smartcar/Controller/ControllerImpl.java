@@ -57,7 +57,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     /**
      * constants
      */
-    private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.eventCheckFrequency"));
+    private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
     private static final double positionDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.PositionDeviation"));
     private static final double angleDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.AngleDeviation"));
 

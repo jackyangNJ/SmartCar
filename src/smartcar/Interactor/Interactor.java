@@ -18,25 +18,25 @@ public class Interactor implements InteractorIf {
 
     @Override
     public void setOperation(int op) {
-        if(op == FORWARD) {
+        if(op == InteractorIf.FORWARD) {
             setCar(50,0);
         }
-        else if(op == BACK) {
+        else if(op == InteractorIf.BACK) {
             setCar(-50,0);
         }
-        else if(op == LEFT) {
+        else if(op == InteractorIf.LEFT) {
             setCar(50,-90);
         }
-        else if(op == RIGHT) {
+        else if(op == InteractorIf.RIGHT) {
             setCar(50,90);
         }
-        else if(op == CLOCKWISE) {
+        else if(op == InteractorIf.CLOCKWISE) {
             setCarClockwise();
         }
-        else if(op == COUNTERCLOCKWISE) {
+        else if(op == InteractorIf.COUNTERCLOCKWISE) {
             setCarCounterClockwise();
         }
-        else if(op == STOP) {
+        else if(op == InteractorIf.STOP) {
             setCar(0,0);
         }
         
@@ -71,5 +71,4 @@ public class Interactor implements InteractorIf {
     public void setCarCounterClockwise() {
         controller.setCarCounterClockwise();
     }
-
 }
