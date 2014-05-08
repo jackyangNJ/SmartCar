@@ -4,6 +4,7 @@ import smartcar.Controller.Controller;
 import smartcar.Controller.ControllerImpl;
 import smartcar.core.Point;
 import smartcar.map.SmartMap;
+import smartcar.map.SmartMapInfo;
 
 public class Interactor implements InteractorIf {
 
@@ -48,8 +49,8 @@ public class Interactor implements InteractorIf {
     }
 
     @Override
-    public SmartMap getSmartMap() {
-        return map;
+    public SmartMapInfo getSmartMapInfo() {
+        return map.getMapInfo();
     }
 
     @Override

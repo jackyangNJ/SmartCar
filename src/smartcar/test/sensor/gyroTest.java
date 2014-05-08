@@ -10,7 +10,7 @@ import static java.lang.Thread.sleep;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
-import smartcar.Motor;
+import smartcar.motor.Motor;
 import smartcar.Sensor.SensorAcc;
 import smartcar.Sensor.SensorGyro;
 import smartcar.core.*;

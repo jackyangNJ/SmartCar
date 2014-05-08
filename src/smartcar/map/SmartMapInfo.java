@@ -6,11 +6,13 @@
 
 package smartcar.map;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Administrator
  */
-public class SmartMapInfo {
+public class SmartMapInfo implements Serializable{
     //double width;
     //double length;
     //double grid;

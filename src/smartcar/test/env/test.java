@@ -6,6 +6,9 @@
 package smartcar.test.env;
 
 import java.util.ArrayList;
+import org.apache.log4j.PropertyConfigurator;
+import smartcar.map.SmartMap;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *
@@ -14,7 +17,8 @@ import java.util.ArrayList;
 public class test {
 
     public static void main(String[] args) {
-        float cF= (float)1/100;
-        System.err.println(cF);
+        PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
+        SmartMap map=new SmartMap();
+        
     }
 }

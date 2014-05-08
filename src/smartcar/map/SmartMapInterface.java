@@ -21,5 +21,5 @@ public interface SmartMapInterface {
     public SmartMapQRCode getQRCodeInformation(Point p);//地图中某点周围二维码位置信息
     public SmartMapQRCode getQRCodeInformation(String s);
     public SmartMapData getPath(Point start,Point end);
-    public SmartMapInfo getMap();//返回地图整体信息，用于jsp显示
+    public SmartMapInfo getMapInfo();//返回地图整体信息，用于jsp显示
 }

@@ -458,7 +458,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
-    public SmartMapInfo getMap() {
+    public SmartMapInfo getMapInfo() {
         logger.info("get information of the map");
         try {
             build(b,q);

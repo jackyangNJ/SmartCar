@@ -10,7 +10,7 @@ import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.Motor;
+import smartcar.motor.Motor;
 import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;

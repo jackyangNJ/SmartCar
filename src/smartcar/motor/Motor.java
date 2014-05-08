@@ -1,4 +1,4 @@
-package smartcar;
+package smartcar.motor;
 
 import java.io.FileWriter;
 import java.io.IOException;

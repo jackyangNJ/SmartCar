@@ -8,7 +8,7 @@ package smartcar.test.sensor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import smartcar.Motor;
+import smartcar.motor.Motor;
 /**
  *
  * @author cs
