@@ -1,4 +1,4 @@
-package smartcar.Interactor;
+package smartcar.thrift;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
