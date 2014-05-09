@@ -14,9 +14,6 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import smartcar.map.SmartMapInfo;
-import smartcar.thrift.CarOperation;
-import smartcar.thrift.PointThrift;
-import smartcar.thrift.SmartCarThrift;
 
 /**
  *
@@ -85,5 +82,4 @@ public class SmartCarService {
         byteBuffer.clear();
         return obj;
     }
-
 }
