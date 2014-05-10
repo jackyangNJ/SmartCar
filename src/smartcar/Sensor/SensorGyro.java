@@ -82,8 +82,8 @@ public class SensorGyro implements SensorGyroIf {
                 //calibrate data                
                 calibrateRawData(meanData);
                 gyroData = kalmanData(rawData);
-                logger.info(gyroData.getHori_angleSpeed());
-                logger.info(gyroData.getHori_angle());
+//                logger.info(gyroData.getHori_angleSpeed());
+//                logger.info(gyroData.getHori_angle());
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
         }

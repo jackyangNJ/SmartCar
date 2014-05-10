@@ -29,7 +29,7 @@ public class QRCode implements QRCodeIf{
 	// every 100ms doing a decoding conduct which means 10Hz
 	private final int readFrequency = 100; 
     
-    Timer timer = new Timer();
+    Timer timer = new Timer("QRcode");
     TimerTask task = new TimerTask() {
         @Override
         public void run() {

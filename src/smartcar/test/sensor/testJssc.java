@@ -18,7 +18,7 @@ public class testJssc {
         serialPort = new SerialPort("/dev/ttyUSB0"); 
         try {
             serialPort.openPort();//Open port
-            serialPort.setParams(9600, 8, 1, 0);//Set params
+            serialPort.setParams(115200, 8, 1, 0);//Set params
             int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
             serialPort.setEventsMask(mask);//Set mask
             serialPort.addEventListener(new SerialPortReader());//Add SerialPortEventListener
@@ -38,7 +38,6 @@ public class testJssc {
 
         public void serialEvent(SerialPortEvent event) {
             if(event.isRXCHAR()){//If data is available
-//                if(event.getEventValue() == 10){//Check bytes count in the input buffer
                     //Read data, if 10 bytes available 
                     try {
                         byte buffer[] = serialPort.readBytes();
@@ -48,7 +47,6 @@ public class testJssc {
                     catch (SerialPortException ex) {
                         System.out.println(ex);
                     }
-//                }
             }
             else if(event.isCTS()){//If CTS line has changed state
                 if(event.getEventValue() == 1){//If line is ON
