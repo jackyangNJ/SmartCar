@@ -1,5 +1,7 @@
 package smartcar.core;
 
+import static smartcar.test.component.testInterator.logger;
+
 /**
  *
  * @author jack
@@ -30,6 +32,17 @@ public class Utils {
         double degree = Math.toDegrees(Math.atan2(vectorY,vectorX));
         if(degree<0) degree = degree+360;        
         return  degree;
+    }
+    /**
+     * use System Thread.sleep to implements delay function
+     * @param time ms
+     */
+    public static void delay(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException ex) {
+            logger.error(ex);
+        }
     }
     public static void main(String[] args) {
         

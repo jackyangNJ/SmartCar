@@ -10,7 +10,7 @@ import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.Motor;
+import smartcar.motor.Motor;
 import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;
@@ -45,19 +45,18 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     DriveModeType driveMode = DriveModeType.MANUAL;
     DriveStrategyType driveStrategy = DriveStrategyType.SIMPLE;
 
-    private SmartMapInterface map;
-    private NavigatorIf navigator;
-    private SensorUltrasonic sensorUltrasonic;
-    private QRCode qrCode;
-    private Timer controlerrtTimer;
+    private final SmartMapInterface map;
+    private final NavigatorIf navigator;
+    private final SensorUltrasonic sensorUltrasonic;
+    private final QRCode qrCode;
+    private final Timer controlerrtTimer;
     private Point destination;
-    private boolean needToSchedulePath = false;
     private SmartMapData scheduledPath;
 
     /**
      * constants
      */
-    private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.eventCheckFrequency"));
+    private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
     private static final double positionDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.PositionDeviation"));
     private static final double angleDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.AngleDeviation"));
 
@@ -146,7 +145,6 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             scheduledPath = map.getPath(currentLocation, destination);
         }
         setMotorCmdAccordingSchedulePath();
-
     }
 
     /**
@@ -154,8 +152,10 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      */
     private void setMotorCmdAccordingSchedulePath() {
         Point currentLocation = SystemCoreData.getLocation();
+        
         //检查是否到终点
         if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
+            logger.info("Reach Endpoint!!!");
             return;
         }
 
@@ -167,16 +167,15 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-//            if (Math.abs(driveDirection, SystemCoreData.getAngle()) > angleDeviation) {
-//                rotateToAbsoluteAngle(driveDirection, angleDeviation);
-//            }
+            if (Math.abs(driveDirection - SystemCoreData.getAngle()) > angleDeviation) {
+                rotateToAbsoluteAngle(driveDirection, angleDeviation);
+            }
             Motor.set_go();
         } else {
             /**
              * TODO
              */
         }
-
     }
 
     /**
@@ -224,6 +223,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public void setCarAutoDriveDestination(Point destination) {
         logger.info("Change to Auto Drive Mode");
         driveMode = DriveModeType.AUTO;
+        scheduledPath = null;
         this.destination = destination;
 
     }

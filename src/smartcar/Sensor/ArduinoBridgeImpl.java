@@ -44,7 +44,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         } catch (SerialPortException ex) {
             logger.error(ex);
         }
-
+        logger.info("ArduinoBrdge init ok!");
     }
 
     /**
@@ -93,7 +93,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
 
     @Override
     public void serialEvent(SerialPortEvent spe) {
-        
+        logger.debug("Serial Event from arduino!");
         //If data is available
         if (spe.isRXCHAR()) {
             try {

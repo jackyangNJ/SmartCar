@@ -2,10 +2,18 @@ package smartcar.Interactor;
 
 import smartcar.core.Point;
 import smartcar.map.SmartMap;
+import smartcar.map.SmartMapInfo;
 
 
 public interface InteractorIf {
-    //??????????????????????????????????????干什么的
+    public static final int FORWARD = 1;
+    public static final int BACK = 2;
+    public static final int LEFT = 3;
+    public static final int RIGHT = 4;
+    public static final int CLOCKWISE = 5;
+    public static final int COUNTERCLOCKWISE = 6;
+    public static final int STOP = 7;
+    
     public void setOperation(int op);
     
     /**
@@ -20,7 +28,7 @@ public interface InteractorIf {
      * 获取SmartMap Instance
      * @return 
      */
-    public SmartMap getSmartMap();
+    public SmartMapInfo getSmartMapInfo();
     
     /**
      * 获取小车当前的位置，由Controller提供返回值
@@ -28,8 +36,6 @@ public interface InteractorIf {
      */
     public Point getCarCurrentLocation();
 
-    //？？？？？？？？？？？？？？？？？？？？？？？这是干什么的
-//    public Movement getMovement();
     
     /**
      * 手动控制小车，参数为控制小车的速度和角度，速度为正值时，小车往前走，速度为负值，小车朝相反方向 
