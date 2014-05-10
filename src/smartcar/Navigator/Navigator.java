@@ -1,6 +1,10 @@
 package smartcar.Navigator;
 
+import com.sun.corba.se.impl.activation.ServerMain;
 import java.util.ArrayList;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
 import smartcar.map.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
@@ -18,13 +22,16 @@ import smartcar.Sensor.SensorMagneticData;
 import smartcar.Sensor.SensorMagneticIf;
 import smartcar.core.SystemCoreData;
 import smartcar.map.SmartMapInterface;
+import smartcar.test.sensor.CameraTest;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *
  * @author jack
  */
-public class Navigator implements NavigatorIf {
-
+public class Navigator implements NavigatorIf {    
+    public static Log logger = LogFactory.getLog(CameraTest.class.getName());
+    
     private static final double possibility_hall = (double) 1 / 2;
     private static final double possibility_acc = (double) 1 / 2;
     private static final double possibility_gory = (double) 1 / 2;
@@ -35,7 +42,7 @@ public class Navigator implements NavigatorIf {
     SensorAccIf sensorAcc = new SensorAcc();
     SensorGyroIf sensorGyro = new SensorGyro();
     SensorMagneticIf sensorMagnetic = new SensorMagnetic();
-
+    
     //传感器数据
     SensorHallData sensorHallData;
     SensorAccData sensorAccData;
@@ -59,14 +66,15 @@ public class Navigator implements NavigatorIf {
         @Override
         public void SensorEventProcess(SensorEvent e) {
             //To change body of generated methods, choose Tools | Templates.s
-            // s not ensure
+            // s not ensure            
             sensorHallData = (SensorHallData) e.getData();
             double s = sensorHallData.getDriveDistance();
             double sum = 0.0;
             double x = navigatorData.getx() + (double) (s * Math.cos((double) sensorGyroData.getHori_angle()));
             //for test
-            System.out.println("navigatorData.getx():" + navigatorData.getx());
-            System.out.println("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());
+//            logger.info("navigatorData.getx():" + navigatorData.getx());
+//            logger.info("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());
+            
             if ( list_x.size() >= 10) {
                  list_x.remove(0);
             }
@@ -75,8 +83,9 @@ public class Navigator implements NavigatorIf {
                 sum += (double)  list_x.get(i);
             }
             double averagex = sum /  list_x.size();
-            System.out.println("averagex:" + averagex);
+            logger.info("x is " + averagex);
             navigatorData.setx(averagex);
+            
             sum = 0.0;
             double y = navigatorData.gety() + (double) (s * Math.sin((double) sensorGyroData.getHori_angle()));
             if ( list_y.size() >= 10) {
@@ -87,8 +96,10 @@ public class Navigator implements NavigatorIf {
                 sum += (double)  list_y.get(i);
             }
             double averagey = sum /  list_y.size();
+            logger.info("y is "+averagey);
             navigatorData.sety(averagey);
-            System.out.println("averagey:" + averagey);
+//            System.out.println("averagey:" + averagey);
+            
             double vx = 0;
             double vy = 0;
             if (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
@@ -100,8 +111,8 @@ public class Navigator implements NavigatorIf {
                 vx = 0;
                 vy = 0;
             }
-            System.out.println("vy:" + vy);
-            System.out.println("vx:" + vx);
+//            System.out.println("vy:" + vy);
+//            System.out.println("vx:" + vx);
             navigatorData.setv_y(vy);
             navigatorData.setv_x(vx);
             //navigatorData.setdistance(sensorHallData.getDriveDistance());
@@ -246,8 +257,8 @@ public class Navigator implements NavigatorIf {
         //注册监听器
         sensorHall.addSenserListener(sensorHallListener);
         sensorGyro.addSenserListener(sensorGyroListener);
-        sensorAcc.addSenserListener(sensorAccListener);
-        sensorMagnetic.addSenserListener(sensorMagneticListener);
+//        sensorAcc.addSenserListener(sensorAccListener);
+//        sensorMagnetic.addSenserListener(sensorMagneticListener);
     }
 
 

@@ -20,16 +20,12 @@ public class NavigatorTest {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap map = new SmartMap();
         Navigator navigatorTest = new Navigator(map);
-        while (true) {
-            logger.info("a.x: " + navigatorTest.getNavigatorDate().geta_x());
-            logger.info("a.y: " + navigatorTest.getNavigatorDate().geta_y());
-            logger.info("v.x: " + navigatorTest.getNavigatorDate().getv_x());
-            logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
-            logger.info("x: " + navigatorTest.getNavigatorDate().getx());
-            logger.info("y: " + navigatorTest.getNavigatorDate().gety());
+        while (true) {            
+           logger.info("v_x"+navigatorTest.getNavigatorData().getv_x());
+           logger.info("v_y"+navigatorTest.getNavigatorData().getv_y());
            logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
          //   System.out.println("distance: " + navigatorTest.getNavigatorDate().getdistance());
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }
     }
 }
