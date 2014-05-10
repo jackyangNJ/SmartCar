@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Navigator.Navigator;
+import smartcar.core.Utils;
 import smartcar.map.SmartMap;
 import smartcar.test.sensor.CameraTest;
 import smartcar.test.sensor.testArduinoBridge;
@@ -16,7 +17,7 @@ public class NavigatorTest {
 
     public static Log logger = LogFactory.getLog(CameraTest.class.getName());
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args){
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap map = new SmartMap();
         Navigator navigatorTest = new Navigator(map);
@@ -27,9 +28,8 @@ public class NavigatorTest {
             logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
             logger.info("x: " + navigatorTest.getNavigatorDate().getx());
             logger.info("y: " + navigatorTest.getNavigatorDate().gety());
-           logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
-         //   System.out.println("distance: " + navigatorTest.getNavigatorDate().getdistance());
-            Thread.sleep(1000);
+            logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
+            Utils.delay(1000);
         }
     }
 }
