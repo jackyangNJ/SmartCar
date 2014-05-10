@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.core.SystemProperty;
 
 /**
  *
@@ -16,7 +17,10 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
     public static Log logger = LogFactory.getLog(SensorUltrasonic.class);
     private ArrayList<SensorListener> SensorListeners;
     private SensorUltrasonicData UltrasonicData;
-    public static final String path = "/sys/class/ulwave/ulwave0/";
+    public static final String triggerFilePath = SystemProperty.getProperty("Ultrasonic.File.trigger");
+    public static final String distance1FilePath = SystemProperty.getProperty("Ultrasonic.File.distance1");
+    public static final String distance2FilePath = SystemProperty.getProperty("Ultrasonic.File.distance2");
+    public static final String distance3FilePath = SystemProperty.getProperty("Ultrasonic.File.distance3");
     /*unit:ms;  40Hz*/
     public static final int Frequency = 2500;
 
@@ -42,7 +46,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
     public SensorUltrasonic() {
         UltrasonicData = new SensorUltrasonicData();
         //timer.scheduleAtFixedRate(task, 0, Frequency);
-        timer.schedule(task, 0, 1000);
+//        timer.schedule(task, 0, 1000);
     }
 
     /**
@@ -51,10 +55,10 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
      * @throws java.lang.InterruptedException
      */
     public void trigger() throws InterruptedException {
-        char[] bufRead = new char[4];
+        char[] bufRead = new char[10];
 
         try {            //向trigger文件中写1
-            FileWriter fw = new FileWriter(path + "trigger");
+            FileWriter fw = new FileWriter(triggerFilePath);
             fw.write("1\n");
             fw.close();
         } catch (IOException ex) {
@@ -63,15 +67,15 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
         
         //直到从trigger文件读到yes，数据才准备好
         try {
-            FileReader fr = new FileReader(path + "trigger");
+            FileReader fr = new FileReader(triggerFilePath);
             fr.read(bufRead);
-            logger.info(bufRead);
+            logger.info(new String(bufRead));
             int i;
             while (!new String(bufRead, 0, 3).equals("yes")) {
-                fr = new FileReader(path + "trigger");
+                fr = new FileReader(triggerFilePath);                
                 i = fr.read(bufRead);
                 fr.close();
-                Thread.sleep(10);
+                Thread.sleep(1);
             }
             fr.close();
         } catch (IOException ex) {
@@ -89,9 +93,9 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
         trigger();    //触发之；
 
         try {            //读取三个distance文件的数值
-            FileReader fr_dis1 = new FileReader(path + "distance1");
-            FileReader fr_dis2 = new FileReader(path + "distance2");
-            FileReader fr_dis3 = new FileReader(path + "distance3");
+            FileReader fr_dis1 = new FileReader(distance1FilePath);
+            FileReader fr_dis2 = new FileReader(distance2FilePath);
+            FileReader fr_dis3 = new FileReader(distance3FilePath);
             fr_dis1.read(disRead);
 //            System.out.println("distance1 is: " + new String(disRead));
             String[] disarray = new String(disRead).split(" ");

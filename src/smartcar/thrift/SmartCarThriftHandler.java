@@ -9,10 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.thrift.TException;
 import smartcar.Interactor.Interactor;
 import smartcar.Interactor.InteractorIf;
 import smartcar.core.Point;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *
@@ -29,40 +31,43 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     @Override
     public void ping() throws TException {
+        logger.info("ping");
     }
 
     @Override
     public void setCarAutoDriveDestination(PointThrift location) throws TException {
+        logger.info("setCarAutoDriveDestination callby");
         logger.info(location);
         interactor.setCarAutoDriveDestination(new Point(location.x, location.y));
     }
 
     @Override
     public PointThrift getCarCurrentLocation() throws TException {
+        logger.info("getCarCurrentLocation callby");
         Point currentPosition = interactor.getCarCurrentLocation();
         PointThrift pos;
         pos = new  PointThrift(currentPosition.getX(), currentPosition.getY());
         return pos;
-        
     }
 
     @Override
     public void setOperation(CarOperation op) throws TException {
+        logger.info("setOperation = "+op );
         interactor.setOperation(op.getValue());
     }
 
     @Override
     public ByteBuffer getSmartMap() throws TException {
-
+        logger.info("getSmartMap");
         try {
             return getByteBufferFromObject(interactor.getSmartMapInfo());
         } catch (IOException ex) {
-            Logger.getLogger(SmartCarThriftHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex);
         }
         return null;
     }
 
-    public static ByteBuffer getByteBufferFromObject(Serializable obj) throws IOException {
+    private static ByteBuffer getByteBufferFromObject(Serializable obj) throws IOException {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bout);
         out.writeObject(obj);
@@ -72,5 +77,13 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         out.close();
         return ByteBuffer.wrap(bytes);
     }
-
+    public static void main(String[] args) {
+        PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
+        SmartCarThriftHandler handler=new SmartCarThriftHandler();
+        try {
+            handler.getSmartMap();
+        } catch (TException ex) {
+            Logger.getLogger(SmartCarThriftHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

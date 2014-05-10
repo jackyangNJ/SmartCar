@@ -475,8 +475,10 @@ public class SmartMap implements SmartMapInterface {
     public void json(SmartMapBarrier b,SmartMapQRCode q) throws FileNotFoundException, IOException {
         logger.info("read the json file");
 
-        String data = ReadFile("../SmartCar/src/config/newjson.json");
-        //System.out.println(data);
+        String data = ReadFile(SmartMap.class.getResource("/config/newjson.json").getPath());
+//        String data = "/tmp/newjson.json";
+        logger.info("SmarpMap Data file"+data);
+        
         JSONObject jsonObj = JSONObject.fromString(data);
         //得到barrier对象
         JSONArray arrayB = jsonObj.getJSONArray("barriers");

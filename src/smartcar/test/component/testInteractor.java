@@ -11,9 +11,9 @@ import smartcar.test.sensor.testArduinoBridge;
  *
  * @author cs
  */
-public class testInterator {
+public class testInteractor {
 
-    public static Log logger = LogFactory.getLog(testInterator.class.getName());
+    public static Log logger = LogFactory.getLog(testInteractor.class.getName());
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));

@@ -1,12 +1,17 @@
 package smartcar.core;
 
-import static smartcar.test.component.testInterator.logger;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author jack
  */
 public class Utils {
+    public static Log logger = LogFactory.getLog(Utils.class);
     /**
      * 获取两个point之间的距离
      * @param srcPoint
@@ -43,6 +48,30 @@ public class Utils {
         } catch (InterruptedException ex) {
             logger.error(ex);
         }
+    }
+    public static String excuteSysCommand(String cmd){
+        //返回与当前 Java 应用程序相关的运行时对象
+        Runtime run = Runtime.getRuntime();
+        try {  
+            Process p = run.exec(cmd);// 启动另一个进程来执行命令  
+            BufferedInputStream in = new BufferedInputStream(p.getInputStream());  
+            BufferedReader inBr = new BufferedReader(new InputStreamReader(in));  
+            String lineStr;  
+            while ((lineStr = inBr.readLine()) != null)  
+                //获得命令执行后在控制台的输出信息  
+                System.out.println(lineStr);// 打印输出信息  
+            //检查命令是否执行失败。  
+            if (p.waitFor() != 0) {  
+                if (p.exitValue() == 1)//p.exitValue()==0表示正常结束，1：非正常结束  
+                    logger.error(p);
+            }  
+            inBr.close();  
+            in.close();  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return null;
+
     }
     public static void main(String[] args) {
         

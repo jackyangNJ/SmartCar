@@ -6,6 +6,7 @@
 
 package smartcar.map;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +15,8 @@ import java.util.Map;
  * @author Administrator
  */
 //Node对象用于封装节点信息，包括名字和子节点
-public class Node {
-    
+public class Node implements Serializable{
+    private static final long serialVersionUID = 1324123542315L;
     private String name; 
     private Map<Node,Double> child=new HashMap<Node,Double>(); 
     private boolean barriermask = false;

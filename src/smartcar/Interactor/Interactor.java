@@ -1,5 +1,7 @@
 package smartcar.Interactor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import smartcar.Controller.Controller;
 import smartcar.Controller.ControllerImpl;
 import smartcar.core.Point;
@@ -7,40 +9,19 @@ import smartcar.map.SmartMap;
 import smartcar.map.SmartMapInfo;
 
 public class Interactor implements InteractorIf {
-
+    public static Log logger = LogFactory.getLog(Interactor.class);
     private SmartMap map;
-    private final Controller controller;
+    private Controller controller=null;
 
     public Interactor() {
         map = new SmartMap();
-        controller = new ControllerImpl(map);
+//        controller = new ControllerImpl(map);
 
     }
 
     @Override
     public void setOperation(int op) {
-        if(op == InteractorIf.FORWARD) {
-            setCar(50,0);
-        }
-        else if(op == InteractorIf.BACK) {
-            setCar(-50,0);
-        }
-        else if(op == InteractorIf.LEFT) {
-            setCar(50,-90);
-        }
-        else if(op == InteractorIf.RIGHT) {
-            setCar(50,90);
-        }
-        else if(op == InteractorIf.CLOCKWISE) {
-            setCarClockwise();
-        }
-        else if(op == InteractorIf.COUNTERCLOCKWISE) {
-            setCarCounterClockwise();
-        }
-        else if(op == InteractorIf.STOP) {
-            setCar(0,0);
-        }
-        
+        controller.setOperation(op);
     }
 
     @Override

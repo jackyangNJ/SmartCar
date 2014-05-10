@@ -245,9 +245,9 @@ public class Navigator implements NavigatorIf {
         navigatorData = new NavigatorData();
         //注册监听器
         sensorHall.addSenserListener(sensorHallListener);
-        sensorGyro.addSenserListener(sensorGyroListener);
-        sensorAcc.addSenserListener(sensorAccListener);
-        sensorMagnetic.addSenserListener(sensorMagneticListener);
+//        sensorGyro.addSenserListener(sensorGyroListener);
+//        sensorAcc.addSenserListener(sensorAccListener);
+//        sensorMagnetic.addSenserListener(sensorMagneticListener);
     }
 
 

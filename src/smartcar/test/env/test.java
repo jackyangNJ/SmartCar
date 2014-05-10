@@ -18,7 +18,8 @@ public class test {
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-        SmartMap map=new SmartMap();
+        System.err.println(Math.cos(5.710036949078421E25));
+        System.err.println(SmartMap.class.getResource("/config/log4j.properties").getPath());
         
     }
 }

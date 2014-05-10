@@ -82,4 +82,15 @@ public class SmartCarService {
         byteBuffer.clear();
         return obj;
     }
+    
+    public static void main(String[] args) {
+        SmartCarService service=new SmartCarService();
+        SmartMapInfo info = null;
+        try {
+            info = service.getSmartMap();
+        } catch (TException ex) {
+            Logger.getLogger(SmartCarService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.err.println(info.getNumofx());
+    }
 }

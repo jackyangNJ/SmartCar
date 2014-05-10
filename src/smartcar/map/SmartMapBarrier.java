@@ -6,6 +6,7 @@
 
 package smartcar.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import smartcar.core.Point;
 
@@ -13,7 +14,7 @@ import smartcar.core.Point;
  *
  * @author Administrator
  */
-public class SmartMapBarrier {
+public class SmartMapBarrier implements Serializable{
     int num=0;//障碍物个数
     ArrayList<Barrier> barriers = new ArrayList<Barrier>();
     void setBarrier(Point p,double length,double width) {
@@ -40,7 +41,7 @@ public class SmartMapBarrier {
                     + "," + barriers.get(i).width);
         }
     }
-    static class Barrier {
+    static class Barrier implements Serializable{
         Point p;
         double length;
         double width;

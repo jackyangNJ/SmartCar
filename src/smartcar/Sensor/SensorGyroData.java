@@ -39,10 +39,6 @@ public class SensorGyroData {
         this.hori_angleSpeed = hori_angleSpeed;
     }
 
-//    double getangular() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
     /**
      * @return the hori_angle
      */
