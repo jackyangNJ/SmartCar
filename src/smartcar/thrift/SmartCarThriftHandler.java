@@ -23,7 +23,7 @@ import smartcar.test.sensor.testArduinoBridge;
 public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     public static Log logger = LogFactory.getLog(SmartCarThriftHandler.class);
-    InteractorIf interactor=new Interactor();
+    public     InteractorIf interactor=new Interactor();
 
     public SmartCarThriftHandler() {
 
@@ -80,10 +80,12 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartCarThriftHandler handler=new SmartCarThriftHandler();
+        
         try {
             handler.getSmartMap();
         } catch (TException ex) {
             Logger.getLogger(SmartCarThriftHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 }

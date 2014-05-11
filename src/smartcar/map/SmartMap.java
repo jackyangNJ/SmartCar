@@ -284,7 +284,8 @@ public class SmartMap implements SmartMapInterface {
             GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));
         }
         
-        
+        logger.info("numofx="+numofx);
+        logger.info("numofy="+numofy);
 	for(int i = 0; i < numofx; i ++){
 			
             for(int j = 0; j < numofy; j ++){
@@ -463,7 +464,7 @@ public class SmartMap implements SmartMapInterface {
         try {
             build(b,q);
         } catch (IOException ex) {
-            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex);
         }
         SmartMapInfo info = new SmartMapInfo();
         info.setNumofx(numofx);

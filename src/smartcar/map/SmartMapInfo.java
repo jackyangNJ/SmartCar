@@ -13,12 +13,9 @@ import java.io.Serializable;
  * @author Administrator
  */
 public class SmartMapInfo implements Serializable{
-    //double width;
-    //double length;
-    //double grid;
     int numofy;
     int numofx;
-    Node[][] GridMap = new Node[numofx][numofy];
+    Node[][] GridMap;
     /*
     void setWidth(double width) {
         this.width = width;
@@ -67,4 +64,5 @@ public class SmartMapInfo implements Serializable{
     public Node[][] getMap() {//表示地图的二维数组
         return GridMap;
     }
+    
 }

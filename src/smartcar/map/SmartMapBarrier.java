@@ -6,6 +6,8 @@
 
 package smartcar.map;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import smartcar.core.Point;
@@ -45,5 +47,34 @@ public class SmartMapBarrier implements Serializable{
         Point p;
         double length;
         double width;
+        static int num=0;
+        public Point getP() {
+            return p;
+        }
+
+        public void setP(Point p) {
+            this.p = p;
+        }
+
+        public double getLength() {
+            return length;
+        }
+
+        public void setLength(double length) {
+            this.length = length;
+        }
+
+        public double getWidth() {
+            return width;
+        }
+
+        public void setWidth(double width) {
+            this.width = width;
+        }
+          private void writeObject(ObjectOutputStream out) throws IOException {
+        System.err.println(num + "barrier");
+        num = num + 1;
+    }
+        
     }
 }

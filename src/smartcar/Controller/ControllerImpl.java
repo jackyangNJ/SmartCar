@@ -47,6 +47,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      * 默认进入手动驾驶模式
      */
     DriveModeType driveMode = DriveModeType.MANUAL;
+    
     /**
      * 默认采用简单行驶策略
      */

@@ -12,27 +12,29 @@ public class SensorUltrasonicData {
 
     }
 
-    public void setDistance1(double distance) {
-        this.Distance1 = distance;
-    }
-
     public double getDistance1() {
-        return this.Distance1;
+        return Distance1;
     }
 
-    public void setDistance2(double distance) {
-        this.Distance1 = distance;
+    public void setDistance1(double Distance1) {
+        this.Distance1 = Distance1;
     }
 
     public double getDistance2() {
-        return this.Distance1;
+        return Distance2;
     }
 
-    public void setDistance3(double distance) {
-        this.Distance1 = distance;
+    public void setDistance2(double Distance2) {
+        this.Distance2 = Distance2;
     }
 
     public double getDistance3() {
-        return this.Distance1;
+        return Distance3;
     }
+
+    public void setDistance3(double Distance3) {
+        this.Distance3 = Distance3;
+    }
+
+    
 }

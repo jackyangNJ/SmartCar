@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.core.SystemProperty;
+import smartcar.core.Utils;
 
 /**
  *
@@ -55,8 +56,6 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
      * @throws java.lang.InterruptedException
      */
     public void trigger() throws InterruptedException {
-        char[] bufRead = new char[10];
-
         try {            //向trigger文件中写1
             FileWriter fw = new FileWriter(triggerFilePath);
             fw.write("1\n");
@@ -64,66 +63,48 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
         } catch (IOException ex) {
             logger.error(ex);
         }
-        
+
         //直到从trigger文件读到yes，数据才准备好
-        try {
-            FileReader fr = new FileReader(triggerFilePath);
-            fr.read(bufRead);
-            logger.info(new String(bufRead));
-            int i;
-            while (!new String(bufRead, 0, 3).equals("yes")) {
-                fr = new FileReader(triggerFilePath);                
-                i = fr.read(bufRead);
-                fr.close();
-                Thread.sleep(1);
-            }
-            fr.close();
-        } catch (IOException ex) {
-            logger.error(ex);
+        String resultString;
+        resultString = Utils.excuteSysCommand("cat " + triggerFilePath);
+        logger.info(resultString);
+        while (!resultString.equals("yes")) {
+            resultString = Utils.excuteSysCommand("cat " + triggerFilePath);
+            Utils.delay(10);
         }
     }
 
     /**
      * 从distance文件中获取测量数据
+     *
+     * @throws java.lang.InterruptedException
      */
     public void getDistance() throws InterruptedException {
-        char[] disRead = new char[20];
+        String resultString;
         long dis_cnt1 = 0, dis_cnt2 = 0, dis_cnt3 = 0;                            //time ulwave giving back
 
         trigger();    //触发之；
 
-        try {            //读取三个distance文件的数值
-            FileReader fr_dis1 = new FileReader(distance1FilePath);
-            FileReader fr_dis2 = new FileReader(distance2FilePath);
-            FileReader fr_dis3 = new FileReader(distance3FilePath);
-            fr_dis1.read(disRead);
-//            System.out.println("distance1 is: " + new String(disRead));
-            String[] disarray = new String(disRead).split(" ");
-            dis_cnt1 = Integer.parseInt(disarray[0].trim());
-//            System.out.println("distance1 is: " + dis_cnt1);
+        //读取三个distance文件的数值
+        resultString = Utils.excuteSysCommand("cat " + distance1FilePath);
+        String[] disarray = resultString.split(" ");
+        dis_cnt1 = Integer.parseInt(disarray[0].trim());
+        logger.debug("distance3 is: " + dis_cnt1);
 
-            fr_dis2.read(disRead);
-//            System.out.println("distance2 is: " + new String(disRead));
-            disarray = new String(disRead).split(" ");
-            dis_cnt2 = Integer.parseInt(disarray[0].trim());
-//            System.out.println("distance1 is: " + dis_cnt2);
+        resultString = Utils.excuteSysCommand("cat " + distance2FilePath);
+        disarray = resultString.split(" ");
+        dis_cnt2 = Integer.parseInt(disarray[0].trim());
+        logger.debug("distance3 is: " + dis_cnt2);
 
-            fr_dis3.read(disRead);
-//            System.out.println("distance3 is: " + new String(disRead));
-            disarray = new String(disRead).split(" ");
-            dis_cnt3 = Integer.parseInt(disarray[0].trim());
-//            System.out.println("distance1 is: " + dis_cnt3);
-            fr_dis1.close();
-            fr_dis1.close();
-            fr_dis1.close();
-        } catch (IOException ex) {
-
-        }
+        resultString = Utils.excuteSysCommand("cat " + distance3FilePath);
+        disarray = resultString.split(" ");
+        dis_cnt3 = Integer.parseInt(disarray[0].trim());
+        logger.debug("distance3 is: " + dis_cnt3);
 
         //单位(m)
-        UltrasonicData.setDistance1(dis_cnt1 * 170 / 1000000000);
-        UltrasonicData.setDistance2(dis_cnt2 * 170 / 1000000000);
-        UltrasonicData.setDistance3(dis_cnt3 * 170 / 1000000000);
+        UltrasonicData.setDistance1((double) dis_cnt1 * 170 / 1000000000);
+        UltrasonicData.setDistance2((double) dis_cnt2 * 170 / 1000000000);
+        UltrasonicData.setDistance3((double) dis_cnt3 * 170 / 1000000000);
     }
 
     /**
@@ -183,11 +164,6 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
         sensorUltrasonicData.setDistance1(UltrasonicData.getDistance1());
         sensorUltrasonicData.setDistance2(UltrasonicData.getDistance2());
         sensorUltrasonicData.setDistance3(UltrasonicData.getDistance3());
-        //传送数据之后，将储存的数据置为最大
-//        UltrasonicData.setDistance1(3.0f);
-//        UltrasonicData.setDistance1(3.0f);
-//        UltrasonicData.setDistance1(3.0f);
-
         return sensorUltrasonicData;
     }
 
