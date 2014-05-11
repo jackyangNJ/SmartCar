@@ -29,12 +29,12 @@ public class CameraHW {
             return;
         }
         cvCapture = opencv_highgui.cvCreateCameraCapture(0);
-        
         if (cvCapture == null) {
             logger.error("cannot get Camera device");
             System.exit(-1);
         }
         logger.info("Camera started");
+        
     }
 
     public static void stopCamera() {

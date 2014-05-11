@@ -6,11 +6,13 @@
 
 package smartcar.map;
 
+import java.io.Serializable;
+
 /**
  *封装返回给网页显示的点的信息（包括该点是否有障碍物和是否有二维码以及相应的信息）
  * @author Administrator
  */
-public class NodeToDisplay {
+public class NodeToDisplay implements Serializable{
     int x;
     int y;
     private boolean barriermask = false;

@@ -61,8 +61,8 @@ public class SmartCarService {
     }
 
     
-    public SmartMapInfo getSmartMap()  throws TException{
-        ByteBuffer dataBuffer =client.getSmartMap();
+    public SmartMapInfo getSmartMapInfo()  throws TException{
+        ByteBuffer dataBuffer =client.getSmartMapInfo();
         try {
             return (SmartMapInfo)getObject(dataBuffer);
         } catch (IOException | ClassNotFoundException ex) {
@@ -87,7 +87,7 @@ public class SmartCarService {
         SmartCarService service=new SmartCarService();
         SmartMapInfo info = null;
         try {
-            info = service.getSmartMap();
+            info = service.getSmartMapInfo();
         } catch (TException ex) {
             Logger.getLogger(SmartCarService.class.getName()).log(Level.SEVERE, null, ex);
         }
