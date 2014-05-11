@@ -1,9 +1,15 @@
 package smartcar.Navigator;
 
+import com.sun.corba.se.impl.activation.ServerMain;
 import java.util.ArrayList;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.PropertyConfigurator;
 import smartcar.map.SmartMap;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.Sensor.ArduinoBridge;
+import smartcar.Sensor.ArduinoBridgeImpl;
 import smartcar.Sensor.SensorAcc;
 import smartcar.Sensor.SensorAccData;
 import smartcar.Sensor.SensorAccIf;
@@ -17,25 +23,35 @@ import smartcar.Sensor.SensorMagnetic;
 import smartcar.Sensor.SensorMagneticData;
 import smartcar.Sensor.SensorMagneticIf;
 import smartcar.core.SystemCoreData;
+import smartcar.core.SystemProperty;
 import smartcar.map.SmartMapInterface;
+import smartcar.test.sensor.CameraTest;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *
  * @author jack
  */
-public class Navigator implements NavigatorIf {
-
+public class Navigator implements NavigatorIf {    
+    public static Log logger = LogFactory.getLog(CameraTest.class.getName());
+    
     private static final double possibility_hall = (double) 1 / 2;
     private static final double possibility_acc = (double) 1 / 2;
     private static final double possibility_gory = (double) 1 / 2;
-    double frequency;
+    double wheelgirth = Double.parseDouble(SystemProperty.getProperty("Car.WheelGirth"));
+    double timeInterval;    
+    double beginTime,endTime;    
     SmartMapInterface map;
     //传感器对象
-    SensorHallIf sensorHall = new SensorHall();
+    String serialName = SystemProperty.getProperty("ArduinoBridge.serialComName");
+    int serialRate =Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));
+    ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName,serialRate);
+    
+    SensorHall sensorHall = new SensorHall();
     SensorAccIf sensorAcc = new SensorAcc();
     SensorGyroIf sensorGyro = new SensorGyro();
     SensorMagneticIf sensorMagnetic = new SensorMagnetic();
-
+    
     //传感器数据
     SensorHallData sensorHallData;
     SensorAccData sensorAccData;
@@ -46,9 +62,7 @@ public class Navigator implements NavigatorIf {
     ArrayList list_vx = new ArrayList(10);
     ArrayList list_vy = new ArrayList(10);
     ArrayList list_ax = new ArrayList(10);
-    ArrayList list_ay = new ArrayList(10);
-    ArrayList list_x = new ArrayList(10);
-    ArrayList list_y = new ArrayList(10);
+    ArrayList list_ay = new ArrayList(10);        
     ArrayList list_angularspeed =  new ArrayList(10);
     //ArrayList list_gyroav = new ArrayList(10);
     /**
@@ -59,49 +73,41 @@ public class Navigator implements NavigatorIf {
         @Override
         public void SensorEventProcess(SensorEvent e) {
             //To change body of generated methods, choose Tools | Templates.s
-            // s not ensure
+            // s not ensure            
+            beginTime = endTime;
+            endTime = System.currentTimeMillis();
+            timeInterval = (endTime-beginTime)/1000;
+            
             sensorHallData = (SensorHallData) e.getData();
-            double s = sensorHallData.getDriveDistance();
-            double sum = 0.0;
-            double x = navigatorData.getx() + (double) (s * Math.cos((double) sensorGyroData.getHori_angle()));
+//            double s = sensorHallData.getDriveDistance();            
+            logger.info("angular is "+navigatorData.getangular());
+            logger.info("cos is " + Math.cos(navigatorData.getangular()));
+            logger.info("x + ********************"+(double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular()))));
+            double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
+            logger.info("x is "+x);
             //for test
-            System.out.println("navigatorData.getx():" + navigatorData.getx());
-            System.out.println("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());
-            if ( list_x.size() >= 10) {
-                 list_x.remove(0);
-            }
-            list_x.add(x);
-            for (int i = 0, size =  list_x.size(); i < size; i++) {
-                sum += (double)  list_x.get(i);
-            }
-            double averagex = sum /  list_x.size();
-            System.out.println("averagex:" + averagex);
-            navigatorData.setx(averagex);
-            sum = 0.0;
-            double y = navigatorData.gety() + (double) (s * Math.sin((double) sensorGyroData.getHori_angle()));
-            if ( list_y.size() >= 10) {
-                 list_y.remove(0);
-            }
-            list_y.add(y);
-            for (int i = 0, size =  list_y.size(); i < size; i++) {
-                sum += (double)  list_y.get(i);
-            }
-            double averagey = sum /  list_y.size();
-            navigatorData.sety(averagey);
-            System.out.println("averagey:" + averagey);
+//            logger.info("navigatorData.getx():" + navigatorData.getx());
+//            logger.info("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());                      
+            navigatorData.setx(x);
+                        
+            double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));            
+            logger.info("y is "+y);
+            navigatorData.sety(y);
+//            System.out.println("averagey:" + averagey);
+            
             double vx = 0;
             double vy = 0;
             if (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
-                vx = possibility_hall * navigatorData.getv_x() + (1 - possibility_hall) * (double) (s * Math.cos((double) sensorGyroData.getHori_angle())) * frequency;
+                vx = possibility_hall * navigatorData.getv_x() + (1 - possibility_hall) * (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular()))) /timeInterval;
               //  navigatorData.setv_x(vx);
-                vy = possibility_hall * navigatorData.getv_y() + (1 - possibility_hall) * (double) (s * Math.sin((double) sensorGyroData.getHori_angle())) * frequency;
+                vy = possibility_hall * navigatorData.getv_y() + (1 - possibility_hall) * (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular()))) /timeInterval;
               //  navigatorData.setv_y(vy);
             } else {
                 vx = 0;
                 vy = 0;
             }
-            System.out.println("vy:" + vy);
-            System.out.println("vx:" + vx);
+//            System.out.println("vy:" + vy);
+//            System.out.println("vx:" + vx);
             navigatorData.setv_y(vy);
             navigatorData.setv_x(vx);
             //navigatorData.setdistance(sensorHallData.getDriveDistance());
@@ -156,7 +162,7 @@ public class Navigator implements NavigatorIf {
             for (int i = 0, size =  list_vy.size(); i < size; i++) {
                 sum += (double)  list_vy.get(i);
             }
-            double averagevy = sum /  list_y.size();
+            double averagevy = sum /  list_vy.size();
             navigatorData.setv_y(averagevy);
             
              
@@ -242,9 +248,12 @@ public class Navigator implements NavigatorIf {
      */
     public Navigator(SmartMap map) {
         this.map = map;
+        endTime = System.currentTimeMillis();
         navigatorData = new NavigatorData();
-        //注册监听器
+        //注册监听器        
+        arduinoBridge.registerMessageListener(ArduinoBridge.HALL_MSG_TYPE,sensorHall);
         sensorHall.addSenserListener(sensorHallListener);
+
 //        sensorGyro.addSenserListener(sensorGyroListener);
 //        sensorAcc.addSenserListener(sensorAccListener);
 //        sensorMagnetic.addSenserListener(sensorMagneticListener);

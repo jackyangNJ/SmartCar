@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Navigator.Navigator;
+import smartcar.core.SystemCoreData;
 import smartcar.core.Utils;
 import smartcar.map.SmartMap;
 import smartcar.test.sensor.CameraTest;
@@ -20,16 +21,20 @@ public class NavigatorTest {
     public static void main(String[] args){
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap map = new SmartMap();
+        SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
         Navigator navigatorTest = new Navigator(map);
+        navigatorTest.calibrateSensors();
+        SystemCoreData.setSystemState(SystemCoreData.STATE_GOAHEAD);
+
         while (true) {
-            logger.info("a.x: " + navigatorTest.getNavigatorDate().geta_x());
-            logger.info("a.y: " + navigatorTest.getNavigatorDate().geta_y());
-            logger.info("v.x: " + navigatorTest.getNavigatorDate().getv_x());
-            logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
-            logger.info("x: " + navigatorTest.getNavigatorDate().getx());
-            logger.info("y: " + navigatorTest.getNavigatorDate().gety());
-            logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
-            Utils.delay(1000);
+//            logger.info("a.x: " + navigatorTest.getNavigatorDate().geta_x());
+//            logger.info("a.y: " + navigatorTest.getNavigatorDate().geta_y());
+//            logger.info("v.x: " + navigatorTest.getNavigatorDate().getv_x());
+//            logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
+//            logger.info("x: " + navigatorTest.getNavigatorDate().getx());
+//            logger.info("y: " + navigatorTest.getNavigatorDate().gety());
+//            logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
+//            Utils.delay(500);
         }
     }
 }
