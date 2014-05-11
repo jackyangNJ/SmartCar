@@ -3,45 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package smartcar.map;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- *
+ *封装返回给网页显示的点的信息（包括该点是否有障碍物和是否有二维码以及相应的信息）
  * @author Administrator
  */
-//Node对象用于封装节点信息，包括名字和子节点
-public class Node{
-    private String name;
-    private transient Map<Node, Double> child = new HashMap<>();
+public class NodeToDisplay implements Serializable{
+    int x;
+    int y;
     private boolean barriermask = false;
     SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
     private boolean qrcodemask = false;
     SmartMapQRCode.QRCode q = new SmartMapQRCode.QRCode();
 
-    public Node(String name) {
-        this.name = name;
+    public NodeToDisplay(int x,int y) {
+        this.x = x;
+        this.y = y;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<Node, Double> getChild() {
-        return child;
-    }
-
-    public void setChild(Map<Node, Double> child) {
-        this.child = child;
-    }
-
     public void setblack(SmartMapBarrier.Barrier b) {//设置为障碍物点
         barriermask = true;
         this.b = b;
@@ -60,6 +42,10 @@ public class Node{
         return qrcodemask;
     }
 
+    /**
+     *
+     * @return
+     */
     public SmartMapBarrier.Barrier getBarrierInfo() {
         return b;
     }
@@ -67,5 +53,4 @@ public class Node{
     public SmartMapQRCode.QRCode getQRCodeInfo() {
         return q;
     }
-
 }

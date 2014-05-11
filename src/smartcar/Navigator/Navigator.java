@@ -253,7 +253,8 @@ public class Navigator implements NavigatorIf {
         //注册监听器        
         arduinoBridge.registerMessageListener(ArduinoBridge.HALL_MSG_TYPE,sensorHall);
         sensorHall.addSenserListener(sensorHallListener);
-        sensorGyro.addSenserListener(sensorGyroListener);
+
+//        sensorGyro.addSenserListener(sensorGyroListener);
 //        sensorAcc.addSenserListener(sensorAccListener);
 //        sensorMagnetic.addSenserListener(sensorMagneticListener);
     }

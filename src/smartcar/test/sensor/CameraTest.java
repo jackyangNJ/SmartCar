@@ -20,24 +20,24 @@ public class CameraTest {
 
     public static void main(String[] args) throws FrameGrabber.Exception {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-//        opencv_core.IplImage frame = CameraHW.getIplImage();
-//        opencv_highgui.cvSaveImage("test.jpg", frame);
-//        logger.info("take a picrute");
-//        CameraHW.stopCamera();
-        
-        OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);  
-        grabber.start();
-        opencv_core.IplImage frame = grabber.grab();
+        opencv_core.IplImage frame = CameraHW.getIplImage();
         opencv_highgui.cvSaveImage("test.jpg", frame);
-        grabber.setImageHeight(640);
-        logger.info(grabber.getImageHeight());
-        logger.info(grabber.getPixelFormat());
-        logger.info(grabber.getImageWidth());
-        logger.info(grabber.getLengthInFrames());
-        logger.info(grabber.getFrameRate());
-        logger.info(grabber.getSampleRate());
+        logger.info("take a picrute");
+        CameraHW.stopCamera();
         
-        grabber.stop();
+//        OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);  
+//        grabber.start();
+//        opencv_core.IplImage frame = grabber.grab();
+//        opencv_highgui.cvSaveImage("test.jpg", frame);
+//        grabber.setImageHeight(640);
+//        logger.info(grabber.getImageHeight());
+//        logger.info(grabber.getPixelFormat());
+//        logger.info(grabber.getImageWidth());
+//        logger.info(grabber.getLengthInFrames());
+//        logger.info(grabber.getFrameRate());
+//        logger.info(grabber.getSampleRate());
+//        
+//        grabber.stop();
         
         
     }

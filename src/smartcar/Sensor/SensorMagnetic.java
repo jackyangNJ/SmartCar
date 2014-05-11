@@ -16,7 +16,6 @@ public class SensorMagnetic implements SensorMagneticIf{
 
     @Override
     public void addSenserListener(SensorListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -254,7 +254,9 @@ public class SmartMap implements SmartMapInterface {
             double x = b.barriers.get(i).p.x;
             double y = b.barriers.get(i).p.y;
             int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
+            //System.out.println("x_i:" + x_i);
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
+            //System.out.println("y_i:" + y_i);
             GridMap[x_i][y_i].setblack(b.barriers.get(i));
             double length = (b.barriers.get(i).length - 2) / 2;//中心点一侧的长度
             if(length != 0) {
@@ -284,7 +286,8 @@ public class SmartMap implements SmartMapInterface {
             GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));
         }
         
-        
+        logger.info("numofx="+numofx);
+        logger.info("numofy="+numofy);
 	for(int i = 0; i < numofx; i ++){
 			
             for(int j = 0; j < numofy; j ++){
@@ -331,7 +334,7 @@ public class SmartMap implements SmartMapInterface {
     public static void main(String[] args) throws IOException { 
     	PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap s = new SmartMap();
-        SmartMapData d = new SmartMapData();
+       /* SmartMapData d = new SmartMapData();
         d = s.getPath(new Point(1,2), new Point(4,3));
         //System.out.print(d.getAngle() + "\n");
         //System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
@@ -342,6 +345,13 @@ public class SmartMap implements SmartMapInterface {
             System.out.print(d.getAngle() + "\n");
             System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
             d = d.child;
+        }*/
+        SmartMapInfo info = s.getMapInfo();
+        int num = info.GridMap.size();
+        System.out.println(num);
+        for(int i = 0;i < num;i++) {
+            System.out.println("x:" + info.GridMap.get(i).x + " y:" +  info.GridMap.get(i).y);
+            System.out.println("barrier:" + info.GridMap.get(i).getblack() + " qrcode:" + info.GridMap.get(i).getQRCode());
         }
         /*double f = 1.9f;
         int i = (int)f;
@@ -351,6 +361,7 @@ public class SmartMap implements SmartMapInterface {
     } 
 
   
+    @Override
     public SmartMapBarrier getBarrierInformation() {
         logger.info("get barriers information of the map");
         SmartMap s = new SmartMap();
@@ -363,6 +374,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
   
+    @Override
     public SmartMapQRCode getQRCodeInformation() {
         logger.info("get qrcodes information of the map");
         SmartMap s = new SmartMap();
@@ -375,7 +387,8 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
-    public SmartMapBarrier getBarrierInformation(Point p) {
+    @Override
+    public SmartMapBarrier.Barrier getBarrierInformation(Point p) {
         logger.info("get barriers information near the point");
         SmartMap s = new SmartMap();
         try {
@@ -383,11 +396,20 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return b;
+        int i = 0;
+        for(;i < b.num;i++) {
+            double distance = (b.barriers.get(i).p.y - p.y) * (b.barriers.get(i).p.y - p.y) 
+                    + (b.barriers.get(i).p.x - p.x) * (b.barriers.get(i).p.x - p.x);
+            if(distance < 4) {
+                return b.barriers.get(i);
+            }
+        }
+        return null;
     }
 
 
-    public SmartMapQRCode getQRCodeInformation(Point p) {
+    @Override
+    public SmartMapQRCode.QRCode getQRCodeInformation(Point p) {
         logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
         try {
@@ -395,11 +417,20 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return q;
+        int i = 0;
+        for(;i < q.num;i++) {
+            double distance = (q.qrcodes.get(i).location.y - p.y) * (q.qrcodes.get(i).location.y - p.y) 
+                    + (q.qrcodes.get(i).location.x - p.x) * (q.qrcodes.get(i).location.x - p.x);
+            if(distance < 4) {
+                return q.qrcodes.get(i);
+            }
+        }
+        return null;
     }
 
 
-    public SmartMapQRCode getQRCodeInformation(String str) {
+    @Override
+    public SmartMapQRCode.QRCode getQRCodeInformation(String str) {
         logger.info("get qrcodes information");
         SmartMap s = new SmartMap();
         try {
@@ -407,10 +438,16 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return q;
+        int i = 0;
+        for(;i < q.num;i++) {
+            if(q.qrcodes.get(i).data.equals(s))
+                return q.qrcodes.get(i);
+        }
+        return null;
     }
     
 
+    @Override
     public SmartMapData getPath(Point start, Point end) {
         logger.info("get the path between two points");
         try {
@@ -458,33 +495,60 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
+    @Override
     public SmartMapInfo getMapInfo() {
         logger.info("get information of the map");
         try {
             build(b,q);
         } catch (IOException ex) {
-            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex);
         }
+        //System.out.println(b.num + "..." + q.num);
         SmartMapInfo info = new SmartMapInfo();
         info.setNumofx(numofx);
         info.setNumofy(numofy);
-        info.setGridMap(GridMap);
+        ArrayList<NodeToDisplay> map = new ArrayList<NodeToDisplay>();
+        int i;
+        int j;
+        for(i = 0;i < numofx;i++) {
+            for(j = 0;j < numofy;j++) {
+                int x = i;
+                int y = j;
+                NodeToDisplay node = new NodeToDisplay(x,y);
+                if(GridMap[i][j].getblack() == false && GridMap[i][j].getQRCode() == false) {
+                    
+                }
+                else {
+                    if(GridMap[i][j].getblack() == true) {
+                        node.setblack(GridMap[i][j].getBarrierInfo());
+                    }
+                    if(GridMap[i][j].getQRCode() == true) {
+                        node.setQRCode(GridMap[i][j].getQRCodeInfo());
+                    }
+                    map.add(node);
+                }
+            }
+        }
+        logger.info("barrier and qrcode num:" + map.size());
+        info.setGridMap(map);
         return info;
     }
     
     public void json(SmartMapBarrier b,SmartMapQRCode q) throws FileNotFoundException, IOException {
         logger.info("read the json file");
 
-        String data = ReadFile("../SmartCar/src/config/newjson.json");
-        //System.out.println(data);
+        String data = ReadFile(SmartMap.class.getResource("/config/newjson.json").getPath());
+//        String data = "/tmp/newjson.json";
+        logger.info("SmarpMap Data file"+data);
+        
         JSONObject jsonObj = JSONObject.fromString(data);
         //得到barrier对象
         JSONArray arrayB = jsonObj.getJSONArray("barriers");
-        
         //System.out.println("barrier length:" + arrayB.length());
         for(int i = 0;i < arrayB.length();i++){
             //= (SmartMapBarrier.Barrier)JSONObject.toBean((JSONArray.fromObject(arrayB.toString()).getJSONObject(i)),SmartMapBarrier.Barrier.class);
             JSONObject temp = new JSONObject(arrayB.getString(i));
+            //System.out.println("b.num" + b.num);
             b.setBarrier(new Point((double)temp.getDouble("centre point x"),(double)temp.getDouble("centre point y")),(double)temp.getDouble("length"), (double)temp.getDouble("width"));
             /*b.p.x = (double)temp.getDouble("centre point x");
             b.p.y = (double)temp.getDouble("centre point y");
@@ -499,11 +563,14 @@ public class SmartMap implements SmartMapInterface {
         for(int i = 0;i < arrayQ.length();i++){
             //(SmartMapQRCode.QRCode)JSONObject.toBean((JSONArray.fromObject(arrayQ.toString()).getJSONObject(i)),SmartMapQRCode.QRCode.class);
             JSONObject temp = new JSONObject(arrayQ.getString(i)); 
+            //System.out.println("q.num" + q.num);
             q.setQRCode(new Point((double)temp.getDouble("centre point x"),(double)temp.getDouble("centre point y")),temp.getString("content"));
             /*q.p.x = temp.getInt("centre point x");
             q.p.y = temp.getInt("centre point y");
             q.l = temp.getString("content");*/
         }
+        logger.info("barrier:"+ b.num);
+        logger.info("qrcode:"+ q.num);
     }
     public String ReadFile(String path){
         File file = new File(path);

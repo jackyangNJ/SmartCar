@@ -10,6 +10,7 @@ import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.Interactor.InteractorIf;
 import smartcar.motor.Motor;
 import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
@@ -42,7 +43,14 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         SIMPLE, COMPLICATE
     }
     static Log logger = LogFactory.getLog(ControllerImpl.class.getName());
+    /**
+     * 默认进入手动驾驶模式
+     */
     DriveModeType driveMode = DriveModeType.MANUAL;
+    
+    /**
+     * 默认采用简单行驶策略
+     */
     DriveStrategyType driveStrategy = DriveStrategyType.SIMPLE;
 
     private final SmartMapInterface map;
@@ -72,7 +80,6 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             double dis2 = sensorUltrasonicData.getDistance2();
             double dis3 = sensorUltrasonicData.getDistance3();
             logger.info("Receive Ultrasonic Data: 1:" + dis1 + " 2 :" + dis2 + " 3: " + dis3);
-
         }
     };
     /**
@@ -92,6 +99,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         sensorUltrasonic = new SensorUltrasonic();
         qrCode = new QRCode();
 
+        //更新系统状态
+        SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
+
         //建立navigator,并校正传感器数据
         navigator = new Navigator(map);
         navigator.calibrateSensors();
@@ -105,6 +115,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         controlerrtTimer = new Timer("Controller");
         controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / eventCheckFrequency);
         logger.info("starting Controller TimerTask ");
+
     }
 
     @Override
@@ -138,7 +149,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     private void autoDriveDealer() {
         //规划路径
-        logger.info("Enter autoDriveDealer");
+
         if (scheduledPath == null) {
             logger.info("Schedule Path");
             Point currentLocation = SystemCoreData.getLocation();
@@ -151,8 +162,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      *
      */
     private void setMotorCmdAccordingSchedulePath() {
+
         Point currentLocation = SystemCoreData.getLocation();
-        
+
         //检查是否到终点
         if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
             logger.info("Reach Endpoint!!!");
@@ -238,4 +250,49 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void setOperation(int op) {
+        if (op == InteractorIf.FORWARD) {
+            logger.info("setOperation:FORWARD");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
+            setCar(50, 0);
+            return;
+        }
+        
+        if (op == InteractorIf.BACK) {
+            logger.info("setOperation:BACK");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_GOBACK);
+            setCar(-50, 0);
+            return;
+        }
+        if (op == InteractorIf.LEFT) {
+            logger.info("setOperation:LEFT");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_GOLEFT);
+            setCar(50, -90);
+            return;
+        }
+        if (op == InteractorIf.RIGHT) {
+            logger.info("setOperation:RIGHT");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_GORIGHT);
+            setCar(50, 90);
+            return;
+        }
+        if (op == InteractorIf.CLOCKWISE) {
+            logger.info("setOperation:CLOCKWISE");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_CLOCKWISE);
+            setCarClockwise();
+            return;
+        }
+        if (op == InteractorIf.COUNTERCLOCKWISE) {
+            logger.info("setOperation:COUNTERCLOCKWISE");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_COUNTERCLOCKWISE);
+            setCarCounterClockwise();
+            return;
+        }
+        if (op == InteractorIf.STOP) {
+            logger.info("setOperation:STOP");
+            SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
+            setCar(0, 0);
+            return;
+        }
+    }
 }

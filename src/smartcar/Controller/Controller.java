@@ -39,4 +39,6 @@ public interface Controller {
      * 逆时针旋转,non block function
      */
     public void setCarCounterClockwise();
+    
+    public void setOperation(int op);
 }

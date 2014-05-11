@@ -271,6 +271,7 @@ public class SensorGyro implements SensorGyroIf {
     @Override
     public void calibrate() {
         //wait until car is still
+        logger.info("Gyto calibrate!");
         while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
         }
         //pause timer task

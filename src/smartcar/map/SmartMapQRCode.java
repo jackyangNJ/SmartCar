@@ -6,6 +6,7 @@
 
 package smartcar.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import smartcar.core.Point;
 
@@ -13,7 +14,7 @@ import smartcar.core.Point;
  *
  * @author Administrator
  */
-public class SmartMapQRCode {
+public class SmartMapQRCode implements Serializable{
     int num;//二维码个数
     ArrayList<QRCode> qrcodes = new ArrayList<>();
     void setQRCode(Point location,String data) {
@@ -23,7 +24,7 @@ public class SmartMapQRCode {
         qrcodes.add(b);
         num ++;
     }
-    void printQRCodes() {
+    /*void printQRCodes() {
         System.out.println("The number of qrcodes is " + num);
         for(int i = 0;i < num;i++) {
             System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
@@ -42,9 +43,25 @@ public class SmartMapQRCode {
             if(qrcodes.get(i).data.equals(s))
                 System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
-    }
-    static class QRCode {
+    }*/
+    static class QRCode implements Serializable{
         Point location;
+
+        public Point getLocation() {
+            return location;
+        }
+
+        public void setLocation(Point location) {
+            this.location = location;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
         String data;
     }
 }
