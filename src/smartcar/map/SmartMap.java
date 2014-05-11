@@ -348,7 +348,11 @@ public class SmartMap implements SmartMapInterface {
         }*/
         SmartMapInfo info = s.getMapInfo();
         int num = info.GridMap.size();
-        //System.out.println(num);
+        System.out.println(num);
+        for(int i = 0;i < num;i++) {
+            System.out.println("x:" + info.GridMap.get(i).x + " y:" +  info.GridMap.get(i).y);
+            System.out.println("barrier:" + info.GridMap.get(i).getblack() + " qrcode:" + info.GridMap.get(i).getQRCode());
+        }
         /*double f = 1.9f;
         int i = (int)f;
         System.out.println(i);*/
@@ -357,6 +361,7 @@ public class SmartMap implements SmartMapInterface {
     } 
 
   
+    @Override
     public SmartMapBarrier getBarrierInformation() {
         logger.info("get barriers information of the map");
         SmartMap s = new SmartMap();
@@ -369,6 +374,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
   
+    @Override
     public SmartMapQRCode getQRCodeInformation() {
         logger.info("get qrcodes information of the map");
         SmartMap s = new SmartMap();
@@ -381,6 +387,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
+    @Override
     public SmartMapBarrier.Barrier getBarrierInformation(Point p) {
         logger.info("get barriers information near the point");
         SmartMap s = new SmartMap();
@@ -401,6 +408,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
+    @Override
     public SmartMapQRCode.QRCode getQRCodeInformation(Point p) {
         logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
@@ -515,7 +523,7 @@ public class SmartMap implements SmartMapInterface {
                         node.setblack(GridMap[i][j].getBarrierInfo());
                     }
                     if(GridMap[i][j].getQRCode() == true) {
-                        node.setblack(GridMap[i][j].getBarrierInfo());
+                        node.setQRCode(GridMap[i][j].getQRCodeInfo());
                     }
                     map.add(node);
                 }
