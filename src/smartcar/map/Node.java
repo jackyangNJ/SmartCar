@@ -5,8 +5,6 @@
  */
 package smartcar.map;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +14,9 @@ import java.util.Map;
  * @author Administrator
  */
 //Node对象用于封装节点信息，包括名字和子节点
-public class Node implements Serializable {
-
-    
-    private static final long serialVersionUID = 1324123542315L;
+public class Node{
     private String name;
-    private Map<Node, Double> child = new HashMap<>();
+    private transient Map<Node, Double> child = new HashMap<>();
     private boolean barriermask = false;
     SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
     private boolean qrcodemask = false;
@@ -73,5 +68,4 @@ public class Node implements Serializable {
         return q;
     }
 
-  
 }

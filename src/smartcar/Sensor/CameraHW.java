@@ -21,7 +21,7 @@ public class CameraHW {
     private static opencv_highgui.CvCapture cvCapture;
 
     static {
-//        startCamera();
+        startCamera();
     }
 
     public static void startCamera() {
