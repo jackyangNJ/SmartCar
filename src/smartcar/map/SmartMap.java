@@ -376,7 +376,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
-    public SmartMapBarrier getBarrierInformation(Point p) {
+    public SmartMapBarrier.Barrier getBarrierInformation(Point p) {
         logger.info("get barriers information near the point");
         SmartMap s = new SmartMap();
         try {
@@ -384,11 +384,19 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return b;
+        int i = 0;
+        for(;i < b.num;i++) {
+            double distance = (b.barriers.get(i).p.y - p.y) * (b.barriers.get(i).p.y - p.y) 
+                    + (b.barriers.get(i).p.x - p.x) * (b.barriers.get(i).p.x - p.x);
+            if(distance < 4) {
+                return b.barriers.get(i);
+            }
+        }
+        return null;
     }
 
 
-    public SmartMapQRCode getQRCodeInformation(Point p) {
+    public SmartMapQRCode.QRCode getQRCodeInformation(Point p) {
         logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
         try {
@@ -396,11 +404,20 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return q;
+        int i = 0;
+        for(;i < q.num;i++) {
+            double distance = (q.qrcodes.get(i).location.y - p.y) * (q.qrcodes.get(i).location.y - p.y) 
+                    + (q.qrcodes.get(i).location.x - p.x) * (q.qrcodes.get(i).location.x - p.x);
+            if(distance < 4) {
+                return q.qrcodes.get(i);
+            }
+        }
+        return null;
     }
 
 
-    public SmartMapQRCode getQRCodeInformation(String str) {
+    @Override
+    public SmartMapQRCode.QRCode getQRCodeInformation(String str) {
         logger.info("get qrcodes information");
         SmartMap s = new SmartMap();
         try {
@@ -408,10 +425,16 @@ public class SmartMap implements SmartMapInterface {
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return q;
+        int i = 0;
+        for(;i < q.num;i++) {
+            if(q.qrcodes.get(i).data.equals(s))
+                return q.qrcodes.get(i);
+        }
+        return null;
     }
     
 
+    @Override
     public SmartMapData getPath(Point start, Point end) {
         logger.info("get the path between two points");
         try {
@@ -459,6 +482,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
 
+    @Override
     public SmartMapInfo getMapInfo() {
         logger.info("get information of the map");
         try {
@@ -469,7 +493,27 @@ public class SmartMap implements SmartMapInterface {
         SmartMapInfo info = new SmartMapInfo();
         info.setNumofx(numofx);
         info.setNumofy(numofy);
-        info.setGridMap(GridMap);
+        ArrayList<NodeToDisplay> map = new ArrayList<NodeToDisplay>();
+        int i = 0;
+        int j = 0;
+        for(;i < numofx;i++) {
+            for(;j < numofy;j++) {
+                int x = i;
+                int y = j;
+                NodeToDisplay node = new NodeToDisplay(x,y);
+                if(GridMap[i][j].getblack() == false && GridMap[i][j].getQRCode() == false) {
+                    continue;
+                }
+                if(GridMap[i][j].getblack() == true) {
+                    node.setblack(GridMap[i][j].getBarrierInfo());
+                }
+                if(GridMap[i][j].getQRCode() == true) {
+                    node.setblack(GridMap[i][j].getBarrierInfo());
+                }
+                map.add(node);
+            }
+        }
+        info.setGridMap(map);
         return info;
     }
     

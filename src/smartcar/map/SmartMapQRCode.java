@@ -24,7 +24,7 @@ public class SmartMapQRCode implements Serializable{
         qrcodes.add(b);
         num ++;
     }
-    void printQRCodes() {
+    /*void printQRCodes() {
         System.out.println("The number of qrcodes is " + num);
         for(int i = 0;i < num;i++) {
             System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
@@ -43,7 +43,7 @@ public class SmartMapQRCode implements Serializable{
             if(qrcodes.get(i).data.equals(s))
                 System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
-    }
+    }*/
     static class QRCode implements Serializable{
         Point location;
 

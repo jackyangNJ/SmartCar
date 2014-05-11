@@ -7,6 +7,7 @@
 package smartcar.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.io.Serializable;
 public class SmartMapInfo implements Serializable{
     int numofy;
     int numofx;
-    Node[][] GridMap;
+    ArrayList<NodeToDisplay> GridMap = new ArrayList<NodeToDisplay>();
     /*
     void setWidth(double width) {
         this.width = width;
@@ -45,7 +46,7 @@ public class SmartMapInfo implements Serializable{
         this.numofy = numofy;
     }
     
-    public int getNumofy() {//二维数组的行数
+    public int getNumofy() {//二维数组的列数
         return numofy;
     }
     
@@ -53,15 +54,15 @@ public class SmartMapInfo implements Serializable{
         this.numofx = numofx;
     }
     
-    public int getNumofx() {//二维数组的列数
+    public int getNumofx() {//二维数组的行数
         return numofx;
     }
     
-    void setGridMap(Node[][] GridMap) {
+    void setGridMap(ArrayList GridMap) {
         this.GridMap = GridMap;
     }
     
-    public Node[][] getMap() {//表示地图的二维数组
+    public ArrayList getMap() {//表示有障碍物或二维码的点的动态数组
         return GridMap;
     }
     

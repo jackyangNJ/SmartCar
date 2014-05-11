@@ -27,7 +27,8 @@ public class SmartMapBarrier implements Serializable{
         barriers.add(b);
         num ++;
     }
-    void printBarriers() {
+    
+    /*void printBarriers() {
         System.out.println("The number of barriers is " + num);
         for(int i = 0;i < num;i++) {
             System.out.println(i + ": " + barriers.get(i).p.x + "," + barriers.get(i).p.y + "," + barriers.get(i).length
@@ -42,7 +43,7 @@ public class SmartMapBarrier implements Serializable{
             System.out.println(barriers.get(i).p.x + "," + barriers.get(i).p.y + "," + barriers.get(i).length
                     + "," + barriers.get(i).width);
         }
-    }
+    }*/
     static class Barrier implements Serializable{
         Point p;
         double length;
