@@ -42,7 +42,7 @@ public class SmartCarThrift {
 
     public void setCarAutoDriveDestination(PointThrift location) throws org.apache.thrift.TException;
 
-    public ByteBuffer getSmartMap() throws org.apache.thrift.TException;
+    public ByteBuffer getSmartMapInfo() throws org.apache.thrift.TException;
 
     public PointThrift getCarCurrentLocation() throws org.apache.thrift.TException;
 
@@ -56,7 +56,7 @@ public class SmartCarThrift {
 
     public void setCarAutoDriveDestination(PointThrift location, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getSmartMap(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getSmartMapInfo(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getCarCurrentLocation(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -141,26 +141,26 @@ public class SmartCarThrift {
       return;
     }
 
-    public ByteBuffer getSmartMap() throws org.apache.thrift.TException
+    public ByteBuffer getSmartMapInfo() throws org.apache.thrift.TException
     {
-      send_getSmartMap();
-      return recv_getSmartMap();
+      send_getSmartMapInfo();
+      return recv_getSmartMapInfo();
     }
 
-    public void send_getSmartMap() throws org.apache.thrift.TException
+    public void send_getSmartMapInfo() throws org.apache.thrift.TException
     {
-      getSmartMap_args args = new getSmartMap_args();
-      sendBase("getSmartMap", args);
+      getSmartMapInfo_args args = new getSmartMapInfo_args();
+      sendBase("getSmartMapInfo", args);
     }
 
-    public ByteBuffer recv_getSmartMap() throws org.apache.thrift.TException
+    public ByteBuffer recv_getSmartMapInfo() throws org.apache.thrift.TException
     {
-      getSmartMap_result result = new getSmartMap_result();
-      receiveBase(result, "getSmartMap");
+      getSmartMapInfo_result result = new getSmartMapInfo_result();
+      receiveBase(result, "getSmartMapInfo");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getSmartMap failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getSmartMapInfo failed: unknown result");
     }
 
     public PointThrift getCarCurrentLocation() throws org.apache.thrift.TException
@@ -296,21 +296,21 @@ public class SmartCarThrift {
       }
     }
 
-    public void getSmartMap(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getSmartMapInfo(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getSmartMap_call method_call = new getSmartMap_call(resultHandler, this, ___protocolFactory, ___transport);
+      getSmartMapInfo_call method_call = new getSmartMapInfo_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getSmartMap_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public getSmartMap_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class getSmartMapInfo_call extends org.apache.thrift.async.TAsyncMethodCall {
+      public getSmartMapInfo_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getSmartMap", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getSmartMap_args args = new getSmartMap_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getSmartMapInfo", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getSmartMapInfo_args args = new getSmartMapInfo_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -321,7 +321,7 @@ public class SmartCarThrift {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getSmartMap();
+        return (new Client(prot)).recv_getSmartMapInfo();
       }
     }
 
@@ -370,7 +370,7 @@ public class SmartCarThrift {
       processMap.put("ping", new ping());
       processMap.put("setOperation", new setOperation());
       processMap.put("setCarAutoDriveDestination", new setCarAutoDriveDestination());
-      processMap.put("getSmartMap", new getSmartMap());
+      processMap.put("getSmartMapInfo", new getSmartMapInfo());
       processMap.put("getCarCurrentLocation", new getCarCurrentLocation());
       return processMap;
     }
@@ -435,22 +435,22 @@ public class SmartCarThrift {
       }
     }
 
-    public static class getSmartMap<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getSmartMap_args> {
-      public getSmartMap() {
-        super("getSmartMap");
+    public static class getSmartMapInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getSmartMapInfo_args> {
+      public getSmartMapInfo() {
+        super("getSmartMapInfo");
       }
 
-      public getSmartMap_args getEmptyArgsInstance() {
-        return new getSmartMap_args();
+      public getSmartMapInfo_args getEmptyArgsInstance() {
+        return new getSmartMapInfo_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getSmartMap_result getResult(I iface, getSmartMap_args args) throws org.apache.thrift.TException {
-        getSmartMap_result result = new getSmartMap_result();
-        result.success = iface.getSmartMap();
+      public getSmartMapInfo_result getResult(I iface, getSmartMapInfo_args args) throws org.apache.thrift.TException {
+        getSmartMapInfo_result result = new getSmartMapInfo_result();
+        result.success = iface.getSmartMapInfo();
         return result;
       }
     }
@@ -491,7 +491,7 @@ public class SmartCarThrift {
       processMap.put("ping", new ping());
       processMap.put("setOperation", new setOperation());
       processMap.put("setCarAutoDriveDestination", new setCarAutoDriveDestination());
-      processMap.put("getSmartMap", new getSmartMap());
+      processMap.put("getSmartMapInfo", new getSmartMapInfo());
       processMap.put("getCarCurrentLocation", new getCarCurrentLocation());
       return processMap;
     }
@@ -646,20 +646,20 @@ public class SmartCarThrift {
       }
     }
 
-    public static class getSmartMap<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getSmartMap_args, ByteBuffer> {
-      public getSmartMap() {
-        super("getSmartMap");
+    public static class getSmartMapInfo<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getSmartMapInfo_args, ByteBuffer> {
+      public getSmartMapInfo() {
+        super("getSmartMapInfo");
       }
 
-      public getSmartMap_args getEmptyArgsInstance() {
-        return new getSmartMap_args();
+      public getSmartMapInfo_args getEmptyArgsInstance() {
+        return new getSmartMapInfo_args();
       }
 
       public AsyncMethodCallback<ByteBuffer> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<ByteBuffer>() { 
           public void onComplete(ByteBuffer o) {
-            getSmartMap_result result = new getSmartMap_result();
+            getSmartMapInfo_result result = new getSmartMapInfo_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -672,7 +672,7 @@ public class SmartCarThrift {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getSmartMap_result result = new getSmartMap_result();
+            getSmartMapInfo_result result = new getSmartMapInfo_result();
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -692,8 +692,8 @@ public class SmartCarThrift {
         return false;
       }
 
-      public void start(I iface, getSmartMap_args args, org.apache.thrift.async.AsyncMethodCallback<ByteBuffer> resultHandler) throws TException {
-        iface.getSmartMap(resultHandler);
+      public void start(I iface, getSmartMapInfo_args args, org.apache.thrift.async.AsyncMethodCallback<ByteBuffer> resultHandler) throws TException {
+        iface.getSmartMapInfo(resultHandler);
       }
     }
 
@@ -2463,14 +2463,14 @@ public class SmartCarThrift {
 
   }
 
-  public static class getSmartMap_args implements org.apache.thrift.TBase<getSmartMap_args, getSmartMap_args._Fields>, java.io.Serializable, Cloneable, Comparable<getSmartMap_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getSmartMap_args");
+  public static class getSmartMapInfo_args implements org.apache.thrift.TBase<getSmartMapInfo_args, getSmartMapInfo_args._Fields>, java.io.Serializable, Cloneable, Comparable<getSmartMapInfo_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getSmartMapInfo_args");
 
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getSmartMap_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getSmartMap_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getSmartMapInfo_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getSmartMapInfo_argsTupleSchemeFactory());
     }
 
 
@@ -2533,20 +2533,20 @@ public class SmartCarThrift {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getSmartMap_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getSmartMapInfo_args.class, metaDataMap);
     }
 
-    public getSmartMap_args() {
+    public getSmartMapInfo_args() {
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getSmartMap_args(getSmartMap_args other) {
+    public getSmartMapInfo_args(getSmartMapInfo_args other) {
     }
 
-    public getSmartMap_args deepCopy() {
-      return new getSmartMap_args(this);
+    public getSmartMapInfo_args deepCopy() {
+      return new getSmartMapInfo_args(this);
     }
 
     @Override
@@ -2579,12 +2579,12 @@ public class SmartCarThrift {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getSmartMap_args)
-        return this.equals((getSmartMap_args)that);
+      if (that instanceof getSmartMapInfo_args)
+        return this.equals((getSmartMapInfo_args)that);
       return false;
     }
 
-    public boolean equals(getSmartMap_args that) {
+    public boolean equals(getSmartMapInfo_args that) {
       if (that == null)
         return false;
 
@@ -2597,7 +2597,7 @@ public class SmartCarThrift {
     }
 
     @Override
-    public int compareTo(getSmartMap_args other) {
+    public int compareTo(getSmartMapInfo_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -2621,7 +2621,7 @@ public class SmartCarThrift {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getSmartMap_args(");
+      StringBuilder sb = new StringBuilder("getSmartMapInfo_args(");
       boolean first = true;
 
       sb.append(")");
@@ -2649,15 +2649,15 @@ public class SmartCarThrift {
       }
     }
 
-    private static class getSmartMap_argsStandardSchemeFactory implements SchemeFactory {
-      public getSmartMap_argsStandardScheme getScheme() {
-        return new getSmartMap_argsStandardScheme();
+    private static class getSmartMapInfo_argsStandardSchemeFactory implements SchemeFactory {
+      public getSmartMapInfo_argsStandardScheme getScheme() {
+        return new getSmartMapInfo_argsStandardScheme();
       }
     }
 
-    private static class getSmartMap_argsStandardScheme extends StandardScheme<getSmartMap_args> {
+    private static class getSmartMapInfo_argsStandardScheme extends StandardScheme<getSmartMapInfo_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getSmartMap_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getSmartMapInfo_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2678,7 +2678,7 @@ public class SmartCarThrift {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getSmartMap_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getSmartMapInfo_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -2688,36 +2688,36 @@ public class SmartCarThrift {
 
     }
 
-    private static class getSmartMap_argsTupleSchemeFactory implements SchemeFactory {
-      public getSmartMap_argsTupleScheme getScheme() {
-        return new getSmartMap_argsTupleScheme();
+    private static class getSmartMapInfo_argsTupleSchemeFactory implements SchemeFactory {
+      public getSmartMapInfo_argsTupleScheme getScheme() {
+        return new getSmartMapInfo_argsTupleScheme();
       }
     }
 
-    private static class getSmartMap_argsTupleScheme extends TupleScheme<getSmartMap_args> {
+    private static class getSmartMapInfo_argsTupleScheme extends TupleScheme<getSmartMapInfo_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getSmartMap_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getSmartMapInfo_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getSmartMap_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getSmartMapInfo_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
 
   }
 
-  public static class getSmartMap_result implements org.apache.thrift.TBase<getSmartMap_result, getSmartMap_result._Fields>, java.io.Serializable, Cloneable, Comparable<getSmartMap_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getSmartMap_result");
+  public static class getSmartMapInfo_result implements org.apache.thrift.TBase<getSmartMapInfo_result, getSmartMapInfo_result._Fields>, java.io.Serializable, Cloneable, Comparable<getSmartMapInfo_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getSmartMapInfo_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getSmartMap_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getSmartMap_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getSmartMapInfo_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getSmartMapInfo_resultTupleSchemeFactory());
     }
 
     public ByteBuffer success; // required
@@ -2787,13 +2787,13 @@ public class SmartCarThrift {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getSmartMap_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getSmartMapInfo_result.class, metaDataMap);
     }
 
-    public getSmartMap_result() {
+    public getSmartMapInfo_result() {
     }
 
-    public getSmartMap_result(
+    public getSmartMapInfo_result(
       ByteBuffer success)
     {
       this();
@@ -2803,15 +2803,15 @@ public class SmartCarThrift {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getSmartMap_result(getSmartMap_result other) {
+    public getSmartMapInfo_result(getSmartMapInfo_result other) {
       if (other.isSetSuccess()) {
         this.success = org.apache.thrift.TBaseHelper.copyBinary(other.success);
 ;
       }
     }
 
-    public getSmartMap_result deepCopy() {
-      return new getSmartMap_result(this);
+    public getSmartMapInfo_result deepCopy() {
+      return new getSmartMapInfo_result(this);
     }
 
     @Override
@@ -2828,12 +2828,12 @@ public class SmartCarThrift {
       return success;
     }
 
-    public getSmartMap_result setSuccess(byte[] success) {
+    public getSmartMapInfo_result setSuccess(byte[] success) {
       setSuccess(success == null ? (ByteBuffer)null : ByteBuffer.wrap(success));
       return this;
     }
 
-    public getSmartMap_result setSuccess(ByteBuffer success) {
+    public getSmartMapInfo_result setSuccess(ByteBuffer success) {
       this.success = success;
       return this;
     }
@@ -2892,12 +2892,12 @@ public class SmartCarThrift {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getSmartMap_result)
-        return this.equals((getSmartMap_result)that);
+      if (that instanceof getSmartMapInfo_result)
+        return this.equals((getSmartMapInfo_result)that);
       return false;
     }
 
-    public boolean equals(getSmartMap_result that) {
+    public boolean equals(getSmartMapInfo_result that) {
       if (that == null)
         return false;
 
@@ -2919,7 +2919,7 @@ public class SmartCarThrift {
     }
 
     @Override
-    public int compareTo(getSmartMap_result other) {
+    public int compareTo(getSmartMapInfo_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -2953,7 +2953,7 @@ public class SmartCarThrift {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getSmartMap_result(");
+      StringBuilder sb = new StringBuilder("getSmartMapInfo_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -2988,15 +2988,15 @@ public class SmartCarThrift {
       }
     }
 
-    private static class getSmartMap_resultStandardSchemeFactory implements SchemeFactory {
-      public getSmartMap_resultStandardScheme getScheme() {
-        return new getSmartMap_resultStandardScheme();
+    private static class getSmartMapInfo_resultStandardSchemeFactory implements SchemeFactory {
+      public getSmartMapInfo_resultStandardScheme getScheme() {
+        return new getSmartMapInfo_resultStandardScheme();
       }
     }
 
-    private static class getSmartMap_resultStandardScheme extends StandardScheme<getSmartMap_result> {
+    private static class getSmartMapInfo_resultStandardScheme extends StandardScheme<getSmartMapInfo_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getSmartMap_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getSmartMapInfo_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3025,7 +3025,7 @@ public class SmartCarThrift {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getSmartMap_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getSmartMapInfo_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3040,16 +3040,16 @@ public class SmartCarThrift {
 
     }
 
-    private static class getSmartMap_resultTupleSchemeFactory implements SchemeFactory {
-      public getSmartMap_resultTupleScheme getScheme() {
-        return new getSmartMap_resultTupleScheme();
+    private static class getSmartMapInfo_resultTupleSchemeFactory implements SchemeFactory {
+      public getSmartMapInfo_resultTupleScheme getScheme() {
+        return new getSmartMapInfo_resultTupleScheme();
       }
     }
 
-    private static class getSmartMap_resultTupleScheme extends TupleScheme<getSmartMap_result> {
+    private static class getSmartMapInfo_resultTupleScheme extends TupleScheme<getSmartMapInfo_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getSmartMap_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getSmartMapInfo_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -3062,7 +3062,7 @@ public class SmartCarThrift {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getSmartMap_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getSmartMapInfo_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

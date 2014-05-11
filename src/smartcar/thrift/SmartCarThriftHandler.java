@@ -14,6 +14,7 @@ import org.apache.thrift.TException;
 import smartcar.Interactor.Interactor;
 import smartcar.Interactor.InteractorIf;
 import smartcar.core.Point;
+import smartcar.map.SmartMapInfo;
 import smartcar.test.sensor.testArduinoBridge;
 
 /**
@@ -57,10 +58,11 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
     }
 
     @Override
-    public ByteBuffer getSmartMap() throws TException {
+    public ByteBuffer getSmartMapInfo() throws TException {
         logger.info("getSmartMap");
         try {
-            return getByteBufferFromObject(interactor.getSmartMapInfo());
+            SmartMapInfo info = interactor.getSmartMapInfo();
+            return getByteBufferFromObject(info);
         } catch (IOException ex) {
             logger.error(ex);
         }
@@ -82,7 +84,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         SmartCarThriftHandler handler=new SmartCarThriftHandler();
         
         try {
-            handler.getSmartMap();
+            handler.getSmartMapInfo();
         } catch (TException ex) {
             Logger.getLogger(SmartCarThriftHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

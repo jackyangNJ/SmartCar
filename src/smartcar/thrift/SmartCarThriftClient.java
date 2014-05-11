@@ -47,7 +47,7 @@ public class SmartCarThriftClient {
         }
 
         client.ping();
-        ByteBuffer data= client.getSmartMap();
+        ByteBuffer data= client.getSmartMapInfo();
         
         Point p=(Point)getObject(data);
         System.err.println(p);

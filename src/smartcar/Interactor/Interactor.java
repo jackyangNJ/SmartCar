@@ -9,13 +9,14 @@ import smartcar.map.SmartMap;
 import smartcar.map.SmartMapInfo;
 
 public class Interactor implements InteractorIf {
+
     public static Log logger = LogFactory.getLog(Interactor.class);
     private SmartMap map;
-    private Controller controller=null;
+    private Controller controller;
 
     public Interactor() {
         map = new SmartMap();
-//        controller = new ControllerImpl(map);
+        controller = new ControllerImpl(map);
 
     }
 
