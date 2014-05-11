@@ -448,13 +448,19 @@ public class SmartMap implements SmartMapInterface {
     
 
     @Override
-    public SmartMapData getPath(Point start, Point end) {
+    public SmartMapData getPath(Point start_real, Point end_real) {
         logger.info("get the path between two points");
         try {
             build(b,q);
         } catch (IOException ex) {
             Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
         }
+        double start_x = start_real.x/grid;
+        double start_y = start_real.y/grid;
+        double end_x = end_real.x/grid;
+        double end_y = end_real.y/grid;
+        Point start = new Point(start_x,start_y);
+        Point end = new Point(end_x,end_y);
         String name = "(" + String.valueOf((int)end.x) + "," + String.valueOf((int)end.y) + ")";
         //System.out.println(name);
         Node ending = new Node(name);
