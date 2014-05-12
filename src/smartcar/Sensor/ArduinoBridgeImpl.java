@@ -30,8 +30,14 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         serialPort = new jssc.SerialPort(serialName);
         try {
             //Open port
-            serialPort.openPort();
+            if(!serialPort.openPort()){
+                logger.info("cannot open serial port");
+            }
+            logger.info("open serial port");
 
+            //purge
+            serialPort.purgePort(jssc.SerialPort.PURGE_TXCLEAR);
+            serialPort.purgePort(jssc.SerialPort.PURGE_RXCLEAR);
             //Set params
             serialPort.setParams(serialRate, 8, 1, 0);
 

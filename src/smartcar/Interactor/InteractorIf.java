@@ -3,23 +3,16 @@ package smartcar.Interactor;
 import smartcar.core.Point;
 import smartcar.map.SmartMap;
 import smartcar.map.SmartMapInfo;
+import smartcar.thrift.CarOperation;
 
 
 public interface InteractorIf {
-    public static final int FORWARD = 1;
-    public static final int BACK = 2;
-    public static final int LEFT = 3;
-    public static final int RIGHT = 4;
-    public static final int CLOCKWISE = 5;
-    public static final int COUNTERCLOCKWISE = 6;
-    public static final int STOP = 7;
     
-    public void setOperation(int op);
+    public void setCarOperation(CarOperation carOperation);
     
     /**
      * 进入自动驾驶模式，由小车自动行驶到指定的位置
-     * @param x
-     * @param y 
+     * @param location 
      */
     public void setCarAutoDriveDestination(Point location);
 
@@ -43,12 +36,5 @@ public interface InteractorIf {
      * @param angle 
      */
     public void setCar(int speed,int angle);
-    /**
-     * 顺时针旋转，non block function
-     */
-    public void setCarClockwise();
-    /**
-     * 逆时针旋转,non block function
-     */
-    public void setCarCounterClockwise();
+
 }

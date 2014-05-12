@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -24,10 +22,10 @@ import smartcar.test.sensor.testArduinoBridge;
 public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     public static Log logger = LogFactory.getLog(SmartCarThriftHandler.class);
-    public     InteractorIf interactor=new Interactor();
+    public InteractorIf interactor;
 
     public SmartCarThriftHandler() {
-
+        interactor = new Interactor();
     }
 
     @Override
@@ -47,19 +45,19 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         logger.info("getCarCurrentLocation callby");
         Point currentPosition = interactor.getCarCurrentLocation();
         PointThrift pos;
-        pos = new  PointThrift(currentPosition.getX(), currentPosition.getY());
+        pos = new PointThrift(currentPosition.getX(), currentPosition.getY());
         return pos;
     }
 
     @Override
     public void setOperation(CarOperation op) throws TException {
-        logger.info("setOperation = "+op );
-        interactor.setOperation(op.getValue());
+        logger.info("setCarOperation = " + op);
+        interactor.setCarOperation(op);
     }
 
     @Override
     public ByteBuffer getSmartMapInfo() throws TException {
-        logger.info("getSmartMap");
+        logger.info("getSmartMapInfo");
         try {
             SmartMapInfo info = interactor.getSmartMapInfo();
             return getByteBufferFromObject(info);
@@ -79,15 +77,16 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         out.close();
         return ByteBuffer.wrap(bytes);
     }
+
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-        SmartCarThriftHandler handler=new SmartCarThriftHandler();
-        
+        SmartCarThriftHandler handler = new SmartCarThriftHandler();
+
         try {
             handler.getSmartMapInfo();
         } catch (TException ex) {
-            Logger.getLogger(SmartCarThriftHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex);
         }
-        
+
     }
 }

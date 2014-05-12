@@ -10,7 +10,6 @@ import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.Interactor.InteractorIf;
 import smartcar.motor.Motor;
 import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
@@ -22,6 +21,7 @@ import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
 import smartcar.core.Utils;
 import smartcar.map.SmartMapData;
+import smartcar.thrift.CarOperation;
 
 /**
  *
@@ -47,7 +47,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      * 默认进入手动驾驶模式
      */
     DriveModeType driveMode = DriveModeType.MANUAL;
-    
+
     /**
      * 默认采用简单行驶策略
      */
@@ -105,7 +105,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //建立navigator,并校正传感器数据
         navigator = new Navigator(map);
         navigator.calibrateSensors();
-        logger.info("calibrate sensors complete!");
+        logger.info("Navigator calibrate sensors complete!");
 
         //连接事件处理程序
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
@@ -115,27 +115,16 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         controlerrtTimer = new Timer("Controller");
         controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / eventCheckFrequency);
         logger.info("starting Controller TimerTask ");
-
     }
 
     @Override
     public Point getCarCurrentLocation() {
-        return SystemCoreData.getLocation();
+        return navigator.getCurrentLocation();
     }
 
     @Override
     public void setCar(int speed, int angle) {
         Motor.smart_car_set(speed, angle);
-    }
-
-    @Override
-    public void setCarClockwise() {
-        Motor.set_clockwise();
-    }
-
-    @Override
-    public void setCarCounterClockwise() {
-        Motor.set_counterclockwise();
     }
 
     @Override
@@ -152,42 +141,73 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
         if (scheduledPath == null) {
             logger.info("Schedule Path");
-            Point currentLocation = SystemCoreData.getLocation();
+            Point currentLocation = navigator.getCurrentLocation();
             scheduledPath = map.getPath(currentLocation, destination);
+            logger.info("sechdule path:" + scheduledPath);
         }
-        setMotorCmdAccordingSchedulePath();
+
+        /**
+         * 检查二维码
+         */
+        checkQRCode();
+
+        CarOperation op = getMotorOperationAccordingSchedulePath();
     }
 
     /**
      *
      */
-    private void setMotorCmdAccordingSchedulePath() {
+    private CarOperation getMotorOperationAccordingSchedulePath() {
 
-        Point currentLocation = SystemCoreData.getLocation();
-
+        Point currentLocation = navigator.getCurrentLocation();
+        logger.info("CurrentLocation=" + currentLocation);
         //检查是否到终点
         if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
             logger.info("Reach Endpoint!!!");
-            return;
+            setCarOperation(CarOperation.STOP);
+            System.exit(0);
+            return CarOperation.STOP;
         }
 
+        if (scheduledPath == null) {
+            logger.info("Reach Endpoint!!!");
+            setCarOperation(CarOperation.STOP);
+            System.exit(0);
+        }
         //更新schedulePath,因为schedulePath是一个嵌套的数据结构
         if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
             scheduledPath = scheduledPath.getChild();
+            logger.info("schedulePath="+scheduledPath);
         }
 
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-            if (Math.abs(driveDirection - SystemCoreData.getAngle()) > angleDeviation) {
-                rotateToAbsoluteAngle(driveDirection, angleDeviation);
+            logger.info("EndPoint="+scheduledPath.getEndPoint());
+            logger.info("drivedirection=" + driveDirection);
+            logger.info("CurrentAngle = " + navigator.getAngle());
+            double rotateAngle = Math.abs(driveDirection - navigator.getAngle());
+            //SET BACK
+            if (Math.abs(rotateAngle - 180) < 90) {
+                driveDirection = driveDirection > 180 ? driveDirection - 180 : driveDirection + 180;
+                if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
+                    rotateToAbsoluteAngle(driveDirection, angleDeviation);
+                }
+                setCarOperation(CarOperation.BACK);
+            } else { //SET FORWARD
+                if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
+                    rotateToAbsoluteAngle(driveDirection, angleDeviation);
+                }
+                setCarOperation(CarOperation.FORWARD);
             }
-            Motor.set_go();
+
+            return CarOperation.FORWARD;
         } else {
             /**
              * TODO
              */
         }
+        return null;
     }
 
     /**
@@ -203,23 +223,30 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      * 旋转小车到一定角度，deviation指明了旋转的正负误差, 当小车旋转角度的偏差在误差值内时，停止旋转，
      * 这里旋转的策略总是往旋转最小角度的方向旋转
      *
-     * @param angle 表示绝对旋转角度，而非相对角度
+     * @param dstAngle 表示绝对旋转角度，而非相对角度
      * @param deviation
      */
-    public void rotateToAbsoluteAngle(double angle, double deviation) {
-        while (Math.abs(SystemCoreData.getAngle() - angle) > deviation) {
-            if (SystemCoreData.getAngle() > angle) {
-                if (Math.abs(SystemCoreData.getAngle() - angle) < 180) {
-                    Motor.set_clockwise();
+    public void rotateToAbsoluteAngle(double dstAngle, double deviation) {
+        double currentAngle;
+        logger.info("Rotate");
+        //计算最小的旋转方向，使旋转角度达到最小
+        do {
+            currentAngle = navigator.getAngle();
+            if (currentAngle > dstAngle) {
+                if (Math.abs(currentAngle - dstAngle) < 180) {
+                    setCarOperation(CarOperation.CLOCKWISE);
                 } else {
-                    Motor.set_counterclockwise();
+                    setCarOperation(CarOperation.COUNTERCLOCKWISE);
                 }
-            } else if (Math.abs(SystemCoreData.getAngle() - angle) < 180) {
-                Motor.set_counterclockwise();
             } else {
-                Motor.set_clockwise();
+                if (Math.abs(currentAngle - dstAngle) < 180) {
+                    setCarOperation(CarOperation.COUNTERCLOCKWISE);
+                } else {
+                    setCarOperation(CarOperation.CLOCKWISE);
+                }
             }
-        }
+            Utils.delay(5);
+        } while (Math.abs(currentAngle - dstAngle) > deviation);
     }
 
     private void mannualDriveDealer() {
@@ -250,49 +277,49 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void setOperation(int op) {
-        if (op == InteractorIf.FORWARD) {
-            logger.info("setOperation:FORWARD");
+    @Override
+    public void setCarOperation(CarOperation carOperation) {
+        if (carOperation == CarOperation.FORWARD) {
+            logger.debug("setCarOperation:FORWARD");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
-            setCar(50, 0);
+            setCar(20, 0);
             return;
         }
-        
-        if (op == InteractorIf.BACK) {
-            logger.info("setOperation:BACK");
+
+        if (carOperation == CarOperation.BACK) {
+            logger.debug("setCarOperation:BACK");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOBACK);
-            setCar(-50, 0);
+            setCar(-20, 0);
             return;
         }
-        if (op == InteractorIf.LEFT) {
-            logger.info("setOperation:LEFT");
+        if (carOperation == CarOperation.LEFT) {
+            logger.debug("setCarOperation:LEFT");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOLEFT);
-            setCar(50, -90);
+            setCar(20, -90);
             return;
         }
-        if (op == InteractorIf.RIGHT) {
-            logger.info("setOperation:RIGHT");
+        if (carOperation == CarOperation.RIGHT) {
+            logger.debug("setCarOperation:RIGHT");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GORIGHT);
-            setCar(50, 90);
+            setCar(20, 90);
             return;
         }
-        if (op == InteractorIf.CLOCKWISE) {
-            logger.info("setOperation:CLOCKWISE");
+        if (carOperation == CarOperation.CLOCKWISE) {
+            logger.debug("setCarOperation:CLOCKWISE");
             SystemCoreData.setSystemState(SystemCoreData.STATE_CLOCKWISE);
-            setCarClockwise();
+            Motor.set_clockwise();
             return;
         }
-        if (op == InteractorIf.COUNTERCLOCKWISE) {
-            logger.info("setOperation:COUNTERCLOCKWISE");
+        if (carOperation == CarOperation.COUNTERCLOCKWISE) {
+            logger.debug("setCarOperation:COUNTERCLOCKWISE");
             SystemCoreData.setSystemState(SystemCoreData.STATE_COUNTERCLOCKWISE);
-            setCarCounterClockwise();
+            Motor.set_counterclockwise();
             return;
         }
-        if (op == InteractorIf.STOP) {
-            logger.info("setOperation:STOP");
+        if (carOperation == CarOperation.STOP) {
+            logger.debug("setCarOperation:STOP");
             SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
             setCar(0, 0);
-            return;
         }
     }
 }

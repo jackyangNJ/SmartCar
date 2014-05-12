@@ -1,6 +1,7 @@
 package smartcar.Controller;
 
 import smartcar.core.Point;
+import smartcar.thrift.CarOperation;
 
 /**
  *
@@ -31,14 +32,8 @@ public interface Controller {
     public void setCar(int speed, int angle);
 
     /**
-     * 顺时针旋转，non block function
+     * CarOperation 中指定了小车行驶的指令
+     * @param carOperation 
      */
-    public void setCarClockwise();
-
-    /**
-     * 逆时针旋转,non block function
-     */
-    public void setCarCounterClockwise();
-    
-    public void setOperation(int op);
+    public void setCarOperation(CarOperation carOperation);
 }

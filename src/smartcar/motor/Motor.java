@@ -76,7 +76,7 @@ public class Motor {
         fileWrite(MOTOR_FILE_SPEED4, cspeed);
     }
 
-    public static void set_go() {
+    private static void set_go() {
         logger.debug("set go");
         logger.debug(MOTOR_FILE_DIRECTION1);
         fileWrite(MOTOR_FILE_DIRECTION1,Integer.toString(1));
@@ -85,7 +85,7 @@ public class Motor {
         fileWrite(MOTOR_FILE_DIRECTION4,Integer.toString(1));
     }
 
-    public static void set_back() {
+    private static void set_back() {
         logger.debug("set back");
         fileWrite(MOTOR_FILE_DIRECTION1,Integer.toString(0));
         fileWrite(MOTOR_FILE_DIRECTION2,Integer.toString(0));
@@ -95,21 +95,21 @@ public class Motor {
     }
 
 
-    public static void set_left(int speed) {   //no unsigned in java
+    private static void set_left(int speed) {   //no unsigned in java
         logger.debug("set left");
         String cspeed = Integer.toString(speed) + '\0';
         fileWrite(MOTOR_FILE_SPEED2,cspeed);
         fileWrite(MOTOR_FILE_SPEED3,cspeed);
     }
 
-    public static void set_right(int speed) {
+    private static void set_right(int speed) {
         logger.debug("Motor set right");
         String cspeed = Integer.toString(speed) + '\0';
         fileWrite(MOTOR_FILE_SPEED1,cspeed);
         fileWrite(MOTOR_FILE_SPEED4,cspeed);   
     }
 
-    public static void set_car(int FB, int LR, int fast, int slow) {
+    private static void set_car(int FB, int LR, int fast, int slow) {
         if (FB == 1) {
             set_back();
         } else {

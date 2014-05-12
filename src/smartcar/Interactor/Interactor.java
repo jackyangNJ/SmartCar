@@ -7,6 +7,7 @@ import smartcar.Controller.ControllerImpl;
 import smartcar.core.Point;
 import smartcar.map.SmartMap;
 import smartcar.map.SmartMapInfo;
+import smartcar.thrift.CarOperation;
 
 public class Interactor implements InteractorIf {
 
@@ -21,8 +22,8 @@ public class Interactor implements InteractorIf {
     }
 
     @Override
-    public void setOperation(int op) {
-        controller.setOperation(op);
+    public void setCarOperation(CarOperation carOperation) {
+        controller.setCarOperation(carOperation);
     }
 
     @Override
@@ -43,15 +44,5 @@ public class Interactor implements InteractorIf {
     @Override
     public void setCar(int speed, int angle) {
         controller.setCar(speed, angle);
-    }
-
-    @Override
-    public void setCarClockwise() {
-        controller.setCarClockwise();
-    }
-
-    @Override
-    public void setCarCounterClockwise() {
-        controller.setCarCounterClockwise();
     }
 }

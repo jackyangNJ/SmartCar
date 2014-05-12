@@ -82,8 +82,8 @@ public class SensorGyro implements SensorGyroIf {
                 //calibrate data                
                 calibrateRawData(meanData);
                 gyroData = kalmanData(rawData);
-                logger.info(gyroData.getHori_angleSpeed());
-                logger.info(gyroData.getHori_angle());
+//                logger.info(gyroData.getHori_angleSpeed());
+//                logger.info(gyroData.getHori_angle());
                 fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_GYRO_TYPE, gyroData));
             }
         }
@@ -154,7 +154,7 @@ public class SensorGyro implements SensorGyroIf {
         byte Z_L = gyr_read(OUT_Z_L_addr);
         byte Z_H = gyr_read(OUT_Z_H_addr);
         int z = Z_H << 8 | Z_L;
-        rawData.setHori_angleSpeed((double) z * UNIT / 1000);
+        rawData.setHori_angleSpeed((double) z * UNIT / 1000 *2);
     }
 
     /**

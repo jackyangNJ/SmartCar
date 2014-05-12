@@ -24,7 +24,7 @@ public class NavigatorTest {
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
         Navigator navigatorTest = new Navigator(map);
         navigatorTest.calibrateSensors();
-        SystemCoreData.setSystemState(SystemCoreData.STATE_GOAHEAD);
+        SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
 
         while (true) {
 //            logger.info("a.x: " + navigatorTest.getNavigatorDate().geta_x());

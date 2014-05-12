@@ -20,5 +20,4 @@ void loop() {
     }
     HallPinStateOld = HallPinStateNew;
     
-    //get state of magnetic sensor
 }

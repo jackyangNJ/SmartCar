@@ -6,13 +6,14 @@ import smartcar.Sensor.SensorHall;
 import smartcar.Sensor.SensorHallData;
 import smartcar.Sensor.SensorMagnetic;
 import smartcar.Sensor.SensorMagneticData;
+import smartcar.core.Point;
 
 /**
  * Interface for class Navigator
  * @author jackl
  */
 public interface NavigatorIf {
-   public NavigatorData getNavigatorDate();
+   public NavigatorData getNavigatorData();
    /**
     * 获取加速度传感器的原始数据
     * @return 
@@ -40,4 +41,7 @@ public interface NavigatorIf {
     * 静止矫正传感器数据
     */
    public void calibrateSensors();
+   
+    Point getCurrentLocation();
+    double getAngle();
 }

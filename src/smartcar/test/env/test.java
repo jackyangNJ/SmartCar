@@ -7,6 +7,8 @@ package smartcar.test.env;
 
 import java.util.ArrayList;
 import org.apache.log4j.PropertyConfigurator;
+import smartcar.core.Point;
+import smartcar.core.Utils;
 import smartcar.map.SmartMap;
 import smartcar.test.sensor.testArduinoBridge;
 
@@ -18,8 +20,10 @@ public class test {
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-        System.err.println(Math.cos(5.710036949078421E25));
-        System.err.println(SmartMap.class.getResource("/config/log4j.properties").getPath());
+        Point dst=new Point(0.875, 0.625);
+        Point srcPoint= new Point(0.83, 0.55);
+        System.err.println(Utils.getAngle(srcPoint, dst));
+                
         
     }
 }
