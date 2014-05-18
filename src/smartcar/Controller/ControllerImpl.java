@@ -169,21 +169,21 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             return CarOperation.STOP;
         }
 
+        //更新schedulePath,因为schedulePath是一个嵌套的数据结构
+        if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
+            scheduledPath = scheduledPath.getChild();
+            logger.info("schedulePath=" + scheduledPath);
+        }
         if (scheduledPath == null) {
             logger.info("Reach Endpoint!!!");
             setCarOperation(CarOperation.STOP);
             System.exit(0);
         }
-        //更新schedulePath,因为schedulePath是一个嵌套的数据结构
-        if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
-            scheduledPath = scheduledPath.getChild();
-            logger.info("schedulePath="+scheduledPath);
-        }
 
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-            logger.info("EndPoint="+scheduledPath.getEndPoint());
+            logger.info("EndPoint=" + scheduledPath.getEndPoint());
             logger.info("drivedirection=" + driveDirection);
             logger.info("CurrentAngle = " + navigator.getAngle());
             double rotateAngle = Math.abs(driveDirection - navigator.getAngle());
@@ -191,17 +191,15 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             if (Math.abs(rotateAngle - 180) < 90) {
                 driveDirection = driveDirection > 180 ? driveDirection - 180 : driveDirection + 180;
                 if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
-                    rotateToAbsoluteAngle(driveDirection, angleDeviation);
+                    rotateToAbsoluteAngle(driveDirection, 3);
                 }
                 setCarOperation(CarOperation.BACK);
             } else { //SET FORWARD
                 if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
-                    rotateToAbsoluteAngle(driveDirection, angleDeviation);
+                    rotateToAbsoluteAngle(driveDirection, 3);
                 }
                 setCarOperation(CarOperation.FORWARD);
             }
-
-            return CarOperation.FORWARD;
         } else {
             /**
              * TODO

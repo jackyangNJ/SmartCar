@@ -36,6 +36,7 @@ import smartcar.test.sensor.testArduinoBridge;
 //Node对象用于封装节点信息，包括名字和子节点
 //Dijkstra对象用于计算起始节点到所有其他节点的最短路径
 class Dijkstra {
+
     public static Log logger = LogFactory.getLog(Dijkstra.class);
     Set<Node> open = new HashSet<Node>();
     Set<Node> close = new HashSet<Node>();
@@ -238,7 +239,7 @@ public class SmartMap implements SmartMapInterface {
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
             logger.info("y_i:" + y_i);
             //System.out.println("y_i:" + y_i);
-            
+
             GridMap[x_i][y_i].setblack(b.barriers.get(i));
             double length = (b.barriers.get(i).length - grid) / 2;//中心点一侧的长度
             if (length != 0) {
@@ -375,6 +376,11 @@ public class SmartMap implements SmartMapInterface {
         return q;
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     @Override
     public SmartMapBarrier.Barrier getBarrierInformation(Point p) {
         logger.info("get barriers information near the point");
@@ -529,13 +535,10 @@ public class SmartMap implements SmartMapInterface {
     public void json(SmartMapBarrier b, SmartMapQRCode q) throws FileNotFoundException, IOException {
         logger.info("read the json file");
 
-        String data = ReadFile("/home/SmartCarTest/newjson.json");
-//        byte[] content = new byte[1000];
-//        SmartMap.class.getResourceAsStream("/config/newjson.json").read(content);
-//        String data = "/tmp/newjson.json";
+        byte[] content = new byte[10000];
+        SmartMap.class.getResourceAsStream("/config/newjson.json").read(content);
+        String data = new String(content);
         logger.info("SmarpMap Data file" + data);
-
-//        JSONObject jsonObj = JSONObject.fromString(new String(content));
 
         JSONObject jsonObj = JSONObject.fromString(data);
         //得到barrier对象

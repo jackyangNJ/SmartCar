@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
-import smartcar.test.sensor.testArduinoBridge;
 
 /**
  *
@@ -92,7 +91,7 @@ public class Utils {
     }
 
     public static void main(String[] args) {
-        PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
+        PropertyConfigurator.configure(Utils.class.getResourceAsStream("/config/log4j.properties"));
         logger.info(excuteSysCommand("cat /sys/class/ulwave/ulwave0/trigger"));
     }
 }

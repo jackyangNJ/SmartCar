@@ -17,7 +17,7 @@ public class Interactor implements InteractorIf {
 
     public Interactor() {
         map = new SmartMap();
-        controller = new ControllerImpl(map);
+//        controller = new ControllerImpl(map);
 
     }
 

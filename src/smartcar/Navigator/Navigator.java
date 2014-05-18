@@ -70,39 +70,38 @@ public class Navigator implements NavigatorIf {
 
         @Override
         public void SensorEventProcess(SensorEvent e) {
-            //To change body of generated methods, choose Tools | Templates.s
-            // s not ensure            
             beginTime = endTime;
             endTime = System.currentTimeMillis();
             timeInterval = (endTime - beginTime) / 1000;
 
             sensorHallData = (SensorHallData) e.getData();
-//            double s = sensorHallData.getDriveDistance();            
-            double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
-//            logger.info("navigatorData.getx():" + navigatorData.getx());
-//            logger.info("sensorGyroData.getHori_angle():" + sensorGyroData.getHori_angle());                      
-            navigatorData.setx(x);
-
-            double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
-            navigatorData.sety(y);
+            if (SystemCoreData.isSystemState(SystemCoreData.STATE_CLOCKWISE) || SystemCoreData.isSystemState(SystemCoreData.STATE_COUNTERCLOCKWISE)) {
+                logger.info("omit SensorHall Data,due to rotate");
+                return;
+            }
+            if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOFORWARD)) {
+                double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
+                navigatorData.setx(x);
+                double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
+                navigatorData.sety(y);
+            } else {
+                double x = navigatorData.getx() - (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
+                navigatorData.setx(x);
+                double y = navigatorData.gety() - (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
+                navigatorData.sety(y);
+            }
 
             double vx = 0;
             double vy = 0;
             if (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
                 vx = possibility_hall * navigatorData.getv_x() + (1 - possibility_hall) * (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular()))) / timeInterval;
-                //  navigatorData.setv_x(vx);
                 vy = possibility_hall * navigatorData.getv_y() + (1 - possibility_hall) * (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular()))) / timeInterval;
-                //  navigatorData.setv_y(vy);
             } else {
                 vx = 0;
                 vy = 0;
             }
-//            System.out.println("vy:" + vy);
-//            System.out.println("vx:" + vx);
             navigatorData.setv_y(vy);
             navigatorData.setv_x(vx);
-            //navigatorData.setdistance(sensorHallData.getDriveDistance());
-
         }
     };
     /**
@@ -142,7 +141,7 @@ public class Navigator implements NavigatorIf {
             }
             double averagevx = sum / list_vx.size();
             navigatorData.setv_x(averagevx);
-                //navigatorData.setv_x(vx);
+            //navigatorData.setv_x(vx);
             //sensorAccData.setv_x(vx);
 
             if (list_vy.size() >= 10) {
@@ -166,7 +165,7 @@ public class Navigator implements NavigatorIf {
             }
             double averageax = sum / list_ax.size();
             navigatorData.seta_x(averageax);
-                //navigatorData.setv_x(vx);
+            //navigatorData.setv_x(vx);
             //sensorAccData.setv_x(vx);
 
             if (list_ay.size() >= 10) {
@@ -214,7 +213,7 @@ public class Navigator implements NavigatorIf {
                 sum += (double) list_angularspeed.get(i);
             }
             double averageangularspeed = sum / list_angularspeed.size();
-           // sensorGyroData.setHori_angle(averageangular);
+            // sensorGyroData.setHori_angle(averageangular);
             // sensorGyroData.setHori_angleSpeed(averageangularspeed);
             navigatorData.setangular(averageangular);
             navigatorData.setangular_velocity(averageangularspeed);
@@ -287,7 +286,7 @@ public class Navigator implements NavigatorIf {
     }
 
     /**
-     * 
+     *
      * @return range from 0-360
      */
     @Override

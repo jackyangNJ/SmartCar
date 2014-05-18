@@ -69,6 +69,9 @@ public class SystemCoreData {
     public static int getSystemState() {
         return systemState;
     }
+    public  static boolean isSystemState(int state){
+        return state == systemState;
+    }
 
     /**
      * 设为同步方法，获取系统状态

@@ -12,6 +12,7 @@ import org.apache.thrift.TException;
 import smartcar.Interactor.Interactor;
 import smartcar.Interactor.InteractorIf;
 import smartcar.core.Point;
+import smartcar.core.SystemProperty;
 import smartcar.map.SmartMapInfo;
 import smartcar.test.sensor.testArduinoBridge;
 
@@ -22,6 +23,7 @@ import smartcar.test.sensor.testArduinoBridge;
 public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     public static Log logger = LogFactory.getLog(SmartCarThriftHandler.class);
+    private final double gridSize = Double.parseDouble(SystemProperty.getProperty("Map.Grid.Size"));
     public InteractorIf interactor;
 
     public SmartCarThriftHandler() {
@@ -45,7 +47,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         logger.info("getCarCurrentLocation callby");
         Point currentPosition = interactor.getCarCurrentLocation();
         PointThrift pos;
-        pos = new PointThrift(currentPosition.getX(), currentPosition.getY());
+        pos = new PointThrift((int)currentPosition.getX()/gridSize, (int)currentPosition.getY()/gridSize);
         return pos;
     }
 
