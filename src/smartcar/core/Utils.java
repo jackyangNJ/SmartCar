@@ -2,8 +2,15 @@ package smartcar.core;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.ByteBuffer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -88,6 +95,28 @@ public class Utils {
         }
         return null;
 
+    }
+
+    public static Object getObjectFromByteBuffer(ByteBuffer byteBuffer) throws IOException, ClassNotFoundException {
+        ObjectInputStream oi;
+        Object obj;
+        try (InputStream input = new ByteArrayInputStream(byteBuffer.array())) {
+            oi = new ObjectInputStream(input);
+            obj = oi.readObject();
+        }
+        oi.close();
+        byteBuffer.clear();
+        return obj;
+    }
+    public static ByteBuffer getByteBufferFromObject(Serializable obj) throws IOException {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bout);
+        out.writeObject(obj);
+        out.flush();
+        byte[] bytes = bout.toByteArray();
+        bout.close();
+        out.close();
+        return ByteBuffer.wrap(bytes);
     }
 
     public static void main(String[] args) {

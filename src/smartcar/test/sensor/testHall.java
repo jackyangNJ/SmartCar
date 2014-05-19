@@ -52,8 +52,8 @@ public class testHall {
 
         testHall test = new testHall();
         Utils.delay(2000);
-        Motor.smart_car_set(10, 0);
-        while (test.count.get() != 50) {
+//        Motor.smart_car_set(10, 0);
+        while (test.count.get() != 100) {
 
         };
         Motor.smart_car_set(-80, 0);

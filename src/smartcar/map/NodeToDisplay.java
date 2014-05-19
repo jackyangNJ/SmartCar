@@ -13,6 +13,7 @@ import java.io.Serializable;
  * @author Administrator
  */
 public class NodeToDisplay implements Serializable{
+    private static final long serialVersionUID = 14634665734237362L;   
     int x;
     int y;
     private boolean barriermask = false;
@@ -50,6 +51,10 @@ public class NodeToDisplay implements Serializable{
         return b;
     }
 
+    /**
+     *
+     * @return
+     */
     public SmartMapQRCode.QRCode getQRCodeInfo() {
         return q;
     }

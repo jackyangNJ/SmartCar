@@ -1,9 +1,6 @@
 package smartcar.thrift;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +10,7 @@ import smartcar.Interactor.Interactor;
 import smartcar.Interactor.InteractorIf;
 import smartcar.core.Point;
 import smartcar.core.SystemProperty;
+import smartcar.core.Utils;
 import smartcar.map.SmartMapInfo;
 import smartcar.test.sensor.testArduinoBridge;
 
@@ -47,7 +45,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         logger.info("getCarCurrentLocation callby");
         Point currentPosition = interactor.getCarCurrentLocation();
         PointThrift pos;
-        pos = new PointThrift((int)currentPosition.getX()/gridSize, (int)currentPosition.getY()/gridSize);
+        pos = new PointThrift((int) currentPosition.getX() / gridSize, (int) currentPosition.getY() / gridSize);
         return pos;
     }
 
@@ -59,26 +57,20 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     @Override
     public ByteBuffer getSmartMapInfo() throws TException {
-        logger.info("getSmartMapInfo");
         try {
+            logger.info("getSmartMapInfo");
+            
             SmartMapInfo info = interactor.getSmartMapInfo();
-            return getByteBufferFromObject(info);
+            ByteBuffer buffer = Utils.getByteBufferFromObject(info);
+            return buffer;
         } catch (IOException ex) {
             logger.error(ex);
         }
         return null;
+
     }
 
-    private static ByteBuffer getByteBufferFromObject(Serializable obj) throws IOException {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bout);
-        out.writeObject(obj);
-        out.flush();
-        byte[] bytes = bout.toByteArray();
-        bout.close();
-        out.close();
-        return ByteBuffer.wrap(bytes);
-    }
+    
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
@@ -88,6 +80,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
             handler.getSmartMapInfo();
         } catch (TException ex) {
             logger.error(ex);
+
         }
 
     }

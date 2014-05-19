@@ -13,11 +13,11 @@ public class Interactor implements InteractorIf {
 
     public static Log logger = LogFactory.getLog(Interactor.class);
     private SmartMap map;
-    private Controller controller;
+    private Controller controller =null;
 
     public Interactor() {
         map = new SmartMap();
-//        controller = new ControllerImpl(map);
+        controller = new ControllerImpl(map);
 
     }
 

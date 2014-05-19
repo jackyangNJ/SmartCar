@@ -4,33 +4,26 @@ package smartcar.map;
  *
  * @author cgirls
  */
-import smartcar.map.SmartMapInterface;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-//import smartcar.map.SmartMapData;
-//import smartcar.map.SmartMapInfo;
-//import smartcar.map.SmartMapQRCode;
-//import smartcar.map.SmartMapBarrier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-//import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import smartcar.core.Point;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
+import smartcar.core.Point;
 import smartcar.core.SystemProperty;
-import smartcar.test.env.testLogger;
 import smartcar.test.sensor.testArduinoBridge;
 
 //Node对象用于封装节点信息，包括名字和子节点
@@ -506,7 +499,7 @@ public class SmartMap implements SmartMapInterface {
         SmartMapInfo info = new SmartMapInfo();
         info.setNumofx(numofx);
         info.setNumofy(numofy);
-        ArrayList<NodeToDisplay> map = new ArrayList<NodeToDisplay>();
+        List<NodeToDisplay> map = new ArrayList<>();
         int i;
         int j;
         for (i = 0; i < numofx; i++) {

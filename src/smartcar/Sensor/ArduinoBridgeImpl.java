@@ -3,6 +3,8 @@ package smartcar.Sensor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
@@ -21,6 +23,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
     private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
     private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
     private jssc.SerialPort serialPort;
+    private Thread thread;
 
     public ArduinoBridgeImpl(String serialName, int serialRate) {
         init(serialName, serialRate);
@@ -30,7 +33,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         serialPort = new jssc.SerialPort(serialName);
         try {
             //Open port
-            if(!serialPort.openPort()){
+            if (!serialPort.openPort()) {
                 logger.info("cannot open serial port");
             }
             logger.info("open serial port");
@@ -44,8 +47,25 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
             //Set mask
             serialPort.setEventsMask(jssc.SerialPort.MASK_RXCHAR);
 
-            //Add SerialPortEventListener
-            serialPort.addEventListener(this);
+            //create thread to monitor serial port
+            thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            byte[] buffer = serialPort.readBytes(10);
+                            int msgType = buffer[0];
+                            SensorEvent event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
+                            fireSensorEventProcess(msgType, event);
+                        } catch (SerialPortException ex) {
+                            logger.error(ex);
+                        }
+                    }
+                }
+            }, "ArduinoBridge");
+            
+            thread.start();
 
         } catch (SerialPortException ex) {
             logger.error(ex);
@@ -99,13 +119,14 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
 
     @Override
     public void serialEvent(SerialPortEvent spe) {
-        logger.debug("Serial Event from arduino!");
+        logger.info("Serial Event from arduino!");
         //If data is available
         if (spe.isRXCHAR()) {
             try {
-                byte buffer[] = serialPort.readBytes();
+                logger.info("buffer length = " + serialPort.getInputBufferBytesCount());
+                byte buffer[] = serialPort.readBytes(2);
                 int msgType = buffer[0];
-                SensorEvent event= new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
+                SensorEvent event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
                 fireSensorEventProcess(msgType, event);
             } catch (SerialPortException ex) {
                 logger.error(ex);
