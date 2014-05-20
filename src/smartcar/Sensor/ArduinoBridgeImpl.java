@@ -41,6 +41,9 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
             //purge
             serialPort.purgePort(jssc.SerialPort.PURGE_TXCLEAR);
             serialPort.purgePort(jssc.SerialPort.PURGE_RXCLEAR);
+            int n = serialPort.getInputBufferBytesCount();
+            byte[] tmp = serialPort.readBytes(n);
+            
             //Set params
             serialPort.setParams(serialRate, 8, 1, 0);
 
@@ -54,7 +57,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
                 public void run() {
                     while (true) {
                         try {
-                            byte[] buffer = serialPort.readBytes(10);
+                            byte[] buffer = serialPort.readBytes(2);
                             int msgType = buffer[0];
                             SensorEvent event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
                             fireSensorEventProcess(msgType, event);

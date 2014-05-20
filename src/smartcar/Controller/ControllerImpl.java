@@ -29,6 +29,7 @@ import smartcar.thrift.CarOperation;
  */
 public class ControllerImpl extends TimerTask implements NavigatorListener, Controller {
 
+
     private enum DriveModeType {
 
         AUTO, MANUAL
@@ -121,6 +122,10 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public Point getCarCurrentLocation() {
         return navigator.getCurrentLocation();
     }
+    @Override
+    public double getCarAngle() {
+        return navigator.getCurrentAngle();
+    }
 
     @Override
     public void setCar(int speed, int angle) {
@@ -185,17 +190,17 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
             logger.info("EndPoint=" + scheduledPath.getEndPoint());
             logger.info("drivedirection=" + driveDirection);
-            logger.info("CurrentAngle = " + navigator.getAngle());
-            double rotateAngle = Math.abs(driveDirection - navigator.getAngle());
+            logger.info("CurrentAngle = " + navigator.getCurrentAngle());
+            double rotateAngle = Math.abs(driveDirection - navigator.getCurrentAngle());
             //SET BACK
             if (Math.abs(rotateAngle - 180) < 90) {
                 driveDirection = driveDirection > 180 ? driveDirection - 180 : driveDirection + 180;
-                if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
+                if (Math.abs(driveDirection - navigator.getCurrentAngle()) > angleDeviation) {
                     rotateToAbsoluteAngle(driveDirection, 3);
                 }
                 setCarOperation(CarOperation.BACK);
             } else { //SET FORWARD
-                if (Math.abs(driveDirection - navigator.getAngle()) > angleDeviation) {
+                if (Math.abs(driveDirection - navigator.getCurrentAngle()) > angleDeviation) {
                     rotateToAbsoluteAngle(driveDirection, 3);
                 }
                 setCarOperation(CarOperation.FORWARD);
@@ -229,7 +234,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         logger.info("Rotate");
         //计算最小的旋转方向，使旋转角度达到最小
         do {
-            currentAngle = navigator.getAngle();
+            currentAngle = navigator.getCurrentAngle();
             if (currentAngle > dstAngle) {
                 if (Math.abs(currentAngle - dstAngle) < 180) {
                     setCarOperation(CarOperation.CLOCKWISE);

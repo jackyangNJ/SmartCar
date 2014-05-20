@@ -29,6 +29,11 @@ public interface InteractorIf {
      */
     public Point getCarCurrentLocation();
 
+    /**
+     * 获取小车实时的角度
+     * @return
+     */
+    public double getCarAngle();
     
     /**
      * 手动控制小车，参数为控制小车的速度和角度，速度为正值时，小车往前走，速度为负值，小车朝相反方向 
@@ -37,4 +42,5 @@ public interface InteractorIf {
      */
     public void setCar(int speed,int angle);
 
+    
 }

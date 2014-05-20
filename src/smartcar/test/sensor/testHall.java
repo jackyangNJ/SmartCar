@@ -51,13 +51,14 @@ public class testHall {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
 
         testHall test = new testHall();
-        Utils.delay(2000);
+        
 //        Motor.smart_car_set(10, 0);
-        while (test.count.get() != 100) {
-
+        
+        while (test.count.get() != 200) {
+            Utils.delay(10);
         };
-        Motor.smart_car_set(-80, 0);
-        Utils.delay(30);
+        logger.info("stop");
+     
         Motor.smart_car_set(0, 0);
         
         logger.info("count = " + test.count);

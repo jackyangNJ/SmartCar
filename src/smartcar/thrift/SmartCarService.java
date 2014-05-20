@@ -13,6 +13,8 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
+import smartcar.core.Point;
+import smartcar.core.Utils;
 import smartcar.map.SmartMapInfo;
 
 /**
@@ -56,32 +58,26 @@ public class SmartCarService {
     }
 
     
-    public PointThrift getCarCurrentLocation() throws TException {
-        return client.getCarCurrentLocation();
+    public Point getCarCurrentLocation() throws TException {
+        PointThrift tmp =client.getCarCurrentLocation();
+        return new Point(tmp.x, tmp.y);
+    }
+    public double getCarCurrentAngle() throws TException{
+        return client.getCarAngle();
     }
 
     
     public SmartMapInfo getSmartMapInfo()  throws TException{
         ByteBuffer dataBuffer =client.getSmartMapInfo();
         try {
-            return (SmartMapInfo)getObject(dataBuffer);
+            return (SmartMapInfo)Utils.getObjectFromByteBuffer(dataBuffer);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(SmartCarService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    private Object getObject(ByteBuffer byteBuffer) throws IOException, ClassNotFoundException {
-        ObjectInputStream oi;
-        Object obj;
-        try (InputStream input = new ByteArrayInputStream(byteBuffer.array())) {
-            oi = new ObjectInputStream(input);
-            obj = oi.readObject();
-        }
-        oi.close();
-        byteBuffer.clear();
-        return obj;
-    }
+
     
     public static void main(String[] args) {
         SmartCarService service=new SmartCarService();

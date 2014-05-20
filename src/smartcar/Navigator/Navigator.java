@@ -90,6 +90,8 @@ public class Navigator implements NavigatorIf {
                 double y = navigatorData.gety() - (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
                 navigatorData.sety(y);
             }
+            logger.info("x = " + navigatorData.getx());
+            logger.info("y = " + navigatorData.gety());
 
             double vx = 0;
             double vy = 0;
@@ -290,7 +292,7 @@ public class Navigator implements NavigatorIf {
      * @return range from 0-360
      */
     @Override
-    public double getAngle() {
+    public double getCurrentAngle() {
         double angle = navigatorData.getangular();
         while (angle < 0) {
             angle += 360;

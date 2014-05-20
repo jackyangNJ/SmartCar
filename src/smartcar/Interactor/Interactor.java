@@ -13,7 +13,7 @@ public class Interactor implements InteractorIf {
 
     public static Log logger = LogFactory.getLog(Interactor.class);
     private SmartMap map;
-    private Controller controller =null;
+    private Controller controller = null;
 
     public Interactor() {
         map = new SmartMap();
@@ -44,5 +44,10 @@ public class Interactor implements InteractorIf {
     @Override
     public void setCar(int speed, int angle) {
         controller.setCar(speed, angle);
+    }
+
+    @Override
+    public double getCarAngle() {
+        return controller.getCarAngle();
     }
 }

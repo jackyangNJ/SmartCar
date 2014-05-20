@@ -71,6 +71,10 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
     }
 
     
+    @Override
+    public double getCarAngle() throws TException {
+        return interactor.getCarAngle();
+    }
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
@@ -84,4 +88,5 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         }
 
     }
+
 }

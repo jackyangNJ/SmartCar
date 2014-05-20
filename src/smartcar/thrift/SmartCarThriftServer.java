@@ -25,7 +25,7 @@ public class SmartCarThriftServer {
 
     public SmartCarThriftServer() {
         try {
-            serverTransport = new TServerSocket(10000);
+            serverTransport = new TServerSocket(10001);
         } catch (TTransportException ex) {
             logger.info(ex);
         }

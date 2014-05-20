@@ -23,7 +23,7 @@ public class SmartCarThriftClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws TException, IOException, ClassNotFoundException {
-        TTransport transport = new TSocket("localhost", 10000);
+        TTransport transport = new TSocket("localhost", 10001);
 
         TProtocol protocol = new TBinaryProtocol(transport);
 
@@ -34,10 +34,8 @@ public class SmartCarThriftClient {
             Logger.getLogger(SmartCarThriftClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         client.ping();
-        ByteBuffer data = client.getSmartMapInfo();
+        System.err.println(client.getCarAngle());
 
-        SmartMapInfo p = (SmartMapInfo) Utils.getObjectFromByteBuffer(data);
-        transport.close();
 
     }
 

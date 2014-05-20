@@ -19,5 +19,5 @@ void loop() {
         Serial.write('\n');
     }
     HallPinStateOld = HallPinStateNew;
-    
+    dealy(5);
 }

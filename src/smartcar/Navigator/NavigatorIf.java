@@ -43,5 +43,5 @@ public interface NavigatorIf {
    public void calibrateSensors();
    
     Point getCurrentLocation();
-    double getAngle();
+    double getCurrentAngle();
 }

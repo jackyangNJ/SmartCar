@@ -33,8 +33,8 @@ public class NavigatorTest {
 //            logger.info("v.y: " + navigatorTest.getNavigatorDate().getv_y());
 //            logger.info("x: " + navigatorTest.getNavigatorDate().getx());
 //            logger.info("y: " + navigatorTest.getNavigatorDate().gety());
-//            logger.info("angular: " + navigatorTest.getNavigatorDate().getangular());
-//            Utils.delay(500);
+            logger.info("angular: " + navigatorTest.getCurrentAngle());
+            Utils.delay(500);
         }
     }
 }

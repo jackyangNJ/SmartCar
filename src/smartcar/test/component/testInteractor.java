@@ -20,8 +20,9 @@ public class testInteractor {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         Interactor testInter = new Interactor();
 //        testInter.setCarAutoDriveDestination(new Point(1, 1));
-        testInter.getSmartMapInfo();
+        
         while (true) {
+            System.err.println(testInter.getCarAngle());
         }
     }
 }
