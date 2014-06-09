@@ -336,15 +336,15 @@ public class SensorAcc implements SensorAccIf {
      * 用于在静止时矫正传感器的数据，系统状态SystemCoreData.state应处于静止
      */
     @Override
-    public void calibrate() {
+    public void calibrate(int caliNum) {
         //wait until car is still
         while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
 
         }
         //pause timer task
         state = ON_TIMER_STOP;
-        ArrayList<SensorAccData> dataList = new ArrayList<>(calibrationDataNum);
-        for (int i = 0; i < calibrationDataNum; i++) {
+        ArrayList<SensorAccData> dataList = new ArrayList<>(caliNum);
+        for (int i = 0; i < caliNum; i++) {
             readAccData();
             dataList.add(new SensorAccData(0, 0, rawData.geta_x(), rawData.geta_y(), 0, 0));
 

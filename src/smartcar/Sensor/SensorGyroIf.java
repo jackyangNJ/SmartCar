@@ -37,7 +37,7 @@ public interface SensorGyroIf {
     /**
      * 用于静止时传感器校准
      */
-    void calibrate();
+    void calibrate(int caliNum);
     
     /**
      * 设置偏移角度

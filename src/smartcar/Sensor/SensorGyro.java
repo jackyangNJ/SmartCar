@@ -269,7 +269,7 @@ public class SensorGyro implements SensorGyroIf {
      * 用于在静止时矫正传感器的数据，系统状态SystemCoreData.state应处于静止 数据的平均值会存在meanData中
      */
     @Override
-    public void calibrate() {
+    public void calibrate(int caliNum) {
         //wait until car is still
         logger.info("Gyto calibrate!");
         while (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
@@ -277,8 +277,8 @@ public class SensorGyro implements SensorGyroIf {
         //pause timer task
         logger.debug("calibrate starting!!!!!!!");
         setState(ON_TIMER_STOP);
-        ArrayList<SensorGyroData> dataList = new ArrayList<>(calibrationDataNum);
-        for (int i = 0; i < calibrationDataNum; i++) {            //timeval      
+        ArrayList<SensorGyroData> dataList = new ArrayList<>(caliNum);
+        for (int i = 0; i < caliNum; i++) {            //timeval      
             read_HoriAngleSpeed();
             dataList.add(new SensorGyroData(rawData.getHori_angleSpeed(), 0));
 

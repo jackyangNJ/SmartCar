@@ -40,7 +40,7 @@ public interface NavigatorIf {
    /**
     * 静止矫正传感器数据
     */
-   public void calibrateSensors();
+   public void calibrateSensors(int caliNum);
    
     Point getCurrentLocation();
     double getCurrentAngle();

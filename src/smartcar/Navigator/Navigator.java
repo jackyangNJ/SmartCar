@@ -276,9 +276,9 @@ public class Navigator implements NavigatorIf {
     }
 
     @Override
-    public void calibrateSensors() {
-        sensorAcc.calibrate();
-        sensorGyro.calibrate();
+    public void calibrateSensors(int caliNum) {
+        sensorAcc.calibrate(caliNum);
+        sensorGyro.calibrate(caliNum);
         //TODO
     }
 

@@ -35,7 +35,7 @@ public interface SensorAccIf {
     /**
      * 用于静止时传感器校准
      */
-    void calibrate();
+    void calibrate(int caliNum);
     
     public void setBiasPosition(Point biasPosition);
 }

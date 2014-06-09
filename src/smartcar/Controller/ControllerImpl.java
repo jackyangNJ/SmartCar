@@ -68,6 +68,8 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     private static final int eventCheckFrequency = Integer.parseInt(SystemProperty.getProperty("Controller.RunFrequency"));
     private static final double positionDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.PositionDeviation"));
     private static final double angleDeviation = Double.parseDouble(SystemProperty.getProperty("Controller.AngleDeviation"));
+    private static final int initCaliNum = Integer.parseInt(SystemProperty.getProperty("GYRO.CalibrateDataNum"));
+    private static final int runCaliNum = Integer.parseInt(SystemProperty.getProperty("GYRO.RunCalibrateNum"));
 
     /**
      * 超声波事件处理函数
@@ -105,7 +107,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
         //建立navigator,并校正传感器数据
         navigator = new Navigator(map);
-        navigator.calibrateSensors();
+        navigator.calibrateSensors(initCaliNum);
         logger.info("Navigator calibrate sensors complete!");
 
         //连接事件处理程序
@@ -232,6 +234,11 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public void rotateToAbsoluteAngle(double dstAngle, double deviation) {
         double currentAngle;
         logger.info("Rotate");
+        
+        //矫正传感器
+        setCarOperation(CarOperation.STOP);
+        navigator.calibrateSensors(runCaliNum);
+        
         //计算最小的旋转方向，使旋转角度达到最小
         do {
             currentAngle = navigator.getCurrentAngle();
