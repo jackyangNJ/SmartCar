@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TSimpleServer;
+import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
@@ -30,11 +30,11 @@ public class SmartCarThriftServer {
             logger.info(ex);
         }
 
-        TServer.Args tArgs = new TServer.Args(serverTransport);
+        TThreadPoolServer.Args tArgs = new TThreadPoolServer.Args(serverTransport);
         tArgs.protocolFactory(new TBinaryProtocol.Factory());
         tArgs.processor(processor);
-        server = new TSimpleServer(tArgs);
-        logger.info("TSimpleServer started");
+        server = new TThreadPoolServer(tArgs);
+        logger.info("TThreadPoolServer started");
     }
 
     public void start() {

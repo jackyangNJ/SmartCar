@@ -42,10 +42,10 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     @Override
     public PointThrift getCarCurrentLocation() throws TException {
-        logger.info("getCarCurrentLocation callby");
+        logger.debug("getCarCurrentLocation callby");
         Point currentPosition = interactor.getCarCurrentLocation();
         PointThrift pos;
-        pos = new PointThrift((int) currentPosition.getX() / gridSize, (int) currentPosition.getY() / gridSize);
+        pos = new PointThrift(currentPosition.getX(), currentPosition.getY());
         return pos;
     }
 

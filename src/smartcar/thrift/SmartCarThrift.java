@@ -108,7 +108,6 @@ public class SmartCarThrift {
     public void setOperation(CarOperation op) throws org.apache.thrift.TException
     {
       send_setOperation(op);
-      recv_setOperation();
     }
 
     public void send_setOperation(CarOperation op) throws org.apache.thrift.TException
@@ -118,17 +117,9 @@ public class SmartCarThrift {
       sendBase("setOperation", args);
     }
 
-    public void recv_setOperation() throws org.apache.thrift.TException
-    {
-      setOperation_result result = new setOperation_result();
-      receiveBase(result, "setOperation");
-      return;
-    }
-
     public void setCarAutoDriveDestination(PointThrift location) throws org.apache.thrift.TException
     {
       send_setCarAutoDriveDestination(location);
-      recv_setCarAutoDriveDestination();
     }
 
     public void send_setCarAutoDriveDestination(PointThrift location) throws org.apache.thrift.TException
@@ -136,13 +127,6 @@ public class SmartCarThrift {
       setCarAutoDriveDestination_args args = new setCarAutoDriveDestination_args();
       args.setLocation(location);
       sendBase("setCarAutoDriveDestination", args);
-    }
-
-    public void recv_setCarAutoDriveDestination() throws org.apache.thrift.TException
-    {
-      setCarAutoDriveDestination_result result = new setCarAutoDriveDestination_result();
-      receiveBase(result, "setCarAutoDriveDestination");
-      return;
     }
 
     public ByteBuffer getSmartMapInfo() throws org.apache.thrift.TException
@@ -268,7 +252,7 @@ public class SmartCarThrift {
     public static class setOperation_call extends org.apache.thrift.async.TAsyncMethodCall {
       private CarOperation op;
       public setOperation_call(CarOperation op, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
+        super(client, protocolFactory, transport, resultHandler, true);
         this.op = op;
       }
 
@@ -286,7 +270,6 @@ public class SmartCarThrift {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        (new Client(prot)).recv_setOperation();
       }
     }
 
@@ -300,7 +283,7 @@ public class SmartCarThrift {
     public static class setCarAutoDriveDestination_call extends org.apache.thrift.async.TAsyncMethodCall {
       private PointThrift location;
       public setCarAutoDriveDestination_call(PointThrift location, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
+        super(client, protocolFactory, transport, resultHandler, true);
         this.location = location;
       }
 
@@ -318,7 +301,6 @@ public class SmartCarThrift {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        (new Client(prot)).recv_setCarAutoDriveDestination();
       }
     }
 
@@ -461,13 +443,12 @@ public class SmartCarThrift {
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
-      public setOperation_result getResult(I iface, setOperation_args args) throws org.apache.thrift.TException {
-        setOperation_result result = new setOperation_result();
+      public org.apache.thrift.TBase getResult(I iface, setOperation_args args) throws org.apache.thrift.TException {
         iface.setOperation(args.op);
-        return result;
+        return null;
       }
     }
 
@@ -481,13 +462,12 @@ public class SmartCarThrift {
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
-      public setCarAutoDriveDestination_result getResult(I iface, setCarAutoDriveDestination_args args) throws org.apache.thrift.TException {
-        setCarAutoDriveDestination_result result = new setCarAutoDriveDestination_result();
+      public org.apache.thrift.TBase getResult(I iface, setCarAutoDriveDestination_args args) throws org.apache.thrift.TException {
         iface.setCarAutoDriveDestination(args.location);
-        return result;
+        return null;
       }
     }
 
@@ -637,36 +617,14 @@ public class SmartCarThrift {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<Void>() { 
           public void onComplete(Void o) {
-            setOperation_result result = new setOperation_result();
-            try {
-              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-              return;
-            } catch (Exception e) {
-              LOGGER.error("Exception writing to internal frame buffer", e);
-            }
-            fb.close();
           }
           public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TBase msg;
-            setOperation_result result = new setOperation_result();
-            {
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-              return;
-            } catch (Exception ex) {
-              LOGGER.error("Exception writing to internal frame buffer", ex);
-            }
-            fb.close();
           }
         };
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
       public void start(I iface, setOperation_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
@@ -687,36 +645,14 @@ public class SmartCarThrift {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<Void>() { 
           public void onComplete(Void o) {
-            setCarAutoDriveDestination_result result = new setCarAutoDriveDestination_result();
-            try {
-              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-              return;
-            } catch (Exception e) {
-              LOGGER.error("Exception writing to internal frame buffer", e);
-            }
-            fb.close();
           }
           public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TBase msg;
-            setCarAutoDriveDestination_result result = new setCarAutoDriveDestination_result();
-            {
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-              return;
-            } catch (Exception ex) {
-              LOGGER.error("Exception writing to internal frame buffer", ex);
-            }
-            fb.close();
           }
         };
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
       public void start(I iface, setCarAutoDriveDestination_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
@@ -1742,252 +1678,6 @@ public class SmartCarThrift {
 
   }
 
-  public static class setOperation_result implements org.apache.thrift.TBase<setOperation_result, setOperation_result._Fields>, java.io.Serializable, Cloneable, Comparable<setOperation_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("setOperation_result");
-
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new setOperation_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new setOperation_resultTupleSchemeFactory());
-    }
-
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(setOperation_result.class, metaDataMap);
-    }
-
-    public setOperation_result() {
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public setOperation_result(setOperation_result other) {
-    }
-
-    public setOperation_result deepCopy() {
-      return new setOperation_result(this);
-    }
-
-    @Override
-    public void clear() {
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof setOperation_result)
-        return this.equals((setOperation_result)that);
-      return false;
-    }
-
-    public boolean equals(setOperation_result that) {
-      if (that == null)
-        return false;
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      return 0;
-    }
-
-    @Override
-    public int compareTo(setOperation_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("setOperation_result(");
-      boolean first = true;
-
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class setOperation_resultStandardSchemeFactory implements SchemeFactory {
-      public setOperation_resultStandardScheme getScheme() {
-        return new setOperation_resultStandardScheme();
-      }
-    }
-
-    private static class setOperation_resultStandardScheme extends StandardScheme<setOperation_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, setOperation_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, setOperation_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class setOperation_resultTupleSchemeFactory implements SchemeFactory {
-      public setOperation_resultTupleScheme getScheme() {
-        return new setOperation_resultTupleScheme();
-      }
-    }
-
-    private static class setOperation_resultTupleScheme extends TupleScheme<setOperation_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, setOperation_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, setOperation_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-      }
-    }
-
-  }
-
   public static class setCarAutoDriveDestination_args implements org.apache.thrift.TBase<setCarAutoDriveDestination_args, setCarAutoDriveDestination_args._Fields>, java.io.Serializable, Cloneable, Comparable<setCarAutoDriveDestination_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("setCarAutoDriveDestination_args");
 
@@ -2342,252 +2032,6 @@ public class SmartCarThrift {
           struct.location.read(iprot);
           struct.setLocationIsSet(true);
         }
-      }
-    }
-
-  }
-
-  public static class setCarAutoDriveDestination_result implements org.apache.thrift.TBase<setCarAutoDriveDestination_result, setCarAutoDriveDestination_result._Fields>, java.io.Serializable, Cloneable, Comparable<setCarAutoDriveDestination_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("setCarAutoDriveDestination_result");
-
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new setCarAutoDriveDestination_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new setCarAutoDriveDestination_resultTupleSchemeFactory());
-    }
-
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(setCarAutoDriveDestination_result.class, metaDataMap);
-    }
-
-    public setCarAutoDriveDestination_result() {
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public setCarAutoDriveDestination_result(setCarAutoDriveDestination_result other) {
-    }
-
-    public setCarAutoDriveDestination_result deepCopy() {
-      return new setCarAutoDriveDestination_result(this);
-    }
-
-    @Override
-    public void clear() {
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof setCarAutoDriveDestination_result)
-        return this.equals((setCarAutoDriveDestination_result)that);
-      return false;
-    }
-
-    public boolean equals(setCarAutoDriveDestination_result that) {
-      if (that == null)
-        return false;
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      return 0;
-    }
-
-    @Override
-    public int compareTo(setCarAutoDriveDestination_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("setCarAutoDriveDestination_result(");
-      boolean first = true;
-
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class setCarAutoDriveDestination_resultStandardSchemeFactory implements SchemeFactory {
-      public setCarAutoDriveDestination_resultStandardScheme getScheme() {
-        return new setCarAutoDriveDestination_resultStandardScheme();
-      }
-    }
-
-    private static class setCarAutoDriveDestination_resultStandardScheme extends StandardScheme<setCarAutoDriveDestination_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, setCarAutoDriveDestination_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, setCarAutoDriveDestination_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class setCarAutoDriveDestination_resultTupleSchemeFactory implements SchemeFactory {
-      public setCarAutoDriveDestination_resultTupleScheme getScheme() {
-        return new setCarAutoDriveDestination_resultTupleScheme();
-      }
-    }
-
-    private static class setCarAutoDriveDestination_resultTupleScheme extends TupleScheme<setCarAutoDriveDestination_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, setCarAutoDriveDestination_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, setCarAutoDriveDestination_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
 

@@ -31,7 +31,7 @@ public class testHall {
     String serialName = SystemProperty.getProperty("ArduinoBridge.serialComName");
     int serialRate = Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));
     ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName, serialRate);
-    public AtomicInteger count =new AtomicInteger(0);
+    public AtomicInteger count = new AtomicInteger(0);
 
     public testHall() {
         logger.info("1");
@@ -42,7 +42,12 @@ public class testHall {
             public void SensorEventProcess(SensorEvent e) {
                 logger.info("a cycle!!");
                 count.addAndGet(1);
-                logger.info("count="+count);
+                logger.info("count=" + count);
+                if (count.get() == 200) {
+                    Motor.smart_car_set(0, 0);
+                    System.exit(0);
+                }
+
             }
         });
     }
@@ -51,18 +56,7 @@ public class testHall {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
 
         testHall test = new testHall();
-        
-//        Motor.smart_car_set(10, 0);
-        
-        while (test.count.get() != 200) {
-            Utils.delay(10);
-        };
-        logger.info("stop");
-     
-        Motor.smart_car_set(0, 0);
-        
-        logger.info("count = " + test.count);
-        System.exit(0);
+        while (true) {
+        }
     }
-
 }
