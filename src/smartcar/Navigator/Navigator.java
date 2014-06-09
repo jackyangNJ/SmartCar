@@ -73,21 +73,25 @@ public class Navigator implements NavigatorIf {
             beginTime = endTime;
             endTime = System.currentTimeMillis();
             timeInterval = (endTime - beginTime) / 1000;
+            double currentAngle = Math.toRadians(navigatorData.getangular());
 
             sensorHallData = (SensorHallData) e.getData();
             if (SystemCoreData.isSystemState(SystemCoreData.STATE_CLOCKWISE) || SystemCoreData.isSystemState(SystemCoreData.STATE_COUNTERCLOCKWISE)) {
                 logger.info("omit SensorHall Data,due to rotate");
                 return;
             }
+
             if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOFORWARD)) {
-                double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
+                double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(currentAngle));
                 navigatorData.setx(x);
-                double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
+                double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(currentAngle));
                 navigatorData.sety(y);
-            } else {
-                double x = navigatorData.getx() - (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
+            }
+            
+            if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOBACK)) {
+                double x = navigatorData.getx() - (double) (wheelgirth * Math.cos(currentAngle));
                 navigatorData.setx(x);
-                double y = navigatorData.gety() - (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
+                double y = navigatorData.gety() - (double) (wheelgirth * Math.sin(currentAngle));
                 navigatorData.sety(y);
             }
             logger.info("x = " + navigatorData.getx());
@@ -96,8 +100,8 @@ public class Navigator implements NavigatorIf {
             double vx = 0;
             double vy = 0;
             if (SystemCoreData.getSystemState() != SystemCoreData.STATE_STILL) {
-                vx = possibility_hall * navigatorData.getv_x() + (1 - possibility_hall) * (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular()))) / timeInterval;
-                vy = possibility_hall * navigatorData.getv_y() + (1 - possibility_hall) * (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular()))) / timeInterval;
+                vx = possibility_hall * navigatorData.getv_x() + (1 - possibility_hall) * (double) (wheelgirth * Math.cos(currentAngle)) / timeInterval;
+                vy = possibility_hall * navigatorData.getv_y() + (1 - possibility_hall) * (double) (wheelgirth * Math.sin(currentAngle)) / timeInterval;
             } else {
                 vx = 0;
                 vy = 0;
