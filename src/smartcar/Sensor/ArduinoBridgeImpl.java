@@ -22,7 +22,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
     public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
     private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
     private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
-    private jssc.SerialPort serialPort;
+    private static jssc.SerialPort serialPort;
     private Thread thread;
 
     public ArduinoBridgeImpl(String serialName, int serialRate) {
@@ -43,7 +43,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
             serialPort.purgePort(jssc.SerialPort.PURGE_RXCLEAR);
             int n = serialPort.getInputBufferBytesCount();
             byte[] tmp = serialPort.readBytes(n);
-            
+
             //Set params
             serialPort.setParams(serialRate, 8, 1, 0);
 
@@ -67,7 +67,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
                     }
                 }
             }, "ArduinoBridge");
-            
+
             thread.start();
 
         } catch (SerialPortException ex) {
@@ -137,4 +137,16 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         }
     }
 
+    public static boolean sendMessagge(byte[] data) {
+        if (serialPort.isOpened()) {
+            try {
+                return serialPort.writeBytes(data);
+            } catch (SerialPortException ex) {
+                logger.error(ex);
+            }
+        } else {
+            logger.error("Serial port is not open");
+        }
+        return false;
+    }
 }
