@@ -28,9 +28,9 @@ public class gyroTest {
         SensorGyro gyroTest = new SensorGyro();     
         SensorAcc  accTest = new SensorAcc();
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
-        gyroTest.calibrate();
-        accTest.calibrate();
-//        Motor.set_counterclockwise();
+        gyroTest.calibrate(100);
+        accTest.calibrate(100);
+//        Motor.set_coufnterclockwise();
         Motor.smart_car_set(50, 0);        
         
         while(true){            

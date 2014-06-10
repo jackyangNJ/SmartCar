@@ -23,7 +23,7 @@ public class NavigatorTest {
         SmartMap map = new SmartMap();
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
         Navigator navigatorTest = new Navigator(map);
-        navigatorTest.calibrateSensors();
+        navigatorTest.calibrateSensors(100);
         SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
 
         while (true) {
