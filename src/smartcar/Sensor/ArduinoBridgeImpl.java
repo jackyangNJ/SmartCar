@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
+import smartcar.core.Utils;
 
 /**
  *
@@ -42,7 +43,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
             serialPort.purgePort(jssc.SerialPort.PURGE_TXCLEAR);
             serialPort.purgePort(jssc.SerialPort.PURGE_RXCLEAR);
             int n = serialPort.getInputBufferBytesCount();
-            byte[] tmp = serialPort.readBytes(n);
+            serialPort.readBytes(n);
 
             //Set params
             serialPort.setParams(serialRate, 8, 1, 0);
@@ -57,8 +58,9 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
                 public void run() {
                     while (true) {
                         try {
-                            byte[] buffer = serialPort.readBytes(2);
+                            byte[] buffer = serialPort.readBytes(1);
                             int msgType = buffer[0];
+                            logger.info("receve data = "+ (char)buffer[0]);
                             SensorEvent event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
                             fireSensorEventProcess(msgType, event);
                         } catch (SerialPortException ex) {
@@ -73,6 +75,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         } catch (SerialPortException ex) {
             logger.error(ex);
         }
+        Utils.delay(1500);
         logger.info("ArduinoBrdge init ok!");
     }
 
@@ -140,7 +143,8 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
     public static boolean sendMessagge(byte[] data) {
         if (serialPort.isOpened()) {
             try {
-                return serialPort.writeBytes(data);
+                serialPort.writeBytes(data);
+                
             } catch (SerialPortException ex) {
                 logger.error(ex);
             }
