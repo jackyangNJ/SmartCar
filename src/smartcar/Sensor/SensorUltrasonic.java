@@ -13,7 +13,7 @@ import smartcar.core.Utils;
  *
  * @author cshuo
  */
-public class SensorUltrasonic implements SensorUltrasonicIf {
+public class SensorUltrasonic implements SensorUltrasonicIf, SensorListener {
 
     public static Log logger = LogFactory.getLog(SensorUltrasonic.class);
     private ArrayList<SensorListener> SensorListeners;
@@ -46,8 +46,6 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
 
     public SensorUltrasonic() {
         UltrasonicData = new SensorUltrasonicData();
-        //timer.scheduleAtFixedRate(task, 0, Frequency);
-//        timer.schedule(task, 0, 1000);
     }
 
     /**
@@ -165,6 +163,14 @@ public class SensorUltrasonic implements SensorUltrasonicIf {
         sensorUltrasonicData.setDistance2(UltrasonicData.getDistance2());
         sensorUltrasonicData.setDistance3(UltrasonicData.getDistance3());
         return sensorUltrasonicData;
+    }
+
+    @Override
+    public void SensorEventProcess(SensorEvent e) {
+        byte[] buffer = (byte[]) e.getData();
+        double cm = Double.parseDouble(new String(buffer, 1, buffer.length - 2));
+        double distance = cm / 100.0;
+        fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, new SensorUltrasonicData(distance, 0, 0)));
     }
 
 }

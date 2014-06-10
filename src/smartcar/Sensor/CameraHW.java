@@ -1,9 +1,10 @@
 package smartcar.Sensor;
 
-import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import smartcar.test.env.testLogger;
@@ -18,10 +19,22 @@ import smartcar.test.env.testLogger;
 public class CameraHW {
 
     public static Log logger = LogFactory.getLog(testLogger.class.getName());
-    private static opencv_highgui.CvCapture cvCapture;
+    private static opencv_highgui.CvCapture cvCapture = null;
+    private static opencv_core.IplImage image = null;
+    private static final Timer timer;
 
     static {
         startCamera();
+        timer = new Timer("CameraHW");
+        if (cvCapture != null) {
+            timer.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+                    image = opencv_highgui.cvQueryFrame(cvCapture);
+                }
+            }, 0, 100);
+        }
     }
 
     public static void startCamera() {
@@ -33,8 +46,9 @@ public class CameraHW {
             logger.error("cannot get Camera device");
             System.exit(-1);
         }
+        image = opencv_highgui.cvQueryFrame(cvCapture);
+
         logger.info("Camera started");
-        
     }
 
     public static void stopCamera() {
@@ -43,10 +57,10 @@ public class CameraHW {
     }
 
     public static opencv_core.IplImage getIplImage() {
-        return opencv_highgui.cvQueryFrame(cvCapture);
+        return image;
     }
 
     public static BufferedImage getBufferedImage() {
-        return opencv_highgui.cvQueryFrame(cvCapture).getBufferedImage();
+        return image.getBufferedImage();
     }
 }

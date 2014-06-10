@@ -40,10 +40,10 @@ public class testArduinoBridge {
         testArduinoBridge tArduinoBridge = new testArduinoBridge();
 
         for (int i = 0; i < 200; i++) {
-            byte[] data = new byte[2];
+            byte[] data = new byte[3];
             data[0] = 'R';
-
             data[1] = (byte)i;
+            data[2] = '\n';
             System.err.println(Byte.toString((byte)i));
             ArduinoBridgeImpl.sendMessagge(data);
             Utils.delay(50);

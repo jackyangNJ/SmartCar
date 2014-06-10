@@ -1,5 +1,6 @@
 package smartcar.Sensor;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,8 @@ import smartcar.core.Utils;
 public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener {
 
     public static Log logger = LogFactory.getLog(ArduinoBridgeImpl.class.getName());
-    private ArrayList<SensorListener> SensorListeners = new ArrayList<>();
-    private Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
+    private final ArrayList<SensorListener> SensorListeners = new ArrayList<>();
+    private final Map<Integer, ArrayList> listenerTypeMap = new HashMap<>();
     private static jssc.SerialPort serialPort;
     private Thread thread;
 
@@ -56,13 +57,34 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
 
                 @Override
                 public void run() {
+                    SensorEvent event;
                     while (true) {
                         try {
-                            byte[] buffer = serialPort.readBytes(1);
-                            int msgType = buffer[0];
-                            logger.info("receve data = "+ (char)buffer[0]);
-                            SensorEvent event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
-                            fireSensorEventProcess(msgType, event);
+                            byte[] buffer = new byte[20];
+                            int bufferIndex = 0;
+
+                            while (true) {
+                                byte[] data = serialPort.readBytes(1);
+                                if (data.length == 1) {
+                                    buffer[bufferIndex] = data[0];
+                                    //dispaatch message 
+                                    if (data[0] == '\n') {
+                                        bufferIndex = 0;
+                                        switch (buffer[0]) {
+                                            case 'U':
+                                                event = new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, buffer);
+                                                fireSensorEventProcess(SensorEvent.SENSOR_ULTRASONIC_TYPE, event);
+                                                break;
+                                            case 'H':
+                                                event = new SensorEvent(this, SensorEvent.SENSOR_HALL_TYPE, buffer);
+                                                fireSensorEventProcess(SensorEvent.SENSOR_HALL_TYPE, event);
+                                                break;
+                                        }
+                                    } else {
+                                        bufferIndex++;
+                                    }
+                                }
+                            }
                         } catch (SerialPortException ex) {
                             logger.error(ex);
                         }
@@ -144,7 +166,7 @@ public class ArduinoBridgeImpl implements ArduinoBridge, SerialPortEventListener
         if (serialPort.isOpened()) {
             try {
                 serialPort.writeBytes(data);
-                
+
             } catch (SerialPortException ex) {
                 logger.error(ex);
             }

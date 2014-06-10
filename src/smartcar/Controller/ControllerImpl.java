@@ -56,7 +56,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
     private final SmartMapInterface map;
     private final NavigatorIf navigator;
-    private final SensorUltrasonic sensorUltrasonic;
+    private  SensorUltrasonic sensorUltrasonic =null;
     private final QRCode qrCode;
     private final Timer controlerrtTimer;
     private Point destination;

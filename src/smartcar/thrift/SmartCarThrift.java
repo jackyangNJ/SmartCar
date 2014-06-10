@@ -44,9 +44,13 @@ public class SmartCarThrift {
 
     public ByteBuffer getSmartMapInfo() throws org.apache.thrift.TException;
 
+    public ByteBuffer getCameraImage() throws org.apache.thrift.TException;
+
     public PointThrift getCarCurrentLocation() throws org.apache.thrift.TException;
 
     public double getCarAngle() throws org.apache.thrift.TException;
+
+    public void setYuntaiAngle(int angle) throws org.apache.thrift.TException;
 
   }
 
@@ -60,9 +64,13 @@ public class SmartCarThrift {
 
     public void getSmartMapInfo(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
+    public void getCameraImage(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
     public void getCarCurrentLocation(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getCarAngle(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void setYuntaiAngle(int angle, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -151,6 +159,28 @@ public class SmartCarThrift {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getSmartMapInfo failed: unknown result");
     }
 
+    public ByteBuffer getCameraImage() throws org.apache.thrift.TException
+    {
+      send_getCameraImage();
+      return recv_getCameraImage();
+    }
+
+    public void send_getCameraImage() throws org.apache.thrift.TException
+    {
+      getCameraImage_args args = new getCameraImage_args();
+      sendBase("getCameraImage", args);
+    }
+
+    public ByteBuffer recv_getCameraImage() throws org.apache.thrift.TException
+    {
+      getCameraImage_result result = new getCameraImage_result();
+      receiveBase(result, "getCameraImage");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCameraImage failed: unknown result");
+    }
+
     public PointThrift getCarCurrentLocation() throws org.apache.thrift.TException
     {
       send_getCarCurrentLocation();
@@ -193,6 +223,26 @@ public class SmartCarThrift {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCarAngle failed: unknown result");
+    }
+
+    public void setYuntaiAngle(int angle) throws org.apache.thrift.TException
+    {
+      send_setYuntaiAngle(angle);
+      recv_setYuntaiAngle();
+    }
+
+    public void send_setYuntaiAngle(int angle) throws org.apache.thrift.TException
+    {
+      setYuntaiAngle_args args = new setYuntaiAngle_args();
+      args.setAngle(angle);
+      sendBase("setYuntaiAngle", args);
+    }
+
+    public void recv_setYuntaiAngle() throws org.apache.thrift.TException
+    {
+      setYuntaiAngle_result result = new setYuntaiAngle_result();
+      receiveBase(result, "setYuntaiAngle");
+      return;
     }
 
   }
@@ -333,6 +383,35 @@ public class SmartCarThrift {
       }
     }
 
+    public void getCameraImage(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getCameraImage_call method_call = new getCameraImage_call(resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getCameraImage_call extends org.apache.thrift.async.TAsyncMethodCall {
+      public getCameraImage_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getCameraImage", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getCameraImage_args args = new getCameraImage_args();
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public ByteBuffer getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getCameraImage();
+      }
+    }
+
     public void getCarCurrentLocation(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getCarCurrentLocation_call method_call = new getCarCurrentLocation_call(resultHandler, this, ___protocolFactory, ___transport);
@@ -391,6 +470,38 @@ public class SmartCarThrift {
       }
     }
 
+    public void setYuntaiAngle(int angle, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      setYuntaiAngle_call method_call = new setYuntaiAngle_call(angle, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class setYuntaiAngle_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private int angle;
+      public setYuntaiAngle_call(int angle, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.angle = angle;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("setYuntaiAngle", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        setYuntaiAngle_args args = new setYuntaiAngle_args();
+        args.setAngle(angle);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public void getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        (new Client(prot)).recv_setYuntaiAngle();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -408,8 +519,10 @@ public class SmartCarThrift {
       processMap.put("setOperation", new setOperation());
       processMap.put("setCarAutoDriveDestination", new setCarAutoDriveDestination());
       processMap.put("getSmartMapInfo", new getSmartMapInfo());
+      processMap.put("getCameraImage", new getCameraImage());
       processMap.put("getCarCurrentLocation", new getCarCurrentLocation());
       processMap.put("getCarAngle", new getCarAngle());
+      processMap.put("setYuntaiAngle", new setYuntaiAngle());
       return processMap;
     }
 
@@ -491,6 +604,26 @@ public class SmartCarThrift {
       }
     }
 
+    public static class getCameraImage<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getCameraImage_args> {
+      public getCameraImage() {
+        super("getCameraImage");
+      }
+
+      public getCameraImage_args getEmptyArgsInstance() {
+        return new getCameraImage_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getCameraImage_result getResult(I iface, getCameraImage_args args) throws org.apache.thrift.TException {
+        getCameraImage_result result = new getCameraImage_result();
+        result.success = iface.getCameraImage();
+        return result;
+      }
+    }
+
     public static class getCarCurrentLocation<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getCarCurrentLocation_args> {
       public getCarCurrentLocation() {
         super("getCarCurrentLocation");
@@ -532,6 +665,26 @@ public class SmartCarThrift {
       }
     }
 
+    public static class setYuntaiAngle<I extends Iface> extends org.apache.thrift.ProcessFunction<I, setYuntaiAngle_args> {
+      public setYuntaiAngle() {
+        super("setYuntaiAngle");
+      }
+
+      public setYuntaiAngle_args getEmptyArgsInstance() {
+        return new setYuntaiAngle_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public setYuntaiAngle_result getResult(I iface, setYuntaiAngle_args args) throws org.apache.thrift.TException {
+        setYuntaiAngle_result result = new setYuntaiAngle_result();
+        iface.setYuntaiAngle(args.angle);
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -549,8 +702,10 @@ public class SmartCarThrift {
       processMap.put("setOperation", new setOperation());
       processMap.put("setCarAutoDriveDestination", new setCarAutoDriveDestination());
       processMap.put("getSmartMapInfo", new getSmartMapInfo());
+      processMap.put("getCameraImage", new getCameraImage());
       processMap.put("getCarCurrentLocation", new getCarCurrentLocation());
       processMap.put("getCarAngle", new getCarAngle());
+      processMap.put("setYuntaiAngle", new setYuntaiAngle());
       return processMap;
     }
 
@@ -711,6 +866,57 @@ public class SmartCarThrift {
       }
     }
 
+    public static class getCameraImage<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getCameraImage_args, ByteBuffer> {
+      public getCameraImage() {
+        super("getCameraImage");
+      }
+
+      public getCameraImage_args getEmptyArgsInstance() {
+        return new getCameraImage_args();
+      }
+
+      public AsyncMethodCallback<ByteBuffer> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<ByteBuffer>() { 
+          public void onComplete(ByteBuffer o) {
+            getCameraImage_result result = new getCameraImage_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            getCameraImage_result result = new getCameraImage_result();
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getCameraImage_args args, org.apache.thrift.async.AsyncMethodCallback<ByteBuffer> resultHandler) throws TException {
+        iface.getCameraImage(resultHandler);
+      }
+    }
+
     public static class getCarCurrentLocation<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getCarCurrentLocation_args, PointThrift> {
       public getCarCurrentLocation() {
         super("getCarCurrentLocation");
@@ -811,6 +1017,56 @@ public class SmartCarThrift {
 
       public void start(I iface, getCarAngle_args args, org.apache.thrift.async.AsyncMethodCallback<Double> resultHandler) throws TException {
         iface.getCarAngle(resultHandler);
+      }
+    }
+
+    public static class setYuntaiAngle<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, setYuntaiAngle_args, Void> {
+      public setYuntaiAngle() {
+        super("setYuntaiAngle");
+      }
+
+      public setYuntaiAngle_args getEmptyArgsInstance() {
+        return new setYuntaiAngle_args();
+      }
+
+      public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<Void>() { 
+          public void onComplete(Void o) {
+            setYuntaiAngle_result result = new setYuntaiAngle_result();
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            setYuntaiAngle_result result = new setYuntaiAngle_result();
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, setYuntaiAngle_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
+        iface.setYuntaiAngle(args.angle,resultHandler);
       }
     }
 
@@ -2648,6 +2904,617 @@ public class SmartCarThrift {
 
   }
 
+  public static class getCameraImage_args implements org.apache.thrift.TBase<getCameraImage_args, getCameraImage_args._Fields>, java.io.Serializable, Cloneable, Comparable<getCameraImage_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCameraImage_args");
+
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new getCameraImage_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getCameraImage_argsTupleSchemeFactory());
+    }
+
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+;
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCameraImage_args.class, metaDataMap);
+    }
+
+    public getCameraImage_args() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getCameraImage_args(getCameraImage_args other) {
+    }
+
+    public getCameraImage_args deepCopy() {
+      return new getCameraImage_args(this);
+    }
+
+    @Override
+    public void clear() {
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getCameraImage_args)
+        return this.equals((getCameraImage_args)that);
+      return false;
+    }
+
+    public boolean equals(getCameraImage_args that) {
+      if (that == null)
+        return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    @Override
+    public int compareTo(getCameraImage_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getCameraImage_args(");
+      boolean first = true;
+
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getCameraImage_argsStandardSchemeFactory implements SchemeFactory {
+      public getCameraImage_argsStandardScheme getScheme() {
+        return new getCameraImage_argsStandardScheme();
+      }
+    }
+
+    private static class getCameraImage_argsStandardScheme extends StandardScheme<getCameraImage_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getCameraImage_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getCameraImage_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getCameraImage_argsTupleSchemeFactory implements SchemeFactory {
+      public getCameraImage_argsTupleScheme getScheme() {
+        return new getCameraImage_argsTupleScheme();
+      }
+    }
+
+    private static class getCameraImage_argsTupleScheme extends TupleScheme<getCameraImage_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getCameraImage_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getCameraImage_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+      }
+    }
+
+  }
+
+  public static class getCameraImage_result implements org.apache.thrift.TBase<getCameraImage_result, getCameraImage_result._Fields>, java.io.Serializable, Cloneable, Comparable<getCameraImage_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCameraImage_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new getCameraImage_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getCameraImage_resultTupleSchemeFactory());
+    }
+
+    public ByteBuffer success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCameraImage_result.class, metaDataMap);
+    }
+
+    public getCameraImage_result() {
+    }
+
+    public getCameraImage_result(
+      ByteBuffer success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getCameraImage_result(getCameraImage_result other) {
+      if (other.isSetSuccess()) {
+        this.success = org.apache.thrift.TBaseHelper.copyBinary(other.success);
+;
+      }
+    }
+
+    public getCameraImage_result deepCopy() {
+      return new getCameraImage_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public byte[] getSuccess() {
+      setSuccess(org.apache.thrift.TBaseHelper.rightSize(success));
+      return success == null ? null : success.array();
+    }
+
+    public ByteBuffer bufferForSuccess() {
+      return success;
+    }
+
+    public getCameraImage_result setSuccess(byte[] success) {
+      setSuccess(success == null ? (ByteBuffer)null : ByteBuffer.wrap(success));
+      return this;
+    }
+
+    public getCameraImage_result setSuccess(ByteBuffer success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((ByteBuffer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getCameraImage_result)
+        return this.equals((getCameraImage_result)that);
+      return false;
+    }
+
+    public boolean equals(getCameraImage_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    @Override
+    public int compareTo(getCameraImage_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getCameraImage_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        org.apache.thrift.TBaseHelper.toString(this.success, sb);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getCameraImage_resultStandardSchemeFactory implements SchemeFactory {
+      public getCameraImage_resultStandardScheme getScheme() {
+        return new getCameraImage_resultStandardScheme();
+      }
+    }
+
+    private static class getCameraImage_resultStandardScheme extends StandardScheme<getCameraImage_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getCameraImage_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.success = iprot.readBinary();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getCameraImage_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          oprot.writeBinary(struct.success);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getCameraImage_resultTupleSchemeFactory implements SchemeFactory {
+      public getCameraImage_resultTupleScheme getScheme() {
+        return new getCameraImage_resultTupleScheme();
+      }
+    }
+
+    private static class getCameraImage_resultTupleScheme extends TupleScheme<getCameraImage_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getCameraImage_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          oprot.writeBinary(struct.success);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getCameraImage_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = iprot.readBinary();
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+  }
+
   public static class getCarCurrentLocation_args implements org.apache.thrift.TBase<getCarCurrentLocation_args, getCarCurrentLocation_args._Fields>, java.io.Serializable, Cloneable, Comparable<getCarCurrentLocation_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCarCurrentLocation_args");
 
@@ -3848,6 +4715,604 @@ public class SmartCarThrift {
           struct.success = iprot.readDouble();
           struct.setSuccessIsSet(true);
         }
+      }
+    }
+
+  }
+
+  public static class setYuntaiAngle_args implements org.apache.thrift.TBase<setYuntaiAngle_args, setYuntaiAngle_args._Fields>, java.io.Serializable, Cloneable, Comparable<setYuntaiAngle_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("setYuntaiAngle_args");
+
+    private static final org.apache.thrift.protocol.TField ANGLE_FIELD_DESC = new org.apache.thrift.protocol.TField("angle", org.apache.thrift.protocol.TType.I32, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new setYuntaiAngle_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new setYuntaiAngle_argsTupleSchemeFactory());
+    }
+
+    public int angle; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      ANGLE((short)1, "angle");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // ANGLE
+            return ANGLE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __ANGLE_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.ANGLE, new org.apache.thrift.meta_data.FieldMetaData("angle", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(setYuntaiAngle_args.class, metaDataMap);
+    }
+
+    public setYuntaiAngle_args() {
+    }
+
+    public setYuntaiAngle_args(
+      int angle)
+    {
+      this();
+      this.angle = angle;
+      setAngleIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public setYuntaiAngle_args(setYuntaiAngle_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.angle = other.angle;
+    }
+
+    public setYuntaiAngle_args deepCopy() {
+      return new setYuntaiAngle_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setAngleIsSet(false);
+      this.angle = 0;
+    }
+
+    public int getAngle() {
+      return this.angle;
+    }
+
+    public setYuntaiAngle_args setAngle(int angle) {
+      this.angle = angle;
+      setAngleIsSet(true);
+      return this;
+    }
+
+    public void unsetAngle() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ANGLE_ISSET_ID);
+    }
+
+    /** Returns true if field angle is set (has been assigned a value) and false otherwise */
+    public boolean isSetAngle() {
+      return EncodingUtils.testBit(__isset_bitfield, __ANGLE_ISSET_ID);
+    }
+
+    public void setAngleIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ANGLE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case ANGLE:
+        if (value == null) {
+          unsetAngle();
+        } else {
+          setAngle((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case ANGLE:
+        return Integer.valueOf(getAngle());
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case ANGLE:
+        return isSetAngle();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof setYuntaiAngle_args)
+        return this.equals((setYuntaiAngle_args)that);
+      return false;
+    }
+
+    public boolean equals(setYuntaiAngle_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_angle = true;
+      boolean that_present_angle = true;
+      if (this_present_angle || that_present_angle) {
+        if (!(this_present_angle && that_present_angle))
+          return false;
+        if (this.angle != that.angle)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    @Override
+    public int compareTo(setYuntaiAngle_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetAngle()).compareTo(other.isSetAngle());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAngle()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.angle, other.angle);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("setYuntaiAngle_args(");
+      boolean first = true;
+
+      sb.append("angle:");
+      sb.append(this.angle);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class setYuntaiAngle_argsStandardSchemeFactory implements SchemeFactory {
+      public setYuntaiAngle_argsStandardScheme getScheme() {
+        return new setYuntaiAngle_argsStandardScheme();
+      }
+    }
+
+    private static class setYuntaiAngle_argsStandardScheme extends StandardScheme<setYuntaiAngle_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, setYuntaiAngle_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // ANGLE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.angle = iprot.readI32();
+                struct.setAngleIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, setYuntaiAngle_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(ANGLE_FIELD_DESC);
+        oprot.writeI32(struct.angle);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class setYuntaiAngle_argsTupleSchemeFactory implements SchemeFactory {
+      public setYuntaiAngle_argsTupleScheme getScheme() {
+        return new setYuntaiAngle_argsTupleScheme();
+      }
+    }
+
+    private static class setYuntaiAngle_argsTupleScheme extends TupleScheme<setYuntaiAngle_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, setYuntaiAngle_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetAngle()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetAngle()) {
+          oprot.writeI32(struct.angle);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, setYuntaiAngle_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.angle = iprot.readI32();
+          struct.setAngleIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class setYuntaiAngle_result implements org.apache.thrift.TBase<setYuntaiAngle_result, setYuntaiAngle_result._Fields>, java.io.Serializable, Cloneable, Comparable<setYuntaiAngle_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("setYuntaiAngle_result");
+
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new setYuntaiAngle_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new setYuntaiAngle_resultTupleSchemeFactory());
+    }
+
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+;
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(setYuntaiAngle_result.class, metaDataMap);
+    }
+
+    public setYuntaiAngle_result() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public setYuntaiAngle_result(setYuntaiAngle_result other) {
+    }
+
+    public setYuntaiAngle_result deepCopy() {
+      return new setYuntaiAngle_result(this);
+    }
+
+    @Override
+    public void clear() {
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof setYuntaiAngle_result)
+        return this.equals((setYuntaiAngle_result)that);
+      return false;
+    }
+
+    public boolean equals(setYuntaiAngle_result that) {
+      if (that == null)
+        return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    @Override
+    public int compareTo(setYuntaiAngle_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("setYuntaiAngle_result(");
+      boolean first = true;
+
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class setYuntaiAngle_resultStandardSchemeFactory implements SchemeFactory {
+      public setYuntaiAngle_resultStandardScheme getScheme() {
+        return new setYuntaiAngle_resultStandardScheme();
+      }
+    }
+
+    private static class setYuntaiAngle_resultStandardScheme extends StandardScheme<setYuntaiAngle_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, setYuntaiAngle_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, setYuntaiAngle_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class setYuntaiAngle_resultTupleSchemeFactory implements SchemeFactory {
+      public setYuntaiAngle_resultTupleScheme getScheme() {
+        return new setYuntaiAngle_resultTupleScheme();
+      }
+    }
+
+    private static class setYuntaiAngle_resultTupleScheme extends TupleScheme<setYuntaiAngle_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, setYuntaiAngle_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, setYuntaiAngle_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
 
