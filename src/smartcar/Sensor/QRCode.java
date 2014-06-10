@@ -1,5 +1,4 @@
 package smartcar.Sensor;
-
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.LuminanceSource;
@@ -23,8 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Event.SensorListener;
 import smartcar.Event.SensorEvent;
-import smartcar.core.Utils;
-import smartcar.test.sensor.QRCodeTest;
 import smartcar.test.sensor.testArduinoBridge;
 
 /**
@@ -52,7 +49,7 @@ public class QRCode implements QRCodeIf {
         }
     };
 
-    String decode() {
+    public String decode() {
         Result result = null;
 
 //        BufferedImage image = CameraHW.getBufferedImage();

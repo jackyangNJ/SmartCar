@@ -1,17 +1,21 @@
 package smartcar.thrift;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.thrift.TException;
 import smartcar.Interactor.Interactor;
 import smartcar.Interactor.InteractorIf;
+import smartcar.Sensor.CameraHW;
 import smartcar.core.Point;
 import smartcar.core.SystemProperty;
 import smartcar.core.Utils;
 import smartcar.map.SmartMapInfo;
+import smartcar.motor.Yuntai;
 import smartcar.test.sensor.testArduinoBridge;
 
 /**
@@ -22,7 +26,8 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     public static Log logger = LogFactory.getLog(SmartCarThriftHandler.class);
     private final double gridSize = Double.parseDouble(SystemProperty.getProperty("Map.Grid.Size"));
-    public InteractorIf interactor;
+    private final String imageFormat = SystemProperty.getProperty("Thrift.ImageFormat");
+    public InteractorIf interactor = null;
 
     public SmartCarThriftHandler() {
         interactor = new Interactor();
@@ -59,7 +64,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
     public ByteBuffer getSmartMapInfo() throws TException {
         try {
             logger.info("getSmartMapInfo");
-            
+
             SmartMapInfo info = interactor.getSmartMapInfo();
             ByteBuffer buffer = Utils.getByteBufferFromObject(info);
             return buffer;
@@ -70,7 +75,24 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
     }
 
-    
+    /**
+     * provide Camera image
+     *
+     * @return
+     * @throws TException
+     */
+    @Override
+    public ByteBuffer getCameraImage() throws TException {
+        logger.info("get Camera Image");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(CameraHW.getBufferedImage(), imageFormat, out);
+        } catch (IOException ex) {
+            logger.error(ex);
+        }
+        return ByteBuffer.wrap(out.toByteArray());
+    }
+
     @Override
     public double getCarAngle() throws TException {
         return interactor.getCarAngle();
@@ -87,6 +109,11 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
 
         }
 
+    }
+
+    @Override
+    public void setYuntaiAngle(int angle) throws TException {
+        Yuntai.setAngle(angle);
     }
 
 }

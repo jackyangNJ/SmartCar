@@ -13,9 +13,10 @@ public class testSensorAcc {
                 PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
                 SensorAcc  accTest = new SensorAcc();
                 SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
-                accTest.calibrate(50);
+//                accTest.calibrate();
                 while(true){
                    
                 }
 	}
 }
+

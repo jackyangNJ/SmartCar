@@ -267,6 +267,7 @@ public class SensorGyro implements SensorGyroIf {
 
     /**
      * 用于在静止时矫正传感器的数据，系统状态SystemCoreData.state应处于静止 数据的平均值会存在meanData中
+     * @param caliNum
      */
     @Override
     public void calibrate(int caliNum) {
@@ -332,10 +333,5 @@ public class SensorGyro implements SensorGyroIf {
         initKalmanFilter();
         rawData = new SensorGyroData();
         gyroData = new SensorGyroData();
-    }
-    
-    public void printMeandData(){
-        logger.info(meanData.getHori_angleSpeed());
-        logger.info(meanData.getHori_angle());
     }
 }

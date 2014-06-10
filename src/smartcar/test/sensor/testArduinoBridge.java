@@ -1,10 +1,6 @@
 package smartcar.test.sensor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -44,10 +40,10 @@ public class testArduinoBridge {
         testArduinoBridge tArduinoBridge = new testArduinoBridge();
 
         for (int i = 0; i < 200; i++) {
-            byte[] data = new byte[2];
+            byte[] data = new byte[3];
             data[0] = 'R';
-
             data[1] = (byte)i;
+            data[2] = '\n';
             System.err.println(Byte.toString((byte)i));
             ArduinoBridgeImpl.sendMessagge(data);
             Utils.delay(50);
