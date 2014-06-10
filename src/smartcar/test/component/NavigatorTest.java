@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import smartcar.Navigator.Navigator;
 import smartcar.core.SystemCoreData;
+import smartcar.core.SystemProperty;
 import smartcar.core.Utils;
 import smartcar.map.SmartMap;
 import smartcar.test.sensor.CameraTest;
@@ -17,13 +18,14 @@ import smartcar.test.sensor.testArduinoBridge;
 public class NavigatorTest {
 
     public static Log logger = LogFactory.getLog(CameraTest.class.getName());
+    private static final int initCaliNum = Integer.parseInt(SystemProperty.getProperty("GYRO.RunCalibrateNum"));
 
     public static void main(String[] args){
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap map = new SmartMap();
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
         Navigator navigatorTest = new Navigator(map);
-        navigatorTest.calibrateSensors();
+        navigatorTest.calibrateSensors(initCaliNum);
         SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
 
         while (true) {

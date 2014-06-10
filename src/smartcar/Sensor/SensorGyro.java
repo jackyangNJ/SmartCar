@@ -333,4 +333,9 @@ public class SensorGyro implements SensorGyroIf {
         rawData = new SensorGyroData();
         gyroData = new SensorGyroData();
     }
+    
+    public void printMeandData(){
+        logger.info(meanData.getHori_angleSpeed());
+        logger.info(meanData.getHori_angle());
+    }
 }

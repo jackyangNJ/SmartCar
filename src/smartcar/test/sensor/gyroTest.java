@@ -14,7 +14,6 @@ import smartcar.motor.Motor;
 import smartcar.Sensor.SensorAcc;
 import smartcar.Sensor.SensorGyro;
 import smartcar.core.*;
-import spiLib.SPIFunc;
 
 /**
  *
@@ -22,24 +21,18 @@ import spiLib.SPIFunc;
  */
 public class gyroTest {
     public static Log logger = LogFactory.getLog(testHall.class.getName());
+    private static final int initCaliNum = Integer.parseInt(SystemProperty.getProperty("GYRO.RunCalibrateNum"));
     public static void main(String[] args) throws InterruptedException{
+        int i = 0;
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
 //        SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);             //set still        
-        SensorGyro gyroTest = new SensorGyro();     
-        SensorAcc  accTest = new SensorAcc();
+        SensorGyro gyroTest = new SensorGyro();                            
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
-        gyroTest.calibrate();
-        accTest.calibrate();
-//        Motor.set_counterclockwise();
-        Motor.smart_car_set(50, 0);        
-        
-        while(true){            
-            if(accTest.getSensorData().gety()<=-0.5){
-                break;
-            }                                    
-        }
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Motor.smart_car_set(0, 0);
-        
+        while(i<5){                    
+            gyroTest.calibrate(initCaliNum);        
+            gyroTest.printMeandData();                                    
+            sleep(6000);
+            i++;
+        }        
     }
 }

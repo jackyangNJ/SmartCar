@@ -1,26 +1,28 @@
 package smartcar.Controller;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import smartcar.map.SmartMap;
-import smartcar.Navigator.Navigator;
 import smartcar.Event.NavigatorEvent;
 import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
-import smartcar.motor.Motor;
+import smartcar.Navigator.Navigator;
 import smartcar.Navigator.NavigatorIf;
 import smartcar.Sensor.QRCode;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
-import smartcar.map.SmartMapInterface;
 import smartcar.core.Point;
 import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
 import smartcar.core.Utils;
+import smartcar.map.SmartMap;
 import smartcar.map.SmartMapData;
+import smartcar.map.SmartMapInterface;
+import smartcar.map.SmartMapQRCode;
+import smartcar.motor.Motor;
 import smartcar.thrift.CarOperation;
 
 /**
@@ -53,7 +55,8 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      * 默认采用简单行驶策略
      */
     DriveStrategyType driveStrategy = DriveStrategyType.SIMPLE;
-
+    
+    private final SmartMapQRCode mapQRcode;
     private final SmartMapInterface map;
     private final NavigatorIf navigator;
     private final SensorUltrasonic sensorUltrasonic;
@@ -101,7 +104,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
 
         sensorUltrasonic = new SensorUltrasonic();
         qrCode = new QRCode();
-
+        mapQRcode = new SmartMapQRCode();
+        //TODO  加入二位位置 mapQRcode.setQRCode(destination, null);        
+        
         //更新系统状态
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
 
@@ -167,6 +172,8 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     private CarOperation getMotorOperationAccordingSchedulePath() {
 
         Point currentLocation = navigator.getCurrentLocation();
+        ArrayList<Point> qrcodePoints = mapQRcode.getQrcodePoints();
+        
         logger.info("CurrentLocation=" + currentLocation);
         //检查是否到终点
         if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
@@ -176,6 +183,13 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             return CarOperation.STOP;
         }
 
+        //检查二维码
+       for(Point p : qrcodePoints){
+           if(Math.abs(Utils.getDistance(p, currentLocation)) < positionDeviation){
+               checkQRCode();
+           }
+       }        
+        
         //更新schedulePath,因为schedulePath是一个嵌套的数据结构
         if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
             scheduledPath = scheduledPath.getChild();
@@ -185,8 +199,8 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             logger.info("Reach Endpoint!!!");
             setCarOperation(CarOperation.STOP);
             System.exit(0);
-        }
-
+        }                                                
+        
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
