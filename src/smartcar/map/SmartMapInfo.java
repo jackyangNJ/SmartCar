@@ -19,6 +19,7 @@ public class SmartMapInfo implements Serializable {
     int numofy;
     int numofx;
     List<NodeToDisplay> GridMap = new ArrayList<>();
+    double grid;
 
     public SmartMapInfo() {
 
@@ -46,6 +47,14 @@ public class SmartMapInfo implements Serializable {
 
     public List getMap() {//表示有障碍物或二维码的点的动态数组
         return GridMap;
+    }
+    
+    public void setGrid(double grid) {
+        this.grid = grid;
+    }
+    
+    public double getGrid() {
+        return grid;
     }
 
     @Override

@@ -235,30 +235,40 @@ public class SmartMap implements SmartMapInterface {
 
             GridMap[x_i][y_i].setblack(b.barriers.get(i));
             double length = (b.barriers.get(i).length - grid) / 2;//中心点一侧的长度
+            int num_l = 0,num_w = 0;
             if (length != 0) {
-                int num_l = (int) (length / grid) + 1;//中心点一侧的网格个数（除中心网格外）（左右）
+                num_l = (int) (length / grid) + 1;//中心点一侧的网格个数（除中心网格外）（左右）
                 for (int j = 1; j <= num_l; j++) {
-                    GridMap[x_i][y_i - num_l].setblack(b.barriers.get(i));
-                    GridMap[x_i][y_i + num_l].setblack(b.barriers.get(i));
+                    GridMap[x_i][y_i - j].setblack(b.barriers.get(i));
+                    GridMap[x_i][y_i + j].setblack(b.barriers.get(i));
                 }
             }
             double width = (b.barriers.get(i).width - grid) / 2;//中心点一侧的宽度
             if (width != 0) {
-                int num_w = (int) (width / grid) + 1;//中心点一侧的网格个数（除中心网格外）（上下）
-                for (int j = 1; j <= num_w; j++) {
-                    GridMap[x_i - num_w][y_i].setblack(b.barriers.get(i));
-                    GridMap[x_i + num_w][y_i].setblack(b.barriers.get(i));
+                num_w = (int) (width / grid) + 1;//中心点一侧的网格个数（除中心网格外）（上下）
+                for (int k = 1; k <= num_l; k++) {
+                    for (int j = 1; j <= num_w; j++) {
+                        GridMap[x_i - j][y_i].setblack(b.barriers.get(i));
+                        GridMap[x_i + j][y_i].setblack(b.barriers.get(i));
+                        GridMap[x_i - j][y_i - k].setblack(b.barriers.get(i));
+                        GridMap[x_i + j][y_i - k].setblack(b.barriers.get(i));
+                        GridMap[x_i - j][y_i + k].setblack(b.barriers.get(i));
+                        GridMap[x_i + j][y_i + k].setblack(b.barriers.get(i));
+                    }
                 }
             }
         }
 
-        logger.info("set qrcode");
+        logger.info("set qrcode" + q.num);
         //set qrcode
         for (int i = 0; i < q.num; i++) {
+            logger.info("i:" + i);
             double x = q.qrcodes.get(i).location.x;
             double y = q.qrcodes.get(i).location.y;
             int x_i = Integer.parseInt(new java.text.DecimalFormat("0").format(x));
             int y_i = Integer.parseInt(new java.text.DecimalFormat("0").format(y));
+            logger.info("x_i:" + x_i);
+            logger.info("y_i:" + y_i);
             GridMap[x_i][y_i].setQRCode(q.qrcodes.get(i));
         }
 
@@ -309,6 +319,15 @@ public class SmartMap implements SmartMapInterface {
                 }
             }
         }
+        System.out.println("set barrier and qrcodes OK!");
+        /*for (int i = 0; i < numofx; i++) {
+            for (int j = 0; j < numofy; j++) {
+                if(GridMap[i][j].getblack() == true)
+                    System.out.println("---------------------------" + i + "--" + j);
+                if(GridMap[i][j].getQRCode() == true)
+                    System.out.println("****************************" + i + "**" + j);
+            }
+        }*/
         //return GridMap;		
     }
 
@@ -319,25 +338,25 @@ public class SmartMap implements SmartMapInterface {
     public static void main(String[] args) throws IOException {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
         SmartMap s = new SmartMap();
-        /* SmartMapData d = new SmartMapData();
-         d = s.getPath(new Point(1,2), new Point(4,3));
+         SmartMapData d = new SmartMapData();
+         d = s.getPath(new Point(0,0), new Point(1.7,1.5));
          //System.out.print(d.getAngle() + "\n");
          //System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
          //d = d.child;
          while(d != null) {
          //System.out.print(d.getAngle() + "\n");
          //System.out.print("->" + d.end.x + "," + d.end.y);
-         System.out.print(d.getAngle() + "\n");
-         System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
-         d = d.child;
-         }*/
-        SmartMapInfo info = s.getMapInfo();
+            //System.out.print(d.getAngle() + "\n");
+            System.out.print(d.start.x + "," + d.start.y + "->" + d.end.x + "," + d.end.y + "\n");
+            d = d.child;
+         }
+        /*SmartMapInfo info = s.getMapInfo();
         int num = info.GridMap.size();
         System.out.println(num);
         for (int i = 0; i < num; i++) {
             System.out.println("x:" + info.GridMap.get(i).x + " y:" + info.GridMap.get(i).y);
             System.out.println("barrier:" + info.GridMap.get(i).getblack() + " qrcode:" + info.GridMap.get(i).getQRCode());
-        }
+        }*/
         /*double f = 1.9f;
          int i = (int)f;
          System.out.println(i);*/
@@ -490,6 +509,11 @@ public class SmartMap implements SmartMapInterface {
     @Override
     public SmartMapInfo getMapInfo() {
         logger.info("get information of the map");
+       /*for (int i = 0; i < numofx; i++) {
+            for (int j = 0; j < numofy; j++) {
+                GridMap[i][j]
+            }
+       }*/
         try {
             build(b, q);
         } catch (IOException ex) {
@@ -509,11 +533,16 @@ public class SmartMap implements SmartMapInterface {
                 NodeToDisplay node = new NodeToDisplay(x, y);
                 if (GridMap[i][j].getblack() == false && GridMap[i][j].getQRCode() == false) {
 
-                } else {
+                } 
+                else {
                     if (GridMap[i][j].getblack() == true) {
+                        //System.out.println("barrier");
+                        //System.out.println("i:" + i + "  j;" + j);
                         node.setblack(GridMap[i][j].getBarrierInfo());
                     }
                     if (GridMap[i][j].getQRCode() == true) {
+                        //System.out.println("qrcode");
+                        //System.out.println("i:" + i + "  j;" + j);
                         node.setQRCode(GridMap[i][j].getQRCodeInfo());
                     }
                     map.add(node);
@@ -521,6 +550,7 @@ public class SmartMap implements SmartMapInterface {
             }
         }
         logger.info("barrier and qrcode num:" + map.size());
+        info.setGrid(grid);
         info.setGridMap(map);
         return info;
     }
