@@ -11,8 +11,8 @@ import org.apache.log4j.PropertyConfigurator;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Sensor.CameraHW;
-import smartcar.Sensor.QRCode;
-import smartcar.Sensor.QRCodeData;
+import smartcar.Sensor.SensorQRCode;
+import smartcar.Sensor.SensorQRCodeData;
 
 /**
  *
@@ -21,7 +21,7 @@ import smartcar.Sensor.QRCodeData;
 public class QRCodeTest implements SensorListener {
 
     public static Log logger = LogFactory.getLog(QRCodeTest.class.getName());
-    QRCode test = new QRCode();
+    SensorQRCode test = new SensorQRCode();
 
     public QRCodeTest() {
         test.addSenserListener(this);
@@ -38,7 +38,7 @@ public class QRCodeTest implements SensorListener {
 
     @Override
     public void SensorEventProcess(SensorEvent e) {
-        QRCodeData data = (QRCodeData) e.getData();
+        SensorQRCodeData data = (SensorQRCodeData) e.getData();
         logger.info(data.get_position());
     }
 }

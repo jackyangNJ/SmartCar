@@ -19,7 +19,7 @@ public class Node{
     private boolean barriermask = false;
     SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
     private boolean qrcodemask = false;
-    SmartMapQRCode.QRCode q = new SmartMapQRCode.QRCode();
+    SmartMapQRCodeInfo q = new SmartMapQRCodeInfo();
 
     public Node(String name) {
         this.name = name;
@@ -50,7 +50,7 @@ public class Node{
         return barriermask;
     }
 
-    public void setQRCode(SmartMapQRCode.QRCode q) {//设置二维码
+    public void setQRCode(SmartMapQRCodeInfo q) {//设置二维码
         qrcodemask = true;
         this.q = q;
     }
@@ -63,7 +63,7 @@ public class Node{
         return b;
     }
 
-    public SmartMapQRCode.QRCode getQRCodeInfo() {
+    public SmartMapQRCodeInfo getQRCodeInfo() {
         return q;
     }
 

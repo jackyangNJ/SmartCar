@@ -17,7 +17,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf, SensorListener {
 
     public static Log logger = LogFactory.getLog(SensorUltrasonic.class);
     private ArrayList<SensorListener> SensorListeners;
-    private SensorUltrasonicData UltrasonicData;
+    private SensorUltrasonicData ultrasonicData;
     public static final String triggerFilePath = SystemProperty.getProperty("Ultrasonic.File.trigger");
     public static final String distance1FilePath = SystemProperty.getProperty("Ultrasonic.File.distance1");
     public static final String distance2FilePath = SystemProperty.getProperty("Ultrasonic.File.distance2");
@@ -45,7 +45,7 @@ public class SensorUltrasonic implements SensorUltrasonicIf, SensorListener {
     };
 
     public SensorUltrasonic() {
-        UltrasonicData = new SensorUltrasonicData();
+        ultrasonicData = new SensorUltrasonicData();
     }
 
     /**
@@ -100,9 +100,9 @@ public class SensorUltrasonic implements SensorUltrasonicIf, SensorListener {
         logger.debug("distance3 is: " + dis_cnt3);
 
         //单位(m)
-        UltrasonicData.setDistance1((double) dis_cnt1 * 170 / 1000000000);
-        UltrasonicData.setDistance2((double) dis_cnt2 * 170 / 1000000000);
-        UltrasonicData.setDistance3((double) dis_cnt3 * 170 / 1000000000);
+        ultrasonicData.setDistance1((double) dis_cnt1 * 170 / 1000000000);
+        ultrasonicData.setDistance2((double) dis_cnt2 * 170 / 1000000000);
+        ultrasonicData.setDistance3((double) dis_cnt3 * 170 / 1000000000);
     }
 
     /**
@@ -158,19 +158,21 @@ public class SensorUltrasonic implements SensorUltrasonicIf, SensorListener {
      */
     @Override
     public SensorUltrasonicData getData() {
-        SensorUltrasonicData sensorUltrasonicData = new SensorUltrasonicData();
-        sensorUltrasonicData.setDistance1(UltrasonicData.getDistance1());
-        sensorUltrasonicData.setDistance2(UltrasonicData.getDistance2());
-        sensorUltrasonicData.setDistance3(UltrasonicData.getDistance3());
-        return sensorUltrasonicData;
+        return ultrasonicData;
     }
 
+    /**
+     * update ultrasonic data
+     * @param e 
+     */
     @Override
     public void SensorEventProcess(SensorEvent e) {
         byte[] buffer = (byte[]) e.getData();
+        //get rid of msg head ang tail ,and parse double
         double cm = Double.parseDouble(new String(buffer, 1, buffer.length - 2));
         double distance = cm / 100.0;
-        fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE, new SensorUltrasonicData(distance, 0, 0)));
+        ultrasonicData.setDistance1(distance);
+        fireSensorEventProcess(new SensorEvent(this, SensorEvent.SENSOR_ULTRASONIC_TYPE,ultrasonicData));
     }
 
 }

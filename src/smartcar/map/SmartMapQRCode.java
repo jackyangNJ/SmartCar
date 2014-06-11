@@ -17,13 +17,17 @@ import smartcar.core.Point;
 public class SmartMapQRCode implements Serializable{
     int num;//二维码个数
     ArrayList<Point> qrcodePositon = new ArrayList<>();
-    ArrayList<QRCode> qrcodes = new ArrayList<>();
+    ArrayList<SmartMapQRCodeInfo> qrcodes = new ArrayList<>();
     public void setQRCode(Point location,String data) {
-        QRCode b = new QRCode();
+        SmartMapQRCodeInfo b = new SmartMapQRCodeInfo();
         b.location = new Point(location.x,location.y);
         b.data = data;
         qrcodes.add(b);
         num ++;
+    }
+
+    public ArrayList<SmartMapQRCodeInfo> getQrcodes() {
+        return qrcodes;
     }
     
     public ArrayList<Point> getQrcodePoints(){        
@@ -52,24 +56,5 @@ public class SmartMapQRCode implements Serializable{
                 System.out.println(i + ": " + qrcodes.get(i).location.x + "," + qrcodes.get(i).location.y + qrcodes.get(i).data);
         }
     }*/
-    static class QRCode implements Serializable{
-        Point location;
-
-        public Point getLocation() {
-            return location;
-        }
-
-        public void setLocation(Point location) {
-            this.location = location;
-        }
-
-        public String getData() {
-            return data;
-        }
-
-        public void setData(String data) {
-            this.data = data;
-        }
-        String data;
-    }
 }
+ 

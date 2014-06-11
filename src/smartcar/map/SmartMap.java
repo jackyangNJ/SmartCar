@@ -414,7 +414,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
     @Override
-    public SmartMapQRCode.QRCode getQRCodeInformation(Point p) {
+    public SmartMapQRCodeInfo getQRCodeInformation(Point p) {
         logger.info("get qrcodes information near the point");
         SmartMap s = new SmartMap();
         try {
@@ -434,7 +434,7 @@ public class SmartMap implements SmartMapInterface {
     }
 
     @Override
-    public SmartMapQRCode.QRCode getQRCodeInformation(String str) {
+    public SmartMapQRCodeInfo getQRCodeInformation(String str) {
         logger.info("get qrcodes information");
         SmartMap s = new SmartMap();
         try {
@@ -453,57 +453,75 @@ public class SmartMap implements SmartMapInterface {
 
     @Override
     public SmartMapData getPath(Point start_real, Point end_real) {
-        logger.info("get the path between two points");
-        try {
-            build(b, q);
-        } catch (IOException ex) {
-            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        double start_x = start_real.x / grid;
-        double start_y = start_real.y / grid;
-        double end_x = end_real.x / grid;
-        double end_y = end_real.y / grid;
-        Point start = new Point(start_x, start_y);
-        Point end = new Point(end_x, end_y);
-        String name = "(" + String.valueOf((int) end.x) + "," + String.valueOf((int) end.y) + ")";
-        //System.out.println(name);
-        Node ending = new Node(name);
-        Dijkstra test = new Dijkstra();
-        Node starting = test.init((int) start.x, (int) start.y, GridMap);
-        // System.out.println(starting.getName());
-        test.computePath(starting);
-        ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();
-        data = test.printPathInfo(ending);//未合并
-        for (int i = 0; i < data.size() - 1; i++) {
-            /*PathNode current = new PathNode(path_nodes.get(i).x,path_nodes.get(i).y);
-             PathNode next = new PathNode(path_nodes.get(i + 1).x,path_nodes.get(i + 1).y);
-             if(current.x == next.x || current.y == next.y || current.x/current.y == next.x/next.y) {
-                                
-             }*/
-            double slope1;
-            double dx1 = data.get(i).start.x - data.get(i).end.x;
-            if (dx1 == 0) {
-                slope1 = 0;
-            } else {
-                slope1 = (data.get(i).start.y - data.get(i).end.y) / dx1;
-            }
-            double slope2;
-            double dx2 = data.get(i + 1).start.x - data.get(i + 1).end.x;
-            if (dx2 == 0) {
-                slope2 = 0;
-            } else {
-                slope2 = (data.get(i + 1).start.y - data.get(i + 1).end.y) / dx2;
-            }
-            if (slope1 == slope2) {//斜率相等
-                data.get(i).end = data.get(i + 1).end;
-                data.get(i).child = data.get(i + 1).child;
-                data.remove(i + 1);
-                i--;
-            }
-        }
-
-        SmartMapData d = data.get(0);
-        return d;
+        SmartMapData d1 = new SmartMapData();
+        SmartMapData d2 = new SmartMapData();
+        SmartMapData d3 = new SmartMapData();
+        SmartMapData d4 = new SmartMapData();
+        d1.setStartPoint(new Point(0.05,0.05));
+        d1.setEndPoint(new Point(0.75,0.05));
+        d2.setStartPoint(new Point(0.75,0.05));
+        d2.setEndPoint(new Point(1.25,0.55));
+        d3.setStartPoint(new Point(1.25,0.05));
+        d3.setEndPoint(new Point(1.25,1.45));
+        d4.setStartPoint(new Point(1.25,1.45));
+        d4.setEndPoint(new Point(1.65,1.45));
+        d3.setChild(d4);
+        d2.setChild(d3);
+        d1.setChild(d2);
+        return d1;
+//        
+//        logger.info("get the path between two points");
+//        try {
+//            build(b, q);
+//        } catch (IOException ex) {
+//            Logger.getLogger(SmartMap.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        double start_x = start_real.x / grid;
+//        double start_y = start_real.y / grid;
+//        double end_x = end_real.x / grid;
+//        double end_y = end_real.y / grid;
+//        Point start = new Point(start_x, start_y);
+//        Point end = new Point(end_x, end_y);
+//        String name = "(" + String.valueOf((int) end.x) + "," + String.valueOf((int) end.y) + ")";
+//        //System.out.println(name);
+//        Node ending = new Node(name);
+//        Dijkstra test = new Dijkstra();
+//        Node starting = test.init((int) start.x, (int) start.y, GridMap);
+//        // System.out.println(starting.getName());
+//        test.computePath(starting);
+//        ArrayList<SmartMapData> data = new ArrayList<SmartMapData>();
+//        data = test.printPathInfo(ending);//未合并
+//        for (int i = 0; i < data.size() - 1; i++) {
+//            /*PathNode current = new PathNode(path_nodes.get(i).x,path_nodes.get(i).y);
+//             PathNode next = new PathNode(path_nodes.get(i + 1).x,path_nodes.get(i + 1).y);
+//             if(current.x == next.x || current.y == next.y || current.x/current.y == next.x/next.y) {
+//                                
+//             }*/
+//            double slope1;
+//            double dx1 = data.get(i).start.x - data.get(i).end.x;
+//            if (dx1 == 0) {
+//                slope1 = 0;
+//            } else {
+//                slope1 = (data.get(i).start.y - data.get(i).end.y) / dx1;
+//            }
+//            double slope2;
+//            double dx2 = data.get(i + 1).start.x - data.get(i + 1).end.x;
+//            if (dx2 == 0) {
+//                slope2 = 0;
+//            } else {
+//                slope2 = (data.get(i + 1).start.y - data.get(i + 1).end.y) / dx2;
+//            }
+//            if (slope1 == slope2) {//斜率相等
+//                data.get(i).end = data.get(i + 1).end;
+//                data.get(i).child = data.get(i + 1).child;
+//                data.remove(i + 1);
+//                i--;
+//            }
+//        }
+//
+//        SmartMapData d = data.get(0);
+//        return d;
+        
     }
 
     @Override

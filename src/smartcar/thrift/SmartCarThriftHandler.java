@@ -69,7 +69,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
             ByteBuffer buffer = Utils.getByteBufferFromObject(info);
             return buffer;
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error(ex);  
         }
         return null;
 
@@ -86,7 +86,7 @@ public class SmartCarThriftHandler implements SmartCarThrift.Iface {
         logger.info("get Camera Image");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            ImageIO.write(CameraHW.getBufferedImage(), imageFormat, out);
+            ImageIO.write(CameraHW.getBufferedImage(), "jpeg", out);
         } catch (IOException ex) {
             logger.error(ex);
         }

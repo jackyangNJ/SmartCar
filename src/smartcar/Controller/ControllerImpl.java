@@ -10,8 +10,7 @@ import smartcar.Event.NavigatorListener;
 import smartcar.Event.SensorEvent;
 import smartcar.Event.SensorListener;
 import smartcar.Navigator.Navigator;
-import smartcar.Navigator.NavigatorIf;
-import smartcar.Sensor.QRCode;
+import smartcar.Sensor.SensorQRCode;
 import smartcar.Sensor.SensorUltrasonic;
 import smartcar.Sensor.SensorUltrasonicData;
 import smartcar.core.Point;
@@ -19,9 +18,12 @@ import smartcar.core.SystemCoreData;
 import smartcar.core.SystemProperty;
 import smartcar.core.Utils;
 import smartcar.map.SmartMap;
+import smartcar.map.SmartMapBarrier;
 import smartcar.map.SmartMapData;
+import smartcar.map.SmartMapInfo;
 import smartcar.map.SmartMapInterface;
 import smartcar.map.SmartMapQRCode;
+import smartcar.map.SmartMapQRCodeInfo;
 import smartcar.motor.Motor;
 import smartcar.motor.Yuntai;
 import smartcar.thrift.CarOperation;
@@ -32,11 +34,12 @@ import smartcar.thrift.CarOperation;
  */
 public class ControllerImpl extends TimerTask implements NavigatorListener, Controller {
 
-
     private enum DriveModeType {
 
         AUTO, MANUAL
     };
+
+    boolean flag = false;
 
     /**
      * DriveStrategy 中，SIMPLE是在小车的行驶过程中，不会转弯，意即直来直去，只会在静止的时候转动角度，
@@ -57,15 +60,19 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      */
     DriveStrategyType driveStrategy = DriveStrategyType.SIMPLE;
 
-    private final SmartMapQRCode mapQRcode;
-    private final SmartMapInterface map;
-    private final NavigatorIf navigator;
-    private  SensorUltrasonic sensorUltrasonic =null;
-    private final QRCode qrCode;
+    private final Navigator navigator;
+    private SensorUltrasonic sensorUltrasonic = null;
+    private final SensorQRCode qrCode;
     private final Timer controlerrtTimer;
     private Point destination;
-    private SmartMapData scheduledPath;
-    private Yuntai yuntai;
+    /**
+     * Map related varibles
+     */
+    private final SmartMapInterface map;
+    private SmartMapInfo smartMapInfo = null;
+    private SmartMapQRCode smartMapQRCode = null;
+    private SmartMapBarrier smartMapBarrier = null;
+    private SmartMapData scheduledPath = null;
 
     /**
      * constants
@@ -85,9 +92,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         public void SensorEventProcess(SensorEvent e) {
             SensorUltrasonicData sensorUltrasonicData = (SensorUltrasonicData) e.getData();
             double dis1 = sensorUltrasonicData.getDistance1();
-            double dis2 = sensorUltrasonicData.getDistance2();
-            double dis3 = sensorUltrasonicData.getDistance3();
-            logger.info("Receive Ultrasonic Data: 1:" + dis1 + " 2 :" + dis2 + " 3: " + dis3);
+            logger.debug("Receive Ultrasonic Data: 1:" + dis1);
         }
     };
     /**
@@ -104,12 +109,6 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public ControllerImpl(SmartMap map) {
         this.map = map;
 
-        sensorUltrasonic = new SensorUltrasonic();
-        qrCode = new QRCode();
-        mapQRcode = new SmartMapQRCode();
-        //TODO  加入二位位置 mapQRcode.setQRCode(destination, null);        
-        
-        yuntai = new Yuntai();
         //更新系统状态
         SystemCoreData.setSystemState(SystemCoreData.STATE_STILL);
 
@@ -119,12 +118,15 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         logger.info("Navigator calibrate sensors complete!");
 
         //连接事件处理程序
+        sensorUltrasonic = new SensorUltrasonic();
+        navigator.arduinoBridge.registerMessageListener(SensorEvent.SENSOR_ULTRASONIC_TYPE, sensorUltrasonic);
+        qrCode = new SensorQRCode();
         sensorUltrasonic.addSenserListener(sensorUltrasonicListener);
         qrCode.addSenserListener(qrCodeListener);
 
         //启动controller线程
         controlerrtTimer = new Timer("Controller");
-        controlerrtTimer.scheduleAtFixedRate(this, 0, 1000 / eventCheckFrequency);
+        controlerrtTimer.schedule(this, 0, 1000 / eventCheckFrequency);
         logger.info("starting Controller TimerTask ");
     }
 
@@ -132,6 +134,7 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public Point getCarCurrentLocation() {
         return navigator.getCurrentLocation();
     }
+
     @Override
     public double getCarAngle() {
         return navigator.getCurrentAngle();
@@ -159,13 +162,16 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             Point currentLocation = navigator.getCurrentLocation();
             scheduledPath = map.getPath(currentLocation, destination);
             logger.info("sechdule path:" + scheduledPath);
+
+            smartMapInfo = map.getMapInfo();
+            smartMapQRCode = map.getQRCodeInformation();
+            smartMapBarrier = map.getBarrierInformation();
         }
 
         /**
          * 检查二维码
          */
         checkQRCode();
-
         CarOperation op = getMotorOperationAccordingSchedulePath();
     }
 
@@ -175,8 +181,9 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     private CarOperation getMotorOperationAccordingSchedulePath() {
         Point currentLocation = navigator.getCurrentLocation();
         ArrayList<Point> qrcodePoints = new ArrayList<>();
-        
+
         logger.info("CurrentLocation=" + currentLocation);
+        logger.info("Angle = " + navigator.getCurrentAngle());
         //检查是否到终点
         if (Math.abs(Utils.getDistance(currentLocation, destination)) < positionDeviation) {
             logger.info("Reach Endpoint!!!");
@@ -184,18 +191,12 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
             System.exit(0);
             return CarOperation.STOP;
         }
-        
-        //检查二维码
-       for(Point p : qrcodePoints){
-           if(Math.abs(Utils.getDistance(p, currentLocation)) < positionDeviation){
-               checkQRCode();
-           }
-       }
 
+        //检查二维码
         //更新schedulePath,因为schedulePath是一个嵌套的数据结构
         if (Math.abs(Utils.getDistance(currentLocation, scheduledPath.getEndPoint())) < positionDeviation) {
             scheduledPath = scheduledPath.getChild();
-            logger.info("schedulePath=" + scheduledPath);
+            logger.info("schedulePath =" + scheduledPath);
         }
         if (scheduledPath == null) {
             logger.info("Reach Endpoint!!!");
@@ -206,20 +207,22 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         //检查是否旋转车头
         if (driveStrategy == DriveStrategyType.SIMPLE) {
             double driveDirection = Utils.getAngle(currentLocation, scheduledPath.getEndPoint());
-            logger.info("EndPoint=" + scheduledPath.getEndPoint());
-            logger.info("drivedirection=" + driveDirection);
-            logger.info("CurrentAngle = " + navigator.getCurrentAngle());
             double rotateAngle = Math.abs(driveDirection - navigator.getCurrentAngle());
+
             //SET BACK
             if (Math.abs(rotateAngle - 180) < 90) {
                 driveDirection = driveDirection > 180 ? driveDirection - 180 : driveDirection + 180;
                 if (Math.abs(driveDirection - navigator.getCurrentAngle()) > angleDeviation) {
-                    rotateToAbsoluteAngle(driveDirection, 3);
+                    rotateToAbsoluteAngle(driveDirection, 5);
                 }
                 setCarOperation(CarOperation.BACK);
             } else { //SET FORWARD
-                if (Math.abs(driveDirection - navigator.getCurrentAngle()) > angleDeviation) {
-                    rotateToAbsoluteAngle(driveDirection, 3);
+                if (rotateAngle > 180) {
+                    rotateAngle = 360 - rotateAngle;
+                }
+                if (rotateAngle > angleDeviation) {
+                    rotateToAbsoluteAngle(driveDirection, 5);
+
                 }
                 setCarOperation(CarOperation.FORWARD);
             }
@@ -236,8 +239,35 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
      *
      * @return
      */
-    private boolean checkQRCode() {        
+    private boolean checkQRCode() {
+        if (!flag) {
+            Point currentLocation = navigator.getCurrentLocation();
+
+            for (SmartMapQRCodeInfo p : smartMapQRCode.getQrcodes()) {
+                logger.info("qr=" + p.getLocation());
+                if (Utils.getDistance(p.getLocation(), currentLocation) < 0.35) {
+                    setCarOperation(CarOperation.STOP);
+                    for (int i = 180; i > 0; i -= 15) {
+                        Yuntai.setAngle(i);
+                        Utils.delay(600);
+                    }
+                    flag = true;
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    private String searchQRcode() {
+        for (int i = 0; i < 180; i += 20) {
+            Yuntai.setAngle(i);
+            String result = qrCode.decode();
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
     /**
@@ -250,11 +280,13 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
     public void rotateToAbsoluteAngle(double dstAngle, double deviation) {
         double currentAngle;
         logger.info("Rotate");
-        
+
+        logger.info("EndPoint =" + scheduledPath.getEndPoint());
+        logger.info("Drivedirection =" + dstAngle);
+        logger.info("CurrentAngle = " + navigator.getCurrentAngle());
         //矫正传感器
-        setCarOperation(CarOperation.STOP);
-        navigator.calibrateSensors(runCaliNum);
-        
+//        setCarOperation(CarOperation.STOP);
+//        navigator.calibrateSensors(runCaliNum);
         //计算最小的旋转方向，使旋转角度达到最小
         do {
             currentAngle = navigator.getCurrentAngle();
@@ -308,26 +340,26 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         if (carOperation == CarOperation.FORWARD) {
             logger.debug("setCarOperation:FORWARD");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOFORWARD);
-            setCar(20, 0);
+            setCar(5, 0);
             return;
         }
 
         if (carOperation == CarOperation.BACK) {
             logger.debug("setCarOperation:BACK");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOBACK);
-            setCar(-20, 0);
+            setCar(-5, 0);
             return;
         }
         if (carOperation == CarOperation.LEFT) {
             logger.debug("setCarOperation:LEFT");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GOLEFT);
-            setCar(20, -90);
+            setCar(5, -90);
             return;
         }
         if (carOperation == CarOperation.RIGHT) {
             logger.debug("setCarOperation:RIGHT");
             SystemCoreData.setSystemState(SystemCoreData.STATE_GORIGHT);
-            setCar(20, 90);
+            setCar(5, 90);
             return;
         }
         if (carOperation == CarOperation.CLOCKWISE) {
@@ -349,4 +381,3 @@ public class ControllerImpl extends TimerTask implements NavigatorListener, Cont
         }
     }
 }
-

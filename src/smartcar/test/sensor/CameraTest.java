@@ -1,9 +1,11 @@
 package smartcar.test.sensor;
 
 import com.googlecode.javacv.FrameGrabber;
-import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_highgui;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -18,13 +20,17 @@ public class CameraTest {
 
     public static Log logger = LogFactory.getLog(CameraTest.class.getName());
 
-    public static void main(String[] args) throws FrameGrabber.Exception {
+    public static void main(String[] args) throws FrameGrabber.Exception, IOException {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-        opencv_core.IplImage frame = CameraHW.getIplImage();
-        opencv_highgui.cvSaveImage("test.jpg", frame);
-        logger.info("take a picrute");
-        CameraHW.stopCamera();
-        
+        while (true) {
+            opencv_core.IplImage frame = CameraHW.getIplImage();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            logger.info(frame.getBufferedImage().getColorModel());
+            ImageIO.write(frame.getBufferedImage(), "jpeg", out);
+            ByteBuffer buffer = ByteBuffer.wrap(out.toByteArray());
+            logger.info("take a picrute");
+        }
+
 //        OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);  
 //        grabber.start();
 //        opencv_core.IplImage frame = grabber.grab();
@@ -38,7 +44,5 @@ public class CameraTest {
 //        logger.info(grabber.getSampleRate());
 //        
 //        grabber.stop();
-        
-        
     }
 }

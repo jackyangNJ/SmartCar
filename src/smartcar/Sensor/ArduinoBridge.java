@@ -9,7 +9,8 @@ import smartcar.Event.SensorListener;
 
 public interface ArduinoBridge {
     public static final int HALL_MSG_TYPE = 0;
-    public static final int MAGNETIC_MSG_TYPE = 0;
+    public static final int MAGNETIC_MSG_TYPE = 1;
+    public static final int ULTRAWAVE_MSG_TYPE = 2;
     
     /**
      * 移除SensorEvent的监听者

@@ -18,7 +18,7 @@ public class SmartMapData {//封装每一条小路径
     SmartMapData child;
 
     public void setStartPoint(Point p) {
-        this.start = new Point(p.x, p.y);
+        this.start = p;
     }
 
     public Point getStartPoint() {
@@ -26,7 +26,7 @@ public class SmartMapData {//封装每一条小路径
     }
 
     public void setEndPoint(Point p) {
-        this.end = new Point(p.x, p.y);
+        this.end = p;
     }
 
     public Point getEndPoint() {
@@ -34,8 +34,7 @@ public class SmartMapData {//封装每一条小路径
     }
 
     public void setChild(SmartMapData s) {
-        child.start = s.start;
-        child.end = s.end;
+        child = s;
     }
 
     public SmartMapData getChild() {

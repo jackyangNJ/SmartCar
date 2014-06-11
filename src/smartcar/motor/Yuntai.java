@@ -1,5 +1,7 @@
 package smartcar.motor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import smartcar.Sensor.ArduinoBridgeImpl;
 
 /**
@@ -31,8 +33,15 @@ public class Yuntai {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ArduinoBridgeImpl arduinoBridgeImpl=new ArduinoBridgeImpl("COM3", 115200);
-        Yuntai.setAngle(180);
+        ArduinoBridgeImpl arduinoBridgeImpl=new ArduinoBridgeImpl("/dev/ttyUSB0", 115200);
+        for (int i = 180; i > 90; i-=15) {
+            Yuntai.setAngle(i);
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Yuntai.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

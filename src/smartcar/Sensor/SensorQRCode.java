@@ -8,15 +8,10 @@ import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -28,12 +23,12 @@ import smartcar.test.sensor.testArduinoBridge;
  *
  * @author Kedar
  */
-public class QRCode implements QRCodeIf {
+public class SensorQRCode implements SensorQRCodeIf {
 
-    public static Log logger = LogFactory.getLog(QRCode.class.getName());
+    public static Log logger = LogFactory.getLog(SensorQRCode.class.getName());
     private ArrayList<SensorListener> SensorListeners;
     private String content;
-    private QRCodeData qrcd;
+    private SensorQRCodeData qrcd;
 
     // every 100ms doing a decoding conduct which means 10Hz
     private final int readFrequency = 100;
@@ -52,13 +47,8 @@ public class QRCode implements QRCodeIf {
     public String decode() {
         Result result = null;
 
-//        BufferedImage image = CameraHW.getBufferedImage();
-        BufferedImage image = null ;
-        try {
-            image = ImageIO.read(new File("e:/test.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(QRCode.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        BufferedImage image = CameraHW.getBufferedImage();
+
         try {
             if (image == null) {
                 System.out.println("the decode image may be not exit.");
@@ -77,10 +67,10 @@ public class QRCode implements QRCodeIf {
         return null;
     }
 
-    public QRCode() {
+    public SensorQRCode() {
 
         content = null;
-        qrcd = new QRCodeData();
+        qrcd = new SensorQRCodeData();
 //        timer.scheduleAtFixedRate(task, 0, readFrequency);
     }
 
@@ -131,7 +121,7 @@ public class QRCode implements QRCodeIf {
     }
 
     @Override
-    public QRCodeData getQRCodeData() {
+    public SensorQRCodeData getQRCodeData() {
         // The string pattern is x:#12#,y:#34#.
         qrcd.set_position(content);
         return qrcd;
@@ -139,7 +129,7 @@ public class QRCode implements QRCodeIf {
 
     public static void main(String[] args) {
         PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
-        QRCode testCode = new QRCode();
+        SensorQRCode testCode = new SensorQRCode();
         while (true) {
             testCode.logger.info(testCode.decode());
 

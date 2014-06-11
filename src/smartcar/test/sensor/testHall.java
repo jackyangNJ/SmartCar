@@ -34,7 +34,7 @@ public class testHall {
     public AtomicInteger count = new AtomicInteger(0);
 
     public testHall() {
-        arduinoBridge.registerMessageListener(ArduinoBridge.HALL_MSG_TYPE, testHall);
+        arduinoBridge.registerMessageListener(SensorEvent.SENSOR_HALL_TYPE, testHall);
         testHall.addSenserListener(new SensorListener() {
             @Override
             public void SensorEventProcess(SensorEvent e) {

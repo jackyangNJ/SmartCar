@@ -43,7 +43,7 @@ public class Navigator implements NavigatorIf {
     //传感器对象
     String serialName = SystemProperty.getProperty("ArduinoBridge.serialComName");
     int serialRate = Integer.parseInt(SystemProperty.getProperty("ArduinoBridge.serialComRate"));
-    ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName, serialRate);
+    public ArduinoBridge arduinoBridge = new ArduinoBridgeImpl(serialName, serialRate);
 
     SensorHall sensorHall = new SensorHall();
     SensorAccIf sensorAcc = new SensorAcc();
@@ -79,12 +79,16 @@ public class Navigator implements NavigatorIf {
                 logger.info("omit SensorHall Data,due to rotate");
                 return;
             }
-            if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOFORWARD)) {
+            logger.debug("state = " + SystemCoreData.getSystemState());
+            if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOFORWARD) || SystemCoreData.isSystemState(SystemCoreData.STATE_STILL)) {
+                logger.debug("angle=" + navigatorData.getangular());
+                logger.debug("delta=" + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular()))));
                 double x = navigatorData.getx() + (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
                 navigatorData.setx(x);
                 double y = navigatorData.gety() + (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
                 navigatorData.sety(y);
-            } else {
+            }
+            if (SystemCoreData.isSystemState(SystemCoreData.STATE_GOBACK)) {
                 double x = navigatorData.getx() - (double) (wheelgirth * Math.cos(Math.toRadians(navigatorData.getangular())));
                 navigatorData.setx(x);
                 double y = navigatorData.gety() - (double) (wheelgirth * Math.sin(Math.toRadians(navigatorData.getangular())));
@@ -242,7 +246,7 @@ public class Navigator implements NavigatorIf {
         endTime = System.currentTimeMillis();
         navigatorData = new NavigatorData();
         //注册监听器        
-        arduinoBridge.registerMessageListener(ArduinoBridge.HALL_MSG_TYPE, sensorHall);
+        arduinoBridge.registerMessageListener(SensorEvent.SENSOR_HALL_TYPE, sensorHall);
         sensorHall.addSenserListener(sensorHallListener);
 
         sensorGyro.addSenserListener(sensorGyroListener);

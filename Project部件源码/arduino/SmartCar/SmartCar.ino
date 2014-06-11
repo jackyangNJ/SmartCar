@@ -45,7 +45,7 @@ bool Hall(){
 	HallPinStateNew = digitalRead(HallPin);
     if ((HallPinStateNew == 0) &&(HallPinStateOld == 1)) {
         //send Hall sensor message via serial
-        Serial.write(HallMsgType);
+        Serial.write('H');
         Serial.write('\n');
     }
     HallPinStateOld = HallPinStateNew;
@@ -72,5 +72,6 @@ void servoProcess()
     servo.write(data);
 	delay(20);
 }
+
 
 

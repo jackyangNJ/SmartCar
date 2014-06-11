@@ -7,7 +7,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import smartcar.test.env.testLogger;
+import org.apache.log4j.PropertyConfigurator;
+import smartcar.test.sensor.testArduinoBridge;
 
 /**
  * The CameraHW class is to manage the samera hardware in the system, and
@@ -16,9 +17,10 @@ import smartcar.test.env.testLogger;
  *
  * @author jack
  */
+
 public class CameraHW {
 
-    public static Log logger = LogFactory.getLog(testLogger.class.getName());
+    public static Log logger = LogFactory.getLog(CameraHW.class);
     private static opencv_highgui.CvCapture cvCapture = null;
     private static opencv_core.IplImage image = null;
     private static final Timer timer;
@@ -26,15 +28,17 @@ public class CameraHW {
     static {
         startCamera();
         timer = new Timer("CameraHW");
+        
         if (cvCapture != null) {
-            timer.scheduleAtFixedRate(new TimerTask() {
-
+            timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     image = opencv_highgui.cvQueryFrame(cvCapture);
+                    logger.debug("new image");
                 }
             }, 0, 100);
         }
+        logger.info("CameraHW timer start");
     }
 
     public static void startCamera() {
@@ -62,5 +66,12 @@ public class CameraHW {
 
     public static BufferedImage getBufferedImage() {
         return image.getBufferedImage();
+    }
+    public static void main(String[] args) {
+        PropertyConfigurator.configure(testArduinoBridge.class.getResourceAsStream("/config/log4j.properties"));
+        while (true) {            
+            CameraHW.getBufferedImage();
+            logger.info("get inmage");
+        }
     }
 }

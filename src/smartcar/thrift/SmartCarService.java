@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,6 +88,8 @@ public class SmartCarService {
     public static void main(String[] args) throws TException, IOException {
         SmartCarService service = new SmartCarService();
         Utils.delay(2000);
-        service.setYuntaiAngle(0);
+        
+        System.err.println(service.getCameraImage().getWidth());;
+        ImageIO.write(service.getCameraImage(),"jpeg",new File("test.jpg"));
     }
 }

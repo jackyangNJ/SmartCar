@@ -19,7 +19,8 @@ public class NodeToDisplay implements Serializable{
     private boolean barriermask = false;
     SmartMapBarrier.Barrier b = new SmartMapBarrier.Barrier();
     private boolean qrcodemask = false;
-    SmartMapQRCode.QRCode q = new SmartMapQRCode.QRCode();
+    SmartMapQRCodeInfo q = new SmartMapQRCodeInfo();
+    
 
     public NodeToDisplay(int x,int y) {
         this.x = x;
@@ -34,7 +35,7 @@ public class NodeToDisplay implements Serializable{
         return barriermask;
     }
 
-    public void setQRCode(SmartMapQRCode.QRCode q) {//设置二维码
+    public void setQRCode(SmartMapQRCodeInfo q) {//设置二维码
         qrcodemask = true;
         this.q = q;
     }
@@ -55,7 +56,7 @@ public class NodeToDisplay implements Serializable{
      *
      * @return
      */
-    public SmartMapQRCode.QRCode getQRCodeInfo() {
+    public SmartMapQRCodeInfo getQRCodeInfo() {
         return q;
     }
 }

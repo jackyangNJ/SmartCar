@@ -18,8 +18,7 @@ public interface SmartMapInterface {
     public SmartMapBarrier getBarrierInformation();//地图整体障碍物信息
     public SmartMapQRCode getQRCodeInformation();//地图整体二维码位置信息
     public SmartMapBarrier.Barrier getBarrierInformation(Point p);//地图中某点周围障碍物信息
-    public SmartMapQRCode.QRCode getQRCodeInformation(Point p);//地图中某点周围二维码位置信息
-    public SmartMapQRCode.QRCode getQRCodeInformation(String s);
+    public SmartMapQRCodeInfo getQRCodeInformation(Point p);    public SmartMapQRCodeInfo getQRCodeInformation(String s);
     public SmartMapData getPath(Point start,Point end);
     public SmartMapInfo getMapInfo();//返回地图整体信息，用于jsp显示
 }
