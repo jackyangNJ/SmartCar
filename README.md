@@ -40,8 +40,10 @@ The picture below is the software hierarchy of acceleration sensor.
 ## Algorithm ##
 ###1. Kalman filter ###
 For the inevitable noises of the measured data, we cannot carry out the integral of original data directly. And thus we adopt the Kalman filter to smooth the data and get relatively stable results. The code for Kalman filter comes from the library OpenCV.
+
 ###2. QR Code ###
 The paper with QR Code image is stuck on the wall. And the car could recognize the QR Code image from the camera by using image processing algorithm. After decoding the image we could get the location of the car.
+
 ###3. Path planning ###
 First, we insert the map data into the car and it shall rasterize data. Then we will use Dijkstra algorithm to get both optimal and the shortest path from the car's current location to the destination dynamically.
 
