@@ -25,4 +25,4 @@ a project based on Zrobot
 
 [1]:http://zrobot.org/
 [2]:http://zrobot.org/wp-content/uploads/2013/08/zrobot-600x400.jpg
-[3]:https://github,com/jackyang74/SmartCar/document/picture/SmartCar.jpg
+[3]:https://github.com/jackyang74/SmartCar/document/picture/SmartCar.jpg
