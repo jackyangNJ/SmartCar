@@ -33,6 +33,10 @@ The chart below shows the sensors or devices we add to the car and their corresp
 ###2. Software ###
 We have used C, Java and Verilog in our project. Verilog code is to implement the controllers of various sensors on FPGA. And the these controllers are connected to CPU via AXI4 bus and corresponding Linux drivers are written in C. Java code is used on the top layer of software hierarchy, achieving the functions of autonomous driving, path planning and obstruction avoidance.
 
+The picture below is the software hierarchy of acceleration sensor.
+
+![AccSensor][4]
+
 ## Algorithm ##
 ###1. Kalman filter ###
 For the inevitable noises of the measured data, we cannot carry out the integral of original data directly. And thus we adopt the Kalman filter to smooth the data and get relatively stable results. The code for Kalman filter comes from the library OpenCV.
@@ -44,3 +48,4 @@ First, we insert the map data into the car and it shall rasterize data. Then we 
 [1]:http://zrobot.org/
 [2]:http://zrobot.org/wp-content/uploads/2013/08/zrobot-600x400.jpg
 [3]:https://raw.githubusercontent.com/jackyang74/SmartCar/master/document/picture/SmartCar.jpg
+[4]:https://raw.githubusercontent.com/jackyang74/SmartCar/master/document/picture/AccSensor.png
