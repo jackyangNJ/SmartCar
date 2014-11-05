@@ -1,10 +1,10 @@
 SmartCar
 ========
 ## Introduction ##
-###1. Aim ###
-**SmartCar ** is a project aims to navigate readers in the library to help them find the book they want. The car can autonomously drive  to the right bookshelf after you tell it the name of the book. To some extent the major work of the project is to solve the problem of indoor localization. 
+**SmartCar** is a project which aims to navigate readers in the library to help find the book they want. The car can autonomously drive  to the right bookshelf after you input the name of the book. 
+The major work of our project is to achieve accurate indoor localization. To solve this, we combine the traditional inertial navigation technology with image processing.
 
-###2. Platform ###
+##Platform ##
 ![ZRobot][2]
 
 Our project is based on the platform [**ZRobot**][1]. 
