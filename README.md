@@ -8,7 +8,7 @@ The major work of our project is to achieve accurate indoor localization. To sol
 ##Platform ##
 ![ZRobot][2]
 
-We use the platform [*ZRobot*][1]. ZRobot is an all programmable robot with motors, camera, ultrasonic sensors and wireless AP. And it is capable of finishing tasks requiring fast movement, obstruction avoidance, computer vision and remote control. 
+We use the platform [*ZRobot*][1] which is an all programmable robot with motors, camera, ultrasonic sensors and wireless AP. And it is capable of finishing tasks requiring fast movement, obstruction avoidance, computer vision and remote control. 
 
 The car consists of two layer boards, one is for control and the other for power supply. The heart of the control board is a Zynq®-7000 chip, which is the newest FPGA chip integrating FPGA resources with ARM-A9 hard core. We run the software on the hard core and take advantage of FPGA resources as middleware between the software and exterior sensors or devices.
 
